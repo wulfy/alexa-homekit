@@ -1,0 +1,92 @@
+const {
+        getStateFromAlexaDevice,
+        getAlexaDevice,
+        sendAlexaCommandResponse,
+        sendDeviceCommand,
+        alexaDiscovery,
+        PROD_MODE
+    } = require("./domoticzApiHelper");
+
+const { ALEXA_REPORTSTATE_REQUEST_EXAMPLE, 
+        ALEXA_SETPERCENT_REQUEST_EXAMPLE,
+        ALEXA_DISCOVERY_REQUEST_EXAMPLE,
+        ALEXA_TURNON_REQUEST,
+        ALEXA_TURNOFF_REQUEST,
+    } = require("./mockups/alexaMockups")
+
+function handler(request, context) {
+    console.log(request);
+    if (request.directive.header.namespace === 'Alexa.Discovery' && request.directive.header.name === 'Discover') {
+        console.log("DEBUG: Discover request " + JSON.stringify(request));
+        handleDiscovery(request, context, "");
+    }
+    else if (request.directive.header.namespace === 'Alexa.PercentageController') {
+        if (request.directive.header.name === 'SetPercentage') {
+            console.log("DEBUG: SetPercentage " + JSON.stringify(request));
+            handlePercentControl(request, context);
+        }
+    }
+    else if (request.directive.header.namespace === 'Alexa.PowerController'){
+        if (request.directive.header.name === 'TurnOff' || request.directive.header.name === 'TurnOn') {
+            console.log("DEBUG: switch on/off " + JSON.stringify(request));
+            handlePowerControl(request, context);
+        }
+    }
+    else if (request.directive.header.namespace === 'Alexa') {
+        if (request.directive.header.name === 'ReportState') {
+            handleReportState(request,context);
+        }
+    }
+
+
+    async function handleDiscovery(request,context){
+        const endPoints = await alexaDiscovery(request);
+        let header = request.directive.header;
+        header.name = "Discover.Response";
+        const response = { header: header, payload: endPoints };
+        console.log("DEBUG: Discovery Response: " + JSON.stringify(response));
+
+        PROD_MODE ? context.succeed(response) : null;
+    }
+
+    async function handleReportState(request, context) {
+        const endpointId = request.directive.endpoint.endpointId;
+        const requestToken = request.directive.endpoint.scope.token;
+        const alexaDevice = await getAlexaDevice(requestToken,endpointId);
+        if(!alexaDevice) return null;
+
+        const deviceStateContext = getStateFromAlexaDevice(alexaDevice);
+        sendAlexaCommandResponse(request,context,deviceStateContext);
+    }
+
+    async function handlePowerControl(request, context) {
+        const setValue = null;
+        const requestMethod = request.directive.header.name;
+        if (requestMethod === "TurnOff" || requestMethod === "TurnOn") {
+            await sendDeviceCommand(request,setValue);
+
+            sendAlexaCommandResponse(request,context,contextResult);
+        }
+
+    }
+
+    async function handlePercentControl(request, context) {
+        const endpointId = request.directive.endpoint.endpointId;
+        const setValue = request.directive.payload.percentage;
+        const requestToken = request.directive.endpoint.scope.token;
+        const requestMethod = request.directive.header.name;
+        if (requestMethod === "SetPercentage") {
+            await sendDeviceCommand(request,setValue);
+            const alexaDevice = await getAlexaDevice(requestToken,endpointId);
+            if(!alexaDevice) return null;
+            const contextResult = getStateFromAlexaDevice(alexaDevice);
+            sendAlexaCommandResponse(request,context,contextResult);
+        }
+    }
+};
+
+exports.handler = handler;
+
+//handler(ALEXA_DISCOVERY_REQUEST_EXAMPLE);
+handler(ALEXA_DISCOVERY_REQUEST_EXAMPLE);
+//handler(ALEXA_REPORTSTATE_REQUEST_EXAMPLE("2_aeon"));

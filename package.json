@@ -1,0 +1,12 @@
+{
+  "name": "homekitSkill",
+  "version": "1.0.0",
+  "description": "Skill to manage Domoticz command threw Alexa homekit",
+  "main": "index.js",
+  "author": "ludovic <wulfy72@yahoo.fr>",
+  "license": "MIT",
+  "dependencies": {
+    "dotenv": "^6.0.0",
+    "mysql": "^2.16.0"
+  }
+}

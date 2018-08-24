@@ -14,7 +14,7 @@ const { ALEXA_REPORTSTATE_REQUEST_EXAMPLE,
         ALEXA_TURNOFF_REQUEST,
     } = require("./mockups/alexaMockups")
 
-function handler(request, context) {
+exports.handler = function (request, context) {
     console.log(request);
     if (request.directive.header.namespace === 'Alexa.Discovery' && request.directive.header.name === 'Discover') {
         console.log("DEBUG: Discover request " + JSON.stringify(request));
@@ -43,10 +43,10 @@ function handler(request, context) {
         const endPoints = await alexaDiscovery(request);
         let header = request.directive.header;
         header.name = "Discover.Response";
-        const response = { header: header, payload: endPoints };
-        console.log("DEBUG: Discovery Response: " + JSON.stringify(response));
-
-        PROD_MODE ? context.succeed(response) : null;
+        const response = {event:{ header: header, payload: endPoints }};
+        console.log("DEBUG: Discovery Response >>>>>>>> " + JSON.stringify(response));
+        
+        PROD_MODE ? context.succeed(response) : console.log("no context sent");
     }
 
     async function handleReportState(request, context) {
@@ -56,15 +56,19 @@ function handler(request, context) {
         if(!alexaDevice) return null;
 
         const deviceStateContext = getStateFromAlexaDevice(alexaDevice);
-        sendAlexaCommandResponse(request,context,deviceStateContext);
+        sendAlexaCommandResponse(request,context,deviceStateContext,true);
     }
 
     async function handlePowerControl(request, context) {
+        const endpointId = request.directive.endpoint.endpointId;
+        const requestToken = request.directive.endpoint.scope.token;
         const setValue = null;
         const requestMethod = request.directive.header.name;
         if (requestMethod === "TurnOff" || requestMethod === "TurnOn") {
             await sendDeviceCommand(request,setValue);
-
+            const alexaDevice = await getAlexaDevice(requestToken,endpointId);
+            if(!alexaDevice) return null;
+            const contextResult = getStateFromAlexaDevice(alexaDevice);
             sendAlexaCommandResponse(request,context,contextResult);
         }
 
@@ -84,9 +88,3 @@ function handler(request, context) {
         }
     }
 };
-
-exports.handler = handler;
-
-//handler(ALEXA_DISCOVERY_REQUEST_EXAMPLE);
-handler(ALEXA_DISCOVERY_REQUEST_EXAMPLE);
-//handler(ALEXA_REPORTSTATE_REQUEST_EXAMPLE("2_aeon"));

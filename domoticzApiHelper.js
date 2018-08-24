@@ -32,7 +32,8 @@ async function getBase(token){
 		if(!user_data)
 			throw "Token Error";
 		
-		const password = decrypt(user_data.domoticzPassword);
+		const password = decrypt(user_data.domoticzPassword).slice(1, -1);
+		console.log("after decrypt " + password)
 		return `http://${user_data.domoticzLogin}:${password}@${user_data.domoticzHost}:${user_data.domoticzPort}/json.htm`
 	}catch(e){
 		throw e.message;
@@ -129,6 +130,7 @@ async function getDevices(token,domoticzDeviceId) {
 	const request = base+"?"+LIST_DEVICE_REQUEST + deviceFilter;
 	console.log("getDevices " + request);
 	const devicesJsonList = await promiseHttpRequest(request);
+	console.log(devicesJsonList)
 	const devicesObjList = JSON.parse(devicesJsonList);
 	return devicesObjList.result;
 }
@@ -189,17 +191,20 @@ exports.PROD_MODE = PROD_MODE
 exports.getStateFromAlexaDevice =function(alexaDevice) {
 	console.log("GET STATE")
 	console.log(alexaDevice)
-	const properties = alexaDevice.capabilities.map((capability)=>{
+	const properties = [];
+	alexaDevice.capabilities.forEach((capability)=>{
 			const alexaInterface = capability.interface;
-			const alexaSupported = capability.supported.map((support)=>{
-				const supportedName = support.name;
-				support.value = eval(support.value);
-				return  {
+			//TODO remplacer par un reduce
+			const alexaSupported = capability.supported.forEach((support)=>{
+				const newSupport = support;
+				newSupport.value = newSupport.value.indexOf("()") >= 0 ? eval(newSupport.value)() : newSupport.value ;
+				properties.push({
 					      "namespace": alexaInterface,
-					      ...support,
+					      ...newSupport,
 					      "timeOfSample": new Date().toISOString(),
 					      "uncertaintyInMilliseconds": 500
-					    }
+					    })
+				
 			});
 			return alexaSupported;
 		});
@@ -212,11 +217,11 @@ exports.getStateFromAlexaDevice =function(alexaDevice) {
 }
 
 //send alexa response and stop lambda by context.succeed call
-exports.sendAlexaCommandResponse = function(request,context,contextResult){
+exports.sendAlexaCommandResponse = function(request,context,contextResult,stateReport){
 	const endpointId = request.directive.endpoint.endpointId;
     let responseHeader = request.directive.header;
     responseHeader.namespace = "Alexa";
-    responseHeader.name = "Response";
+    responseHeader.name = stateReport ? "StateReport":"Response";
     responseHeader.messageId = responseHeader.messageId + "-R";
     // get user token pass in request
     const requestToken = request.directive.endpoint.scope.token;

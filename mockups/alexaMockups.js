@@ -35,7 +35,7 @@ exports.ALEXA_SETPERCENT_REQUEST_EXAMPLE = {
     "endpoint": {
       "scope": {
         "type": "BearerToken",
-        "token": "access-token-from-skill"
+        "token": "56bd316702aa979b916b1ad7bba595b50af94f69"
       },
       "endpointId": "2_aeon",
       "cookie": {

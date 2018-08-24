@@ -41,7 +41,7 @@ const DOMOTICZ_ALEXA_VOLET_EXAMPLE = {
 			},
 			"supported": [{
 	            "name": "powerState",
-	            "value": "@Level@ == 100 ? 'OFF' : 'ON'",
+	            "value": "()=>@Level@ == 100 ? 'OFF' : 'ON'",
 	        }],
 	        "proactivelyReported": true,
 	        "retrievable": true
@@ -97,13 +97,13 @@ const DOMOTICZ_ALEXA_TEMP_EXAMPLE = {
 			},
 			"supported": [{
 	            "name": "temperature",
-	            "value":"@Temp@",
-	            "scale":"CELSIUS"
+	            "value":"()=>({value:@Temp@,scale:'CELSIUS'})",
 	        }],
 	        "proactivelyReported": false,
 	        "retrievable": true
 		}
 	]
 };
+
 
 exports.ALEXAMAPPING = [DOMOTICZ_ALEXA_VOLET_EXAMPLE,DOMOTICZ_ALEXA_PRISE_EXAMPLE,DOMOTICZ_ALEXA_TEMP_EXAMPLE];

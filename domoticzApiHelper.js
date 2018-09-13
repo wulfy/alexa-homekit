@@ -49,7 +49,7 @@ async function getBase(token){
 			throw "Token Error";
 		
 		const password = decrypt(user_data.domoticzPassword).slice(1,-1);
-		console.log("after decrypt " + password)
+		//console.log("after decrypt " + password)
 		const { proto, domain } = extractDomoticzUrlData(user_data.domoticzHost);
 		return `${proto}://${user_data.domoticzLogin}:${password}@${domain}:${user_data.domoticzPort}/json.htm`
 	}catch(e){

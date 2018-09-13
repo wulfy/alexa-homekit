@@ -36,14 +36,14 @@ class Database {
 }
 
 console.log(DBCONFIG)
-getDatabase = () => {
+const getDatabase = () => {
     if(database) return database;
     database = new Database(DBCONFIG);
     database.connect();
     return database;
 };
 
-getUserData = (token) => {
+const getUserData = (token) => {
     console.log("GET USER DATA ");
     const connectionDatabase = getDatabase();
     return connectionDatabase.query(`SELECT * FROM oauth_tokens as ot 
@@ -51,7 +51,7 @@ getUserData = (token) => {
                                      LEFT JOIN user_data as ud ON ud.user_id = ot.user_id 
                                      WHERE ot.access_token = ? `, 
     [token]).then( results => {
-        
+        console.log(results[0])
         let data = results[0];
         if(!data) 
             throw "ERROR NO TOKEN FOUND";
@@ -62,4 +62,3 @@ getUserData = (token) => {
 
 exports.getDatabase = getDatabase;
 exports.getUserData = getUserData;
-

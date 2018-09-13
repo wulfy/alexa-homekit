@@ -101,7 +101,14 @@ const DOMOTICZ_ALEXA_TEMP_EXAMPLE = {
 	        }],
 	        "proactivelyReported": false,
 	        "retrievable": true
-		}
+		},
+		{
+                "interface": "Alexa.EndpointHealth",
+                "supported": [{
+                	"name":"connectivity",
+                "value": '()=>({"value": "OK"})'
+                }],
+            }
 	]
 };
 

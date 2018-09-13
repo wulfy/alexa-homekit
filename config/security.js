@@ -1,7 +1,7 @@
 const crypto = require('crypto');
 const {CRYPTOPASS} = require('./constants');
 const cipher = crypto.createCipher('aes192', CRYPTOPASS);
-const decipher = crypto.createDecipher('aes192', CRYPTOPASS);
+
 
 exports.encrypt = (data) => {
 	const toSave = JSON.stringify(data);
@@ -11,9 +11,13 @@ exports.encrypt = (data) => {
 }
 
 exports.decrypt = (encryptedData) => {
+	const decipher = crypto.createDecipher('aes192', CRYPTOPASS);
+	console.log("START DECRYPT")
 	console.log(encryptedData);
 	let decrypted = decipher.update(encryptedData, 'hex', 'utf8');
+	console.log("configured")
 	decrypted += decipher.final('utf8');
+	console.log("final")
 	console.log(decrypted);
-	return JSON.parse(decrypted);
+	return decrypted;
 }

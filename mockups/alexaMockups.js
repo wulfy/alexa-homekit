@@ -1,6 +1,6 @@
 exports.ALEXA_REPORTSTATE_REQUEST_EXAMPLE = (endPointID)=> {
     return {
-  	"directive": {
+    "directive": {
       "header": {
         "messageId": "abc-123-def-456",
         "correlationToken": "abcdef-123456",
@@ -35,12 +35,12 @@ exports.ALEXA_SETPERCENT_REQUEST_EXAMPLE = {
     "endpoint": {
       "scope": {
         "type": "BearerToken",
-        "token": "56bd316702aa979b916b1ad7bba595b50af94f69"
+        "token": "access-token-from-skill"
       },
       "endpointId": "2_aeon",
       "cookie": {
-			overrideParams: (requestMethod)=> requestMethod === "TurnOn" ||  requestMethod === "TurnOff"? SET_DEVICE_LVL : "",
-			overrideValue : (requestMethod)=> requestMethod === "TurnOn" ? "100" : "0",
+      overrideParams: (requestMethod)=> requestMethod === "TurnOn" ||  requestMethod === "TurnOff"? SET_DEVICE_LVL : "",
+      overrideValue : (requestMethod)=> requestMethod === "TurnOn" ? "100" : "0",
       }
     },
     "payload": {

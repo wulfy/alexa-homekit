@@ -4,7 +4,7 @@ Helper to translate Amazon commands to Domoticz commands
 
 const env = require('dotenv').config();
 const http = require('http');
-const https = require('http');
+const https = require('https');
 const { LIST_DEVICE_REQUEST, 
 		STATE_REQUEST, 
 		SET_COMMAND, 
@@ -24,6 +24,22 @@ const {decrypt} = require("./config/security");
 
 const PROD_MODE = process.env.PROD_MODE === "true" ? true : false;
 
+
+function extractDomoticzUrlData (request) {
+  let domoticzUrlData = {domain:null,proto:"HTTP"};
+  const result = request.split("//").map((value)=>value.split(":")[0]);
+  console.log(result)
+  if(result.length > 1)
+  {
+      domoticzUrlData.proto = result[0];
+      domoticzUrlData.domain = result[1];
+  }else{
+      domoticzUrlData.domain = result[0];
+  }
+
+  return domoticzUrlData;
+}
+
 // get Domoticz credentials corresponding to the token
 async function getBase(token){
 	console.log("getBase")
@@ -32,18 +48,23 @@ async function getBase(token){
 		if(!user_data)
 			throw "Token Error";
 		
-		const password = decrypt(user_data.domoticzPassword).slice(1, -1);
+		const password = decrypt(user_data.domoticzPassword).slice(1,-1);
 		console.log("after decrypt " + password)
-		return `http://${user_data.domoticzLogin}:${password}@${user_data.domoticzHost}:${user_data.domoticzPort}/json.htm`
+		const { proto, domain } = extractDomoticzUrlData(user_data.domoticzHost);
+		return `${proto}://${user_data.domoticzLogin}:${password}@${domain}:${user_data.domoticzPort}/json.htm`
 	}catch(e){
 		throw e.message;
+		console.log(e);
 	}
 	
 	}
 
 function promiseHttpRequest (request) {
+	const requestLower = request.toLowerCase();
+    const httpOrHttps = requestLower.includes("https") ? https : http;
+
     return new Promise ((resolve, reject) => {
-        http.get(request, (resp) => {
+        httpOrHttps.get(request, (resp) => {
           let data = '';
           // A chunk of data has been recieved.
           resp.on('data', (chunk) => {

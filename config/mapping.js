@@ -112,5 +112,33 @@ const DOMOTICZ_ALEXA_TEMP_EXAMPLE = {
 	]
 };
 
+const DOMOTICZ_ALEXA_CONTACT_EXAMPLE = {
+	"domoticz_mapping" : {
+		"Type":"General",
+		"Subtype": "Alarm"
+	},
+	"discovery" : {
+		...COMMON_DISCOVERY_MAPPING,
+		"displayCategories" : ["CONTACT_SENSOR"],
+		"cookie": {},
+	},
+	"capabilities" : [
+		{
+			"interface":"Alexa.ContactSensor",
+			"state":{
+				"detectionState":"",
+			},
+			"command":{
+			},
+			"supported": [{
+	            "name": "detectionState",
+	            "value":"()=>@Level@>0:'DETECTED':'NOT DETECTED'",
+	        }],
+	        "proactivelyReported": false,
+	        "retrievable": true
+		}
+	]
+};
+
 
 exports.ALEXAMAPPING = [DOMOTICZ_ALEXA_VOLET_EXAMPLE,DOMOTICZ_ALEXA_PRISE_EXAMPLE,DOMOTICZ_ALEXA_TEMP_EXAMPLE];

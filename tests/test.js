@@ -1,3 +1,5 @@
+const {handler} = require("../index")
+
 const {
         getStateFromAlexaDevice,
         getAlexaDevice,
@@ -67,7 +69,7 @@ console.log("---- TEST RUNNING ---- ")
 //handleDiscovery(ALEXA_DISCOVERY_REQUEST_EXAMPLE);
 //handleReportState(ALEXA_REPORTSTATE_REQUEST_EXAMPLE);
 //console.log("GO")
-handlePercentControl(ALEXA_SETPERCENT_REQUEST_EXAMPLE)
+//handlePercentControl(ALEXA_SETPERCENT_REQUEST_EXAMPLE)
 console.log("---- TEST ENDED ---- ")
 
 
@@ -75,4 +77,4 @@ console.log("---- TEST ENDED ---- ")
 //handler(ALEXA_DISCOVERY_REQUEST_EXAMPLE);
 //handler(ALEXA_DISCOVERY_REQUEST_EXAMPLE);
 //handler(ALEXA_SETPERCENT_REQUEST_EXAMPLE);
-//handler(ALEXA_REPORTSTATE_REQUEST_EXAMPLE("2_aeon"));
+handler(ALEXA_REPORTSTATE_REQUEST_EXAMPLE("2_aeon"));

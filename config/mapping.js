@@ -79,8 +79,7 @@ const DOMOTICZ_ALEXA_PRISE_EXAMPLE = {
 
 const DOMOTICZ_ALEXA_TEMP_EXAMPLE = {
 	"domoticz_mapping" : {
-		"Type":"Temp",
-		"Subtype": "LaCrosse TX3"
+		"Type":"Temp"
 	},
 	"discovery" : {
 		...COMMON_DISCOVERY_MAPPING,
@@ -103,13 +102,23 @@ const DOMOTICZ_ALEXA_TEMP_EXAMPLE = {
 	        "retrievable": true
 		},
 		{
-                "interface": "Alexa.EndpointHealth",
-                "supported": [{
-                	"name":"connectivity",
-                "value": '()=>({"value": "OK"})'
-                }],
-            }
-	]
+              "interface": "Alexa.ThermostatController",
+              "supported": [
+                  {
+                    "name": "targetSetpoint",
+	            "value":"()=>({value:@Temp@,scale:'CELSIUS'})"
+                  }
+                ],
+                "proactivelyReported": false,
+                "retrievable": true
+         }
+	],
+	"configuration": {
+              "supportsScheduling": false,
+              "supportedModes": [
+                "AUTO"
+              ]
+    }
 };
 
 

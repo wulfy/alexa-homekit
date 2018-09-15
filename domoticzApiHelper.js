@@ -213,6 +213,7 @@ exports.getStateFromAlexaDevice =function(alexaDevice) {
 	console.log("GET STATE")
 	console.log(alexaDevice)
 	const properties = [];
+	const configuration = alexaDevice.configuration;
 	alexaDevice.capabilities.forEach((capability)=>{
 			const alexaInterface = capability.interface;
 			//TODO remplacer par un reduce
@@ -230,10 +231,11 @@ exports.getStateFromAlexaDevice =function(alexaDevice) {
 			return alexaSupported;
 		});
 
-	const contextResult = {
+	let contextResult = {
                 "properties": properties
             };
 
+    configuration ? contextResult.configuration = configuration : null;
     return contextResult;
 }
 

@@ -69,7 +69,7 @@ const DOMOTICZ_ALEXA_PRISE_EXAMPLE = {
 			},
 			"supported": [{
 	            "name": "powerState",
-	            "value":"ON",
+	            "value":"()=> '@Status@' === 'On' ? 'ON' : 'OFF'",
 	        }],
 	        "proactivelyReported": true,
 	        "retrievable": true

@@ -149,5 +149,49 @@ const DOMOTICZ_ALEXA_CONTACT_EXAMPLE = {
 	]
 };
 
+const DOMOTICZ_ALEXA_SELECTOR_MAPPING = {
+	"domoticz_mapping" : {
+		"Type":"Light/Switch",
+		"Subtype": "Selector Switch"
+	},
+	"discovery" : {
+		...COMMON_DISCOVERY_MAPPING,
+		"displayCategories" : ["LIGHT"],
+		"cookie": {
+			/*overrideParams: (requestMethod)=> requestMethod === "TurnOn" ||  requestMethod === "TurnOff"? SET_DEVICE_LVL : null,
+			overrideValue : (requestMethod)=> requestMethod === "TurnOn" ? "100" : "0",*/
+		},
+	},
+	"capabilities" : [
+		{
+			"interface":"Alexa.PercentageController",
+			"state":{
+				"percentage":"@Level@",
+			},
+			"command":{
+			},
+			"supported": [{
+	            "name": "percentage",
+	            "value" : "@Level@",
+	        }],
+	        "retrievable": true
+		},
+		{
+			"interface":"Alexa.PowerController",
+			"state":{
+				"powerState":"ON",
+			},
+			"command":{
+			},
+			"supported": [{
+	            "name": "powerState",
+	            "value": "()=>@Level@ == 100 ? 'OFF' : 'ON'",
+	        }],
+	        "proactivelyReported": true,
+	        "retrievable": true
+		}
+	]
+};
 
-exports.ALEXAMAPPING = [DOMOTICZ_ALEXA_VOLET_EXAMPLE,DOMOTICZ_ALEXA_PRISE_EXAMPLE,DOMOTICZ_ALEXA_TEMP_EXAMPLE];
+
+exports.ALEXAMAPPING = [DOMOTICZ_ALEXA_VOLET_EXAMPLE,DOMOTICZ_ALEXA_PRISE_EXAMPLE,DOMOTICZ_ALEXA_TEMP_EXAMPLE,DOMOTICZ_ALEXA_SELECTOR_MAPPING];

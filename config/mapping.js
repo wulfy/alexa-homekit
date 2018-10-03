@@ -158,8 +158,6 @@ const DOMOTICZ_ALEXA_SELECTOR_MAPPING = {
 		...COMMON_DISCOVERY_MAPPING,
 		"displayCategories" : ["LIGHT"],
 		"cookie": {
-			/*overrideParams: (requestMethod)=> requestMethod === "TurnOn" ||  requestMethod === "TurnOff"? SET_DEVICE_LVL : null,
-			overrideValue : (requestMethod)=> requestMethod === "TurnOn" ? "100" : "0",*/
 		},
 	},
 	"capabilities" : [

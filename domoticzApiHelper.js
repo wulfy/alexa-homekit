@@ -23,7 +23,7 @@ const {decrypt} = require("./config/security");
 
 
 const PROD_MODE = process.env.PROD_MODE === "true" ? true : false;
-
+process.env.NODE_TLS_REJECT_UNAUTHORIZED = "0"; //self signed ssl certificate
 
 function extractDomoticzUrlData (request) {
   let domoticzUrlData = {domain:null,proto:"HTTP"};

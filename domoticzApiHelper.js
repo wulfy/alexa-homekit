@@ -149,8 +149,8 @@ async function getDevices(token,domoticzDeviceId) {
 	const deviceFilter = domoticzDeviceId ? "&rid="+domoticzDeviceId:"";
 	const base = await getBase(token);
 	const request = base+"?"+LIST_DEVICE_REQUEST + deviceFilter;
-	console.log("****************getDevices " + request);
-	const devicesJsonList = DOMOTICZ_GET_DEVICES;//await promiseHttpRequest(request);
+	console.log("getDevices " + request);
+	const devicesJsonList = await promiseHttpRequest(request);
 	console.log(devicesJsonList)
 	const devicesObjList = JSON.parse(devicesJsonList);
 	return devicesObjList.result;

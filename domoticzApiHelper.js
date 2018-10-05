@@ -149,7 +149,7 @@ async function getDevices(token,domoticzDeviceId) {
 	const deviceFilter = domoticzDeviceId ? "&rid="+domoticzDeviceId:"";
 	const base = await getBase(token);
 	const request = base+"?"+LIST_DEVICE_REQUEST + deviceFilter;
-	console.log("getDevices " + request);
+	console.log("getDevices " + LIST_DEVICE_REQUEST + deviceFilter);
 	const devicesJsonList = await promiseHttpRequest(request);
 	console.log(devicesJsonList)
 	const devicesObjList = JSON.parse(devicesJsonList);
@@ -286,7 +286,7 @@ exports.sendDeviceCommand = async function (request, value){
 	if(deviceCommandValue && paramsMapper["value"])
 		deviceRequest += `&${paramsMapper["value"]}=${deviceCommandValue}`
 
-	console.log(deviceRequest);
+	console.log(`&idx=${deviceId}&${paramsMapper["command"]}`);
 
 	try {
 		PROD_MODE ? await promiseHttpRequest(deviceRequest) : null ;

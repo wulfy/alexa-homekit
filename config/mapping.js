@@ -1,5 +1,5 @@
 const COMMON_DISCOVERY_MAPPING = {
-		"endpointId" : "@idx@_@HardwareName@",
+		"endpointId" : "@idx@_@HardwareName@_@SwitchType@",
 		"manufacturerName" : "@HardwareName@",
 		"friendlyName" : "@Name@",
 		"description" : "@Description@",
@@ -8,7 +8,7 @@ const DOMOTICZ_ALEXA_VOLET_EXAMPLE = {
 	"domoticz_mapping" : {
 		"Type":"Light/Switch",
 		"Subtype": "Switch",
-		"Switchtype": "Blinds Percentage"
+		"SwitchType": "Blinds Percentage"
 	},
 	"discovery" : {
 		...COMMON_DISCOVERY_MAPPING,
@@ -46,6 +46,24 @@ const DOMOTICZ_ALEXA_VOLET_EXAMPLE = {
 	        "proactivelyReported": true,
 	        "retrievable": true
 		}
+	]
+};
+const DOMOTICZ_ALEXA_INVERTED_VOLET = {
+	"domoticz_mapping" : {
+		"Type":"Light/Switch",
+		"Subtype": "Switch",
+		"Switchtype": "Blinds Percentage Inverted"
+	},
+	"discovery" : DOMOTICZ_ALEXA_VOLET_EXAMPLE.discovery,
+	"capabilities" : [
+		DOMOTICZ_ALEXA_VOLET_EXAMPLE.capabilities[0],
+		{
+    	...DOMOTICZ_ALEXA_VOLET_EXAMPLE.capabilities[1],
+			"supported": [{
+	            "name": "powerState",
+	            "value": "()=>@Level@ == 100 ? 'ON' : 'OFF'",
+	    }],
+     }
 	]
 };
 const DOMOTICZ_ALEXA_PRISE_EXAMPLE = {
@@ -192,4 +210,4 @@ const DOMOTICZ_ALEXA_SELECTOR_MAPPING = {
 };
 
 
-exports.ALEXAMAPPING = [DOMOTICZ_ALEXA_VOLET_EXAMPLE,DOMOTICZ_ALEXA_PRISE_EXAMPLE,DOMOTICZ_ALEXA_TEMP_EXAMPLE,DOMOTICZ_ALEXA_SELECTOR_MAPPING];
+exports.ALEXAMAPPING = [DOMOTICZ_ALEXA_VOLET_EXAMPLE,DOMOTICZ_ALEXA_PRISE_EXAMPLE,DOMOTICZ_ALEXA_TEMP_EXAMPLE,DOMOTICZ_ALEXA_SELECTOR_MAPPING,DOMOTICZ_ALEXA_INVERTED_VOLET];

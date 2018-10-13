@@ -78,9 +78,9 @@ exports.ALEXA_TURNON_REQUEST = {
     "endpoint": {
       "scope": {
         "type": "BearerToken",
-        "token": "access-token-from-skill"
+        "token": "a4bf269d3fdd181aee9d73a6dfaaaee058471d54"
       },
-      "endpointId": "ludo_volet_demo_id",
+      "endpointId": "2_aeon_Blinds Percentage",
       "cookie": {}
     },
     "payload": {}

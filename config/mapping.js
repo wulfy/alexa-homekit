@@ -4,11 +4,11 @@ const COMMON_DISCOVERY_MAPPING = {
 		"friendlyName" : "@Name@",
 		"description" : "@Description@",
 }
-const DOMOTICZ_ALEXA_VOLET_EXAMPLE = {
+const DOMOTICZ_ALEXA_VOLET = {
 	"domoticz_mapping" : {
 		"Type":"Light/Switch",
 		"Subtype": "Switch",
-		"SwitchType": "Blinds Percentage"
+		"Switchtype": "Blinds Percentage"
 	},
 	"discovery" : {
 		...COMMON_DISCOVERY_MAPPING,
@@ -54,11 +54,11 @@ const DOMOTICZ_ALEXA_INVERTED_VOLET = {
 		"Subtype": "Switch",
 		"Switchtype": "Blinds Percentage Inverted"
 	},
-	"discovery" : DOMOTICZ_ALEXA_VOLET_EXAMPLE.discovery,
+	"discovery" : DOMOTICZ_ALEXA_VOLET.discovery,
 	"capabilities" : [
-		DOMOTICZ_ALEXA_VOLET_EXAMPLE.capabilities[0],
+		DOMOTICZ_ALEXA_VOLET.capabilities[0],
 		{
-    	...DOMOTICZ_ALEXA_VOLET_EXAMPLE.capabilities[1],
+    	...DOMOTICZ_ALEXA_VOLET.capabilities[1],
 			"supported": [{
 	            "name": "powerState",
 	            "value": "()=>@Level@ == 100 ? 'ON' : 'OFF'",
@@ -66,10 +66,8 @@ const DOMOTICZ_ALEXA_INVERTED_VOLET = {
      }
 	]
 };
-const DOMOTICZ_ALEXA_PRISE_EXAMPLE = {
+const DOMOTICZ_ALEXA_ON_OFF = {
 	"domoticz_mapping" : {
-		"Type":"Light/Switch",
-		"Subtype": "Switch",
 		"Switchtype": "On/Off"
 	},
 	"discovery" : {
@@ -95,7 +93,35 @@ const DOMOTICZ_ALEXA_PRISE_EXAMPLE = {
 	]
 };
 
-const DOMOTICZ_ALEXA_TEMP_EXAMPLE = {
+const DOMOTICZ_ALEXA_GROUP = {
+	"domoticz_mapping" : {
+		"Type":"Group"
+	},
+	"discovery" : DOMOTICZ_ALEXA_ON_OFF.discovery,
+	"capabilities" : DOMOTICZ_ALEXA_ON_OFF.capabilities,
+};
+
+const DOMOTICZ_ALEXA_RFY_VOLET = {
+	"domoticz_mapping" : {
+		"Type":"RFY",
+		"Subtype": "RFY",
+		"Switchtype": "Blinds"
+	},
+	"discovery" : DOMOTICZ_ALEXA_ON_OFF.discovery,
+	"capabilities" : DOMOTICZ_ALEXA_ON_OFF.capabilities,
+};
+
+const DOMOTICZ_ALEXA_YEE_LED = {
+	"domoticz_mapping" : {
+		"Type":"Color Switch",
+		"Subtype": "RGBWW",
+		"Switchtype": "Dimmer"
+	},
+	"discovery" : DOMOTICZ_ALEXA_VOLET.discovery,
+	"capabilities" : DOMOTICZ_ALEXA_VOLET.capabilities,
+};
+
+const DOMOTICZ_ALEXA_TEMP = {
 	"domoticz_mapping" : {
 		"Type":"Temp"
 	},
@@ -210,4 +236,12 @@ const DOMOTICZ_ALEXA_SELECTOR_MAPPING = {
 };
 
 
-exports.ALEXAMAPPING = [DOMOTICZ_ALEXA_VOLET_EXAMPLE,DOMOTICZ_ALEXA_PRISE_EXAMPLE,DOMOTICZ_ALEXA_TEMP_EXAMPLE,DOMOTICZ_ALEXA_SELECTOR_MAPPING,DOMOTICZ_ALEXA_INVERTED_VOLET];
+exports.ALEXAMAPPING = [
+							DOMOTICZ_ALEXA_VOLET,
+							DOMOTICZ_ALEXA_ON_OFF,
+							DOMOTICZ_ALEXA_TEMP,
+							DOMOTICZ_ALEXA_SELECTOR_MAPPING,
+							DOMOTICZ_ALEXA_INVERTED_VOLET,
+							DOMOTICZ_ALEXA_GROUP,
+							DOMOTICZ_ALEXA_RFY_VOLET
+						];

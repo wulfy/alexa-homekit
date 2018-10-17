@@ -14,10 +14,11 @@ const { DOMOTICZ_ALEXA_DISCOVERY_MAPPING,
 		ALEXAMAPPING
 	} = require("./config/mapping")
 
-const { DOMOTICZ_GET_DEVICES, 
+const { 
 		DOMOTICZ_STATE_ANSWER, 
 	} = require("./mockups/domoticzMockups")
 
+const { DOMOTICZ_GET_DEVICES } = require("./mockups/client2Mockup");
 const {getUserData} = require("./config/database");
 const {decrypt} = require("./config/security");
 
@@ -120,10 +121,11 @@ function mapDomoToAlexa(domoDevice,alexaMapping){
 
 	alexaMapping.forEach((alexaMap) =>{
       const alexaDevice = alexaMap.domoticz_mapping;
-			if(	alexaDevice.Type && alexaDevice.Type === domoDevice.Type &&
+			if(	
+				(!alexaDevice.Type || alexaDevice.Type === domoDevice.Type) &&
 				(!alexaDevice.Subtype || alexaDevice.Subtype === domoDevice.SubType )&&
 				(!alexaDevice.Switchtype|| alexaDevice.Switchtype === domoDevice.SwitchType)
-				)
+			)
 			{
       console.log("---------mapping----------");
       console.log(domoDevice);
@@ -146,6 +148,8 @@ function mapDomoticzDevices(domoDevices,alexaMapping){
 }
 
 async function getDevices(token,domoticzDeviceId) {
+	//for debug 
+	//return JSON.parse(DOMOTICZ_GET_DEVICES).result;
 	const deviceFilter = domoticzDeviceId ? "&rid="+domoticzDeviceId:"";
 	const base = await getBase(token);
 	const request = base+"?"+LIST_DEVICE_REQUEST + deviceFilter;

@@ -60,7 +60,7 @@ exports.ALEXA_DISCOVERY_REQUEST_EXAMPLE = {
     "payload": {
       "scope": {
         "type": "BearerToken",
-        "token": "04c6fa43a8c6f62d2df0641c97a0598b938a3470"
+        "token": "5a1e219dd51b607ff9b6434a3df829e3def65080"
       }
     }
   }

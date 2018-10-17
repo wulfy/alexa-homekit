@@ -70,7 +70,7 @@ console.log("---- TEST RUNNING ---- ")
 //handleReportState(ALEXA_REPORTSTATE_REQUEST_EXAMPLE);
 //console.log("GO")
 //handlePercentControl(ALEXA_SETPERCENT_REQUEST_EXAMPLE)
-console.log("---- TEST ENDED ---- ")
+
 
 
 //TEST FOR INDEX.JS
@@ -79,3 +79,5 @@ handler(ALEXA_DISCOVERY_REQUEST_EXAMPLE);
 //handler(ALEXA_SETPERCENT_REQUEST_EXAMPLE);
 //handler(ALEXA_REPORTSTATE_REQUEST_EXAMPLE("2_aeon"));
 //handler(ALEXA_TURNON_REQUEST);
+
+console.log("---- TEST ENDED ---- ")

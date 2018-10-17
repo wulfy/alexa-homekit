@@ -8,7 +8,7 @@ const DOMOTICZ_ALEXA_VOLET = {
 	"domoticz_mapping" : {
 		"Type":"Light/Switch",
 		"Subtype": "Switch",
-		"SwitchType": "Blinds Percentage"
+		"Switchtype": "Blinds Percentage"
 	},
 	"discovery" : {
 		...COMMON_DISCOVERY_MAPPING,

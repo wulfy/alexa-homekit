@@ -121,10 +121,11 @@ function mapDomoToAlexa(domoDevice,alexaMapping){
 
 	alexaMapping.forEach((alexaMap) =>{
       const alexaDevice = alexaMap.domoticz_mapping;
-			if(	alexaDevice.Type && alexaDevice.Type === domoDevice.Type &&
+			if(	
+				(!alexaDevice.Type || alexaDevice.Type === domoDevice.Type) &&
 				(!alexaDevice.Subtype || alexaDevice.Subtype === domoDevice.SubType )&&
 				(!alexaDevice.Switchtype|| alexaDevice.Switchtype === domoDevice.SwitchType)
-				)
+			)
 			{
       console.log("---------mapping----------");
       console.log(domoDevice);
@@ -147,7 +148,8 @@ function mapDomoticzDevices(domoDevices,alexaMapping){
 }
 
 async function getDevices(token,domoticzDeviceId) {
-	//for debug return JSON.parse(DOMOTICZ_GET_DEVICES).result;
+	//for debug 
+	//return JSON.parse(DOMOTICZ_GET_DEVICES).result;
 	const deviceFilter = domoticzDeviceId ? "&rid="+domoticzDeviceId:"";
 	const base = await getBase(token);
 	const request = base+"?"+LIST_DEVICE_REQUEST + deviceFilter;

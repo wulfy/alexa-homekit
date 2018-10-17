@@ -8,7 +8,7 @@ const https = require('https');
 const { LIST_DEVICE_REQUEST, 
 		STATE_REQUEST, 
 		SET_COMMAND, 
-		DEVICE_HANDLER_COMMANDS_PARAMS
+		device_handler_command
 	} = require("./config/domoticzCommands")
 const { DOMOTICZ_ALEXA_DISCOVERY_MAPPING, 
 		ALEXAMAPPING
@@ -279,8 +279,9 @@ exports.sendDeviceCommand = async function (request, value){
 	const overrideParams = cookieInfos.overrideParams;
 	const overrideValue = cookieInfos.overrideValue;
 	const deviceId = request.directive.endpoint.endpointId.split("_")[0];
+	const subtype = request.directive.endpoint.endpointId.split("_")[2];
 	//const params = overrideParams && typeof overrideParams === "function" ? overrideParams(requestMethod) : DEVICE_HANDLER_COMMANDS_PARAMS[requestMethod];
-	const paramsMapper =DEVICE_HANDLER_COMMANDS_PARAMS[requestMethod];
+	const paramsMapper =device_handler_command(subtype)[requestMethod];
 	deviceRequest += `&idx=${deviceId}&${paramsMapper["command"]}`;
 
 	if(deviceCommandValue && paramsMapper["value"])

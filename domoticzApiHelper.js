@@ -109,7 +109,10 @@ function configureAlexaDevice(domoDevice, alexaMapping) {
  		// get the var from tomoticz and replace it in mapping json
 		alexaDeviceJson = alexaDeviceJson.replace(toReplace,domoDevice[domoticzVar])
 	});
+
 	const newDiscovery =  JSON.parse(alexaDeviceJson);
+	newDiscovery.discovery.friendlyName = newDiscovery.discovery.friendlyName.replace(/[^\w\s]/gi, ' ');
+  	newDiscovery.discovery.endpointId = newDiscovery.discovery.endpointId.replace('.', '');
   	
   return newDiscovery;
 

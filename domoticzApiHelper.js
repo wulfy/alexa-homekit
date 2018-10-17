@@ -113,6 +113,7 @@ function configureAlexaDevice(domoDevice, alexaMapping) {
 	const newDiscovery =  JSON.parse(alexaDeviceJson);
 	newDiscovery.discovery.friendlyName = newDiscovery.discovery.friendlyName.replace(/[^\w\s]/gi, ' ');
   	newDiscovery.discovery.endpointId = newDiscovery.discovery.endpointId.replace('.', '');
+  	newDiscovery.discovery.endpointId = newDiscovery.discovery.endpointId.replace('\/', '');
   	
   return newDiscovery;
 

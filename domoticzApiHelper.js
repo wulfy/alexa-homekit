@@ -18,7 +18,7 @@ const {
 		DOMOTICZ_STATE_ANSWER, 
 	} = require("./mockups/domoticzMockups")
 
-const { DOMOTICZ_GET_DEVICES } = require("./mockups/client2Mockup");
+const { DOMOTICZ_GET_DEVICES } = require("./mockups/client1Mockup");
 const {getUserData} = require("./config/database");
 const {decrypt} = require("./config/security");
 
@@ -112,8 +112,11 @@ function configureAlexaDevice(domoDevice, alexaMapping) {
 
 	const newDiscovery =  JSON.parse(alexaDeviceJson);
 	newDiscovery.discovery.friendlyName = newDiscovery.discovery.friendlyName.replace(/[^\w\s]/gi, ' ');
-  	newDiscovery.discovery.endpointId = newDiscovery.discovery.endpointId.replace('.', '');
-  	newDiscovery.discovery.endpointId = newDiscovery.discovery.endpointId.replace('\/', '');
+  	newDiscovery.discovery.endpointId = newDiscovery.discovery.endpointId
+  										.split('_')
+  										.reduce(
+  											(accumulator, currentValue) => (accumulator? accumulator + '_' : '') + currentValue.replace(/[^\w\s]/gi, '')
+  										);
   	
   return newDiscovery;
 

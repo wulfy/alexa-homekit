@@ -60,7 +60,7 @@ exports.DOMOTICZ_GET_DEVICES = JSON.stringify({
          "DimmerType" : "abs",
          "Favorite" : 1,
          "HardwareID" : 2,
-         "HardwareName" : "YeeLight",
+         "HardwareName" : "YeeLight coucou.tu \ / àç!è§'( spéciaux",
          "HardwareType" : "YeeLight LED",
          "HardwareTypeVal" : 91,
          "HaveDimmer" : true,

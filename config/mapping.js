@@ -173,7 +173,7 @@ const DOMOTICZ_ALEXA_TEMP_SPECIFIC = {
 	"capabilities" : DOMOTICZ_ALEXA_TEMP.capabilities,
 };
 
-const DOMOTICZ_ALEXA_CONTACT_EXAMPLE = {
+const DOMOTICZ_ALEXA_CONTACT = {
 	"domoticz_mapping" : {
 		"Type":"General",
 		"Subtype": "Alarm"
@@ -254,5 +254,5 @@ exports.ALEXAMAPPING = [
 							DOMOTICZ_ALEXA_RFY_VOLET,
 							DOMOTICZ_ALEXA_YEE_LED,
 							DOMOTICZ_ALEXA_TEMP_SPECIFIC,
-							DOMOTICZ_ALEXA_CONTACT_EXAMPLE
+							DOMOTICZ_ALEXA_CONTACT
 						];

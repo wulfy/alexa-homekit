@@ -165,6 +165,14 @@ const DOMOTICZ_ALEXA_TEMP = {
     }
 };
 
+const DOMOTICZ_ALEXA_TEMP_SPECIFIC = {
+	"domoticz_mapping" : {
+		"Type":"Temp + Humidity"
+	},
+	"discovery" : DOMOTICZ_ALEXA_TEMP.discovery,
+	"capabilities" : DOMOTICZ_ALEXA_TEMP.capabilities,
+};
+
 const DOMOTICZ_ALEXA_CONTACT_EXAMPLE = {
 	"domoticz_mapping" : {
 		"Type":"General",
@@ -243,5 +251,8 @@ exports.ALEXAMAPPING = [
 							DOMOTICZ_ALEXA_SELECTOR_MAPPING,
 							DOMOTICZ_ALEXA_INVERTED_VOLET,
 							DOMOTICZ_ALEXA_GROUP,
-							DOMOTICZ_ALEXA_RFY_VOLET
+							DOMOTICZ_ALEXA_RFY_VOLET,
+							DOMOTICZ_ALEXA_YEE_LED,
+							DOMOTICZ_ALEXA_TEMP_SPECIFIC,
+							DOMOTICZ_ALEXA_CONTACT_EXAMPLE
 						];

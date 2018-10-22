@@ -8,5 +8,18 @@
   "dependencies": {
     "dotenv": "^6.0.0",
     "mysql": "^2.16.0"
+  },
+  "scripts": {
+    "test": "jest",
+    "package": "serverless package"
+  },
+  "devDependencies": {
+    "grunt": "^1.0.3",
+    "grunt-aws-lambda-package": "^0.0.6",
+    "jest": "^23.6.0",
+    "serverless": "^1.32.0",
+    "serverless-webpack": "^5.2.0",
+    "webpack": "^4.22.0",
+    "webpack-cli": "^3.1.2"
   }
 }

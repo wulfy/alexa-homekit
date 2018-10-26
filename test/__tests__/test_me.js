@@ -1,7 +1,7 @@
 const base_config = require("../config_tests/base_config");
 
 //TEST FOR INDEX.JS
-test('DISCOVERY TESTING client2', done => {
+test('DISCOVERY TESTING me', done => {
 
     const { DOMOTICZ_GET_DEVICES } = require("../mockups/domoticzMockups");
 

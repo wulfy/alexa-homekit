@@ -1,5 +1,7 @@
 const mysql = require( 'mysql' );
 const {DBCONFIG} = require('./constants')
+const {sendStatsd} = require('./metrics');
+
 let database = null;
 class Database {
     constructor( config ) {
@@ -45,6 +47,8 @@ const getDatabase = () => {
 
 const getUserData = (token) => {
     console.log("GET USER DATA ");
+    sendStatsd("calls.database.getUserData:1|c");
+
     const connectionDatabase = getDatabase();
     return connectionDatabase.query(`SELECT * FROM oauth_tokens as ot 
                                      LEFT JOIN users as us ON ot.user_id = us.id 

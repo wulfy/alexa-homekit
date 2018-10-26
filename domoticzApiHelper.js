@@ -16,9 +16,11 @@ const { DOMOTICZ_ALEXA_DISCOVERY_MAPPING,
 
 const {getUserData} = require("./config/database");
 const {decrypt} = require("./config/security");
+const {sendStatsd} = require('./config/metrics');
 
 
-const PROD_MODE = process.env.PROD_MODE === "true" ? true : false;
+const PROD_MODE = process.env.PROD_MODE === "true";
+
 process.env.NODE_TLS_REJECT_UNAUTHORIZED = "0"; //self signed ssl certificate
 
 function extractDomoticzUrlData (request) {
@@ -269,6 +271,7 @@ exports.sendAlexaCommandResponse = function(request,context,contextResult,stateR
         }
     };
     console.log("DEBUG: " + responseHeader.namespace + JSON.stringify(response));
+    sendStatsd("calls.answer."+responseHeader.name+":1|c");
     PROD_MODE ? context.succeed(response) : null;
 }
 
@@ -293,10 +296,10 @@ exports.sendDeviceCommand = async function (request, value){
 		deviceRequest += `&${paramsMapper["value"]}=${deviceCommandValue}`
 
 	console.log(deviceRequest);
-
 	try {
 		PROD_MODE ? await promiseHttpRequest(deviceRequest) : null ;
 		console.log("REQUEST SENT");
+		sendStatsd("calls.command."+subtype+":1|c");
 		return "ok";
 	}catch(e){
 		throw e;

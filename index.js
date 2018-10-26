@@ -7,7 +7,13 @@ const {
         PROD_MODE
     } = require("./domoticzApiHelper");
 
+const {sendStatsd} = require('./config/metrics');
+
 exports.handler = function (request, context) {
+
+    //send stats about request receive
+    sendStatsd("request."+request.directive.header.namespace+"."+request.directive.header.name+":1|c");
+
     console.log(request);
     if (request.directive.header.namespace === 'Alexa.Discovery' && request.directive.header.name === 'Discover') {
         console.log("DEBUG: Discover request " + JSON.stringify(request));

@@ -1,5 +1,8 @@
 require('dotenv').config()
 
+const PROD_MODE = process.env.PROD_MODE === "true";
+const CURRENT_INSTANCE = PROD_MODE ? "prod" : "preprod";
+
 exports.DBCONFIG = {
   host     : process.env.MYSQL_ADDON_HOST,
   user     : process.env.MYSQL_ADDON_USER,
@@ -9,3 +12,10 @@ exports.DBCONFIG = {
 };
 
 exports.CRYPTOPASS = process.env.CRYPTOPASS;
+
+exports.METRICS_BASE = "lambda.alhau";
+exports.METRICS_COMMAND = "command";
+exports.METRICS_DISCOVERY = "discovery";
+exports.PROD_MODE = PROD_MODE;
+exports.CURRENT_INSTANCE = CURRENT_INSTANCE;
+exports.METRICS_BASE = "lambda.alhau." + CURRENT_INSTANCE ;

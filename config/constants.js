@@ -1,7 +1,7 @@
 require('dotenv').config()
 
 const PROD_MODE = process.env.PROD_MODE === "true";
-const CURRENT_INSTANCE = PROD_MODE ? "prod" : "preprod";
+const CURRENT_INSTANCE = process.env.INSTANCE_NAME ;//PROD_MODE ? "prod" : "preprod";
 
 exports.DBCONFIG = {
   host     : process.env.MYSQL_ADDON_HOST,

@@ -52,6 +52,7 @@ package:
     - domoticzApiHelper.js
     - config/**
     - .env.dist
+    - .env #because the .env file is generated on jenkins for now
   exclude:
     - test/**
     - "*.*"

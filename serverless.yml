@@ -51,7 +51,6 @@ package:
     - index.js
     - domoticzApiHelper.js
     - config/**
-    - .env.dist
   exclude:
     - test/**
     - "*.*"

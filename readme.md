@@ -21,6 +21,9 @@ You should use crypto.createDecipher('aes192', CRYPTOPASS); in the function call
 ## Tests
 run node test/test.js (dans uncomment on of the handle request)
 
+## Package
+yarn package (will pack and zip the project to be deployable on amazon Lambda)
+
 ### Curl request to set % and get state
 #### set %
 curl "http://<login>:<PWD>@<host>:<port>/json.htm?type=command&param=switchlight&idx=2&switchcmd=Set%20Level&level=80"

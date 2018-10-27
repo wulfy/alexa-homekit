@@ -51,7 +51,6 @@ const getUserData = (token) => {
                                      LEFT JOIN user_data as ud ON ud.user_id = ot.user_id 
                                      WHERE ot.access_token = ? `, 
     [token]).then( results => {
-        //console.log(results[0])
         let data = results[0];
         if(!data) 
             throw "ERROR NO TOKEN FOUND";

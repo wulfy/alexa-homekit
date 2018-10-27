@@ -20,7 +20,7 @@ You should use crypto.createDecipher('aes192', CRYPTOPASS); in the function call
 
 ## Tests
 run node test/test.js (dans uncomment on of the handle request) for manual tests
-yarn test for automated tests
+yarn test (for automated tests)
 
 ## Package
 yarn package (will pack and zip the project to be deployable on amazon Lambda)

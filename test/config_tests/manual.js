@@ -1,5 +1,5 @@
 process.env.PROD_MODE = "true";
-const {handler} = require("../index")
+const {handler} = require("../../index")
 const {
         getStateFromAlexaDevice,
         getAlexaDevice,
@@ -7,7 +7,7 @@ const {
         sendDeviceCommand,
         BASE_REQUEST,
         LIST_DEVICE_REQUEST
-    } = require("../domoticzApiHelper");
+    } = require("../../domoticzApiHelper");
 
 const { ALEXA_REPORTSTATE_REQUEST_EXAMPLE, 
         ALEXA_SETPERCENT_REQUEST_EXAMPLE,

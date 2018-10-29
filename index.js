@@ -9,7 +9,10 @@ const {
 
 const {sendStatsd} = require('./config/metrics');
 
-exports.handler = function (request, context) {
+const { performance } = require('perf_hooks');
+
+exports.handler = async function (request, context) {
+    let durationStart = performance.now();
 
     //send stats about request receive
     sendStatsd("request."+request.directive.header.namespace+"."+request.directive.header.name+":1|c");
@@ -17,23 +20,23 @@ exports.handler = function (request, context) {
     console.log(request);
     if (request.directive.header.namespace === 'Alexa.Discovery' && request.directive.header.name === 'Discover') {
         console.log("DEBUG: Discover request " + JSON.stringify(request));
-        handleDiscovery(request, context, "");
+        await handleDiscovery(request, context, "");
     }
     else if (request.directive.header.namespace === 'Alexa.PercentageController') {
         if (request.directive.header.name === 'SetPercentage') {
             console.log("DEBUG: SetPercentage " + JSON.stringify(request));
-            handlePercentControl(request, context);
+         await handlePercentControl(request, context);
         }
     }
     else if (request.directive.header.namespace === 'Alexa.PowerController'){
         if (request.directive.header.name === 'TurnOff' || request.directive.header.name === 'TurnOn') {
             console.log("DEBUG: switch on/off " + JSON.stringify(request));
-            handlePowerControl(request, context);
+         await handlePowerControl(request, context);
         }
     }
     else if (request.directive.header.namespace === 'Alexa') {
         if (request.directive.header.name === 'ReportState') {
-            handleReportState(request,context);
+          await handleReportState(request,context);
         }
     }
 
@@ -86,4 +89,8 @@ exports.handler = function (request, context) {
             sendAlexaCommandResponse(request,context,contextResult);
         }
     }
+
+    const totalDuration = parseInt(performance.now() - durationStart);
+    console.log("Duration : " + totalDuration + " ms");
+    sendStatsd("request."+request.directive.header.namespace+"."+request.directive.header.name+":"+totalDuration+"|ms");
 };

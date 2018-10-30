@@ -111,7 +111,7 @@ function configureAlexaDevice(domoDevice, alexaMapping) {
   	newDiscovery.discovery.endpointId = newDiscovery.discovery.endpointId
   										.split('_')
   										.reduce(
-  											(accumulator, currentValue) => (accumulator? accumulator + '_' : '') + currentValue.replace(/[^\w\s]/gi, '')
+  											(accumulator, currentValue) => (accumulator? accumulator + '_' : '') + currentValue.replace(/[^\w]/gi, '')
   										);
   	
   return newDiscovery;

@@ -5,7 +5,7 @@ const SET_DEVICE_ON = "switchcmd=On"
 const SET_DEVICE_OFF = "switchcmd=Off"
 exports.STATE_REQUEST = "type=devices"
 exports.SET_COMMAND = "type=command&param=switchlight"
-const VOLET_SUBTYPE = "Blinds Percentage";
+const VOLET_SUBTYPE = "BlindsPercentage";
 
 exports.device_handler_command = (subType)=>({
 	"SetPercentage": {

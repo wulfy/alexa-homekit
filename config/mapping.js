@@ -66,6 +66,22 @@ const DOMOTICZ_ALEXA_INVERTED_VOLET = {
      }
 	]
 };
+const DOMOTICZ_ALEXA_BLIND_INVERTED_VOLET = {
+	"domoticz_mapping" : {
+		"Switchtype": "Blinds Inverted"
+	},
+	"discovery" : DOMOTICZ_ALEXA_VOLET.discovery,
+	"capabilities" : [
+		DOMOTICZ_ALEXA_VOLET.capabilities[0],
+		{
+    	...DOMOTICZ_ALEXA_VOLET.capabilities[1],
+			"supported": [{
+	            "name": "powerState",
+	            "value": "()=>@Level@ == 100 ? 'ON' : 'OFF'",
+	    }],
+     }
+	]
+};
 const DOMOTICZ_ALEXA_ON_OFF = {
 	"domoticz_mapping" : {
 		"Switchtype": "On/Off"
@@ -254,5 +270,6 @@ exports.ALEXAMAPPING = [
 							DOMOTICZ_ALEXA_RFY_VOLET,
 							DOMOTICZ_ALEXA_YEE_LED,
 							DOMOTICZ_ALEXA_TEMP_SPECIFIC,
-							DOMOTICZ_ALEXA_CONTACT
+							DOMOTICZ_ALEXA_CONTACT,
+							DOMOTICZ_ALEXA_BLIND_INVERTED_VOLET
 						];

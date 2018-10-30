@@ -14,16 +14,13 @@ const { DOMOTICZ_ALEXA_DISCOVERY_MAPPING,
 		ALEXAMAPPING
 	} = require("./config/mapping")
 
-const { 
-		DOMOTICZ_STATE_ANSWER, 
-	} = require("./mockups/domoticzMockups")
-
-const { DOMOTICZ_GET_DEVICES } = require("./mockups/client1Mockup");
 const {getUserData} = require("./config/database");
 const {decrypt} = require("./config/security");
+const {sendStatsd} = require('./config/metrics');
 
 
-const PROD_MODE = process.env.PROD_MODE === "true" ? true : false;
+const PROD_MODE = process.env.PROD_MODE === "true";
+
 process.env.NODE_TLS_REJECT_UNAUTHORIZED = "0"; //self signed ssl certificate
 
 function extractDomoticzUrlData (request) {
@@ -43,7 +40,6 @@ function extractDomoticzUrlData (request) {
 
 // get Domoticz credentials corresponding to the token
 async function getBase(token){
-	console.log("getBase")
 	try {
 		const user_data = await getUserData(token);
 		if(!user_data)
@@ -154,9 +150,9 @@ function mapDomoticzDevices(domoDevices,alexaMapping){
 	return mappedDevices;
 }
 
-async function getDevices(token,domoticzDeviceId) {
-	//for debug 
-	//return JSON.parse(DOMOTICZ_GET_DEVICES).result;
+//global to be overriden
+global.getDevices = async function (token,domoticzDeviceId) {
+	console.log("get devices original");
 	const deviceFilter = domoticzDeviceId ? "&rid="+domoticzDeviceId:"";
 	const base = await getBase(token);
 	const request = base+"?"+LIST_DEVICE_REQUEST + deviceFilter;
@@ -275,6 +271,7 @@ exports.sendAlexaCommandResponse = function(request,context,contextResult,stateR
         }
     };
     console.log("DEBUG: " + responseHeader.namespace + JSON.stringify(response));
+    sendStatsd("calls.answer."+responseHeader.name+":1|c");
     PROD_MODE ? context.succeed(response) : null;
 }
 
@@ -299,10 +296,10 @@ exports.sendDeviceCommand = async function (request, value){
 		deviceRequest += `&${paramsMapper["value"]}=${deviceCommandValue}`
 
 	console.log(deviceRequest);
-
 	try {
 		PROD_MODE ? await promiseHttpRequest(deviceRequest) : null ;
 		console.log("REQUEST SENT");
+		sendStatsd("calls.command."+subtype+":1|c");
 		return "ok";
 	}catch(e){
 		throw e;

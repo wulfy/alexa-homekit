@@ -1,5 +1,5 @@
-const {handler} = require("../index")
-
+process.env.PROD_MODE = "true";
+const {handler} = require("../../index")
 const {
         getStateFromAlexaDevice,
         getAlexaDevice,
@@ -7,7 +7,7 @@ const {
         sendDeviceCommand,
         BASE_REQUEST,
         LIST_DEVICE_REQUEST
-    } = require("../domoticzApiHelper");
+    } = require("../../domoticzApiHelper");
 
 const { ALEXA_REPORTSTATE_REQUEST_EXAMPLE, 
         ALEXA_SETPERCENT_REQUEST_EXAMPLE,
@@ -15,6 +15,12 @@ const { ALEXA_REPORTSTATE_REQUEST_EXAMPLE,
         ALEXA_TURNON_REQUEST,
         ALEXA_TURNOFF_REQUEST,
     } = require("../mockups/alexaMockups")
+
+const { 
+        DOMOTICZ_STATE_ANSWER, 
+    } = require("../mockups/domoticzMockups")
+
+const { DOMOTICZ_GET_DEVICES } = require("../mockups/client1Mockup");
 
 async function handleReportState(request, context) {
     const endpointId = request.directive.endpoint.endpointId;
@@ -65,19 +71,25 @@ async function test2()
 	console.log("done " + JSON.stringify(data));
 }
 
+global.getDevices = (token,domoticzDeviceId) => {
+    return JSON.parse(DOMOTICZ_GET_DEVICES).result;
+}
+
+
 console.log("---- TEST RUNNING ---- ")
 //handleDiscovery(ALEXA_DISCOVERY_REQUEST_EXAMPLE);
 //handleReportState(ALEXA_REPORTSTATE_REQUEST_EXAMPLE);
 //console.log("GO")
 //handlePercentControl(ALEXA_SETPERCENT_REQUEST_EXAMPLE)
 
-
+let context = {};
+context.succeed = (data) => console.log(JSON.stringify(data));
 
 //TEST FOR INDEX.JS
-handler(ALEXA_DISCOVERY_REQUEST_EXAMPLE);
+handler(ALEXA_DISCOVERY_REQUEST_EXAMPLE,context);
 //handler(ALEXA_DISCOVERY_REQUEST_EXAMPLE);
 //handler(ALEXA_SETPERCENT_REQUEST_EXAMPLE);
 //handler(ALEXA_REPORTSTATE_REQUEST_EXAMPLE("2_aeon"));
 //handler(ALEXA_TURNON_REQUEST);
-
+console.log(context);
 console.log("---- TEST ENDED ---- ")

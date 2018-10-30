@@ -19,7 +19,11 @@ You should use crypto.createDecipher('aes192', CRYPTOPASS); in the function call
 (don't know why only decrypt is affected and not encrypt)
 
 ## Tests
-run node test/test.js (dans uncomment on of the handle request)
+run node test/test.js (dans uncomment on of the handle request) for manual tests
+npm test (for automated tests)
+
+## Package
+yarn package (will pack and zip the project to be deployable on amazon Lambda)
 
 ### Curl request to set % and get state
 #### set %

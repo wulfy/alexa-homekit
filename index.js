@@ -1,6 +1,5 @@
 const {
-        getStateFromAlexaDevice,
-        getAlexaDevice,
+        getAlexaDeviceState,
         sendAlexaCommandResponse,
         sendDeviceCommand,
         alexaDiscovery,
@@ -54,10 +53,7 @@ exports.handler = async function (request, context) {
     async function handleReportState(request, context) {
         const endpointId = request.directive.endpoint.endpointId;
         const requestToken = request.directive.endpoint.scope.token;
-        const alexaDevice = await getAlexaDevice(requestToken,endpointId);
-        if(!alexaDevice) return null;
-
-        const deviceStateContext = getStateFromAlexaDevice(alexaDevice);
+        const deviceStateContext = getAlexaDeviceState(requestToken,endpointId);
         sendAlexaCommandResponse(request,context,deviceStateContext,true);
     }
 
@@ -68,9 +64,7 @@ exports.handler = async function (request, context) {
         const requestMethod = request.directive.header.name;
         if (requestMethod === "TurnOff" || requestMethod === "TurnOn") {
             await sendDeviceCommand(request,setValue);
-            const alexaDevice = await getAlexaDevice(requestToken,endpointId);
-            if(!alexaDevice) return null;
-            const contextResult = getStateFromAlexaDevice(alexaDevice);
+            const contextResult = await getAlexaDeviceState(requestToken,endpointId);
             sendAlexaCommandResponse(request,context,contextResult);
         }
 
@@ -83,9 +77,7 @@ exports.handler = async function (request, context) {
         const requestMethod = request.directive.header.name;
         if (requestMethod === "SetPercentage") {
             await sendDeviceCommand(request,setValue);
-            const alexaDevice = await getAlexaDevice(requestToken,endpointId);
-            if(!alexaDevice) return null;
-            const contextResult = getStateFromAlexaDevice(alexaDevice);
+            const contextResult = await getAlexaDeviceState(requestToken,endpointId);
             sendAlexaCommandResponse(request,context,contextResult);
         }
     }

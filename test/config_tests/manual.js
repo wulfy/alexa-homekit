@@ -1,5 +1,6 @@
 process.env.PROD_MODE = "true";
 const {handler} = require("../../index")
+
 const {
         getStateFromAlexaDevice,
         getAlexaDevice,
@@ -71,9 +72,11 @@ async function test2()
 	console.log("done " + JSON.stringify(data));
 }
 
+
+/*
 global.getDevices = (token,domoticzDeviceId) => {
     return JSON.parse(DOMOTICZ_GET_DEVICES).result;
-}
+}*/
 
 
 console.log("---- TEST RUNNING ---- ")

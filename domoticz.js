@@ -92,7 +92,6 @@ class domoticz {
 			sendStatsd("calls.command."+deviceSubtype+":1|c");
 
 			return deviceRequest;
-
 		}catch(e){
 			throw e;
 		}

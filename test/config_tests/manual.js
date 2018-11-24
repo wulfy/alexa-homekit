@@ -20,7 +20,7 @@ const {
         DOMOTICZ_STATE_ANSWER, 
     } = require("../mockups/domoticzMockups")
 
-const { DOMOTICZ_GET_DEVICES } = require("../mockups/client3Mockup");
+const { DOMOTICZ_GET_DEVICES } = require("../mockups/client4Mockup");
 
 async function handleReportState(request, context) {
     const endpointId = request.directive.endpoint.endpointId;
@@ -83,7 +83,7 @@ console.log("---- TEST RUNNING ---- ")
 //handlePercentControl(ALEXA_SETPERCENT_REQUEST_EXAMPLE)
 
 let context = {};
-context.succeed = (data) => console.log(JSON.stringify(data));
+context.succeed = (data) => console.log("CONTEXT ENDED");
 
 //TEST FOR INDEX.JS
 handler(ALEXA_DISCOVERY_REQUEST_EXAMPLE,context);

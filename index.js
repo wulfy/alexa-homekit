@@ -47,7 +47,7 @@ exports.handler = async function (request, context) {
         header.name = "Discover.Response";
         const response = {event:{ header: header, payload: endPoints }};
         console.log("DEBUG: Discovery Response >>>>>>>> " + JSON.stringify(response));
-        
+
         PROD_MODE ? context.succeed(response) : console.log("no context sent");
     }
 

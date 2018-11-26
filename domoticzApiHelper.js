@@ -23,6 +23,10 @@ const PROD_MODE = process.env.PROD_MODE === "true";
 
 process.env.NODE_TLS_REJECT_UNAUTHORIZED = "0"; //self signed ssl certificate
 
+
+/**
+ Extract domoticz url informations and store it in a DTO
+**/
 function extractDomoticzUrlData (request) {
   let domoticzUrlData = {domain:null,proto:"HTTP"};
   const result = request.split("//").map((value)=>value.split(":")[0]);
@@ -56,6 +60,7 @@ async function getBase(token){
 	
 	}
 
+//promise to send an HTTP request
 function promiseHttpRequest (request) {
 	const requestLower = request.toLowerCase();
     const httpOrHttps = requestLower.includes("https") ? https : http;

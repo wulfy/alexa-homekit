@@ -18,7 +18,6 @@ process.env.NODE_TLS_REJECT_UNAUTHORIZED = "0"; //self signed ssl certificate
 
 const alexaMapper = new AlexaMapper(ALEXAMAPPING);
 
-
 //use global because it has to be overriden while testing :
 // by re-defining getDevices as device, tests can overwrite it while testing
 // Getdevices do an http request to retrieve domoticz devices
@@ -29,6 +28,8 @@ global.getDevices = async function getDevices (token,domoticzDeviceId) {
 	return await domoticzConnector.getDevices(domoticzDeviceId);
 }
 
+// Alexa discovery full process
+// retrieve user, getdevices, map them to domoticz then return them in Alexa format
 async function alexaDiscoveryEndpoints(request){
 	const requestToken = request.directive.payload.scope.token;
 	const devices = await getDevices(requestToken);
@@ -38,7 +39,7 @@ async function alexaDiscoveryEndpoints(request){
 }
 
 
-/********* EXPORT FILES  *****************************/
+/********* EXPORT FUNCTIONS USED BY INDEX  *****************************/
 
 exports.alexaDiscovery = alexaDiscoveryEndpoints;
 exports.PROD_MODE = PROD_MODE

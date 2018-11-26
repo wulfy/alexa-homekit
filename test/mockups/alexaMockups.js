@@ -49,6 +49,32 @@ exports.ALEXA_SETPERCENT_REQUEST_EXAMPLE = {
   }
 }
 
+exports.ALEXA_SETPERCENT_REQUEST_EXAMPLE = {
+  "directive": {
+    "header": {
+      "namespace": "Alexa.PercentageController",
+      "name": "SetPercentage",
+      "payloadVersion": "3",
+      "messageId": "1bd5d003-31b9-476f-ad03-71d471922820",
+      "correlationToken": "dFMb0z+PgpgdDmluhJ1LddFvSqZ/jCc8ptlAKulUj90jSqg=="
+    },
+    "endpoint": {
+      "scope": {
+        "type": "BearerToken",
+        "token": "access-token-from-skill"
+      },
+      "endpointId": "2_aeon",
+      "cookie": {
+      overrideParams: (requestMethod)=> requestMethod === "TurnOn" ||  requestMethod === "TurnOff"? SET_DEVICE_LVL : "",
+      overrideValue : (requestMethod)=> requestMethod === "TurnOn" ? "100" : "0",
+      }
+    },
+    "payload": {
+      "percentage": 50
+    }
+  }
+}
+
 exports.ALEXA_DISCOVERY_REQUEST_EXAMPLE = {
   "directive": {
     "header": {

@@ -7,7 +7,7 @@ const SET_VOLET_STOP = "switchcmd=Stop"
 exports.STATE_REQUEST = "type=devices"
 exports.SET_COMMAND = "type=command&param=switchlight"
 const VOLET_SUBTYPE = "BlindsPercentage";
-const VOLET_VENETIAN_SUBTYPE = "Venetian Blinds US";
+const VOLET_VENETIAN_SUBTYPE = "VenetianBlindsUS";
 
 device_handler_command = (subType,value)=>({
 	"SetPercentage": {
@@ -26,10 +26,13 @@ device_handler_command = (subType,value)=>({
 	},
 });
 
-exports.generate_command = (subtype,command,value) => {
+exports.generate_command = (deviceId,subtype,command,value) => {
+	console.log(subtype + "->" + command + "->" + value)
 	const paramsMapper = device_handler_command(subtype,value)[command];
-	deviceRequest += `&idx=${deviceId}&${paramsMapper["command"]}`;
+	let deviceRequest = `&idx=${deviceId}&${paramsMapper["command"]}`;
 
 	if(paramsMapper["value"])
-		deviceRequest += `&${paramsMapper["value"]}=${deviceCommandValue}`
+		deviceRequest += `&${paramsMapper["value"]}`
+
+	return deviceRequest;
 }

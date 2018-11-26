@@ -1,4 +1,4 @@
-process.env.PROD_MODE = "true";
+process.env.PROD_MODE = "false";
 const {handler} = require("../../index")
 
 const {
@@ -78,7 +78,6 @@ async function test2()
 global.getDevices = (token,domoticzDeviceId) => {
     return JSON.parse(DOMOTICZ_GET_DEVICES).result;
 }*/
-
 
 console.log("---- TEST RUNNING ---- ")
 //handleDiscovery(ALEXA_DISCOVERY_REQUEST_EXAMPLE);

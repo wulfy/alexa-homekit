@@ -49,7 +49,7 @@ exports.ALEXA_SETPERCENT_REQUEST_EXAMPLE = {
   }
 }
 
-exports.ALEXA_SETPERCENT_REQUEST_EXAMPLE = {
+exports.ALEXA_SETPERCENT_REQUEST_EXAMPLE2 = {
   "directive": {
     "header": {
       "namespace": "Alexa.PercentageController",
@@ -63,7 +63,7 @@ exports.ALEXA_SETPERCENT_REQUEST_EXAMPLE = {
         "type": "BearerToken",
         "token": "access-token-from-skill"
       },
-      "endpointId": "2_aeon",
+      "endpointId": "73_RFXtrx_VenetianBlindsUS",
       "cookie": {
       overrideParams: (requestMethod)=> requestMethod === "TurnOn" ||  requestMethod === "TurnOff"? SET_DEVICE_LVL : "",
       overrideValue : (requestMethod)=> requestMethod === "TurnOn" ? "100" : "0",

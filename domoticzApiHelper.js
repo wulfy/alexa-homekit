@@ -32,7 +32,7 @@ async function alexaDiscoveryEndpoints(requestToken){
 }
 
 
-/********* EXPORT FUNCTIONS USED BY INDEX  *****************************/
+/********* EXPORT FILES  *****************************/
 
 exports.alexaDiscovery = alexaDiscoveryEndpoints;
 exports.PROD_MODE = PROD_MODE
@@ -61,6 +61,7 @@ exports.sendDeviceCommand = async function (request, value){
 	const deviceId = request.directive.endpoint.endpointId.split("_")[0];
 	const subtype = request.directive.endpoint.endpointId.split("_")[2];
 	const domoticzConnector = getDomoticzFromToken(requestToken);
+
 
 	return await domoticzConnector.sendCommand(subtype,deviceId,directive,directiveValue)
 }

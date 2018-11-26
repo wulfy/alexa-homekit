@@ -112,7 +112,9 @@ function configureAlexaDevice(domoDevice, alexaMapping) {
 	});
 
 	const newDiscovery =  JSON.parse(alexaDeviceJson);
-	newDiscovery.discovery.friendlyName = newDiscovery.discovery.friendlyName.replace(/[^\w\s]/gi, ' ');
+	//const cleanRegex = new RegExp("(?:(?!^[×Þß÷þø])[-'0-9a-zÀ-ÿ ])", 'gui');
+	const cleanRegex = new RegExp("[^-'0-9a-zÀ-ÿ _]", 'gui');
+	newDiscovery.discovery.friendlyName = newDiscovery.discovery.friendlyName.replace(cleanRegex,' ');
   	newDiscovery.discovery.endpointId = newDiscovery.discovery.endpointId
   										.split('_')
   										.reduce(
@@ -123,6 +125,8 @@ function configureAlexaDevice(domoDevice, alexaMapping) {
 
 }
 
+//search an Alexa mapping for a given domoticz device
+// matching is done corresponding to domoticz device types , subtypes and switchtypes
 function mapDomoToAlexa(domoDevice,alexaMapping){
 	let result = null;
 	console.log("mapping device --------")
@@ -145,6 +149,7 @@ function mapDomoToAlexa(domoDevice,alexaMapping){
 	return result;
 }
 
+// map alexa to a list of given domoticz devices
 function mapDomoticzDevices(domoDevices,alexaMapping){
 		const mappedDevices = [];
 		domoDevices.forEach( (domoDevice)=>{
@@ -155,7 +160,11 @@ function mapDomoticzDevices(domoDevices,alexaMapping){
 	return mappedDevices;
 }
 
-//global to be overriden
+//use global because it has to be overriden while testing :
+// by re-defining getDevices as device, tests can overwrite it while testing
+// Getdevices do an http request to retrieve domoticz devices
+// Alexa give a token (oauth) then we have to find out which client correspond to the given token
+// and list his devices.
 global.getDevices = async function (token,domoticzDeviceId) {
 	console.log("get devices original");
 	const deviceFilter = domoticzDeviceId ? "&rid="+domoticzDeviceId:"";
@@ -168,12 +177,15 @@ global.getDevices = async function (token,domoticzDeviceId) {
 	return devicesObjList.result;
 }
 
+//map all devices to alexa then return them
 function buildDevices(devices) {
 	const mappedDevices = mapDomoticzDevices(devices,ALEXAMAPPING);
 
 	return mappedDevices;
 }
 
+// Alexa discovery full process
+// retrieve user, getdevices, map them to domoticz then return them in Alexa format
 async function alexaDiscoveryEndpoints(request){
 	const requestToken = request.directive.payload.scope.token;
 	const devices = await getDevices(requestToken);
@@ -215,7 +227,7 @@ async function alexaDiscoveryEndpoints(request){
 }
 
 
-/********* EXPORT FILES  *****************************/
+/********* EXPORT FUNCTIONS USED BY INDEX  *****************************/
 
 exports.alexaDiscovery = alexaDiscoveryEndpoints;
 exports.PROD_MODE = PROD_MODE
@@ -284,7 +296,7 @@ exports.sendAlexaCommandResponse = function(request,context,contextResult,stateR
 exports.sendDeviceCommand = async function (request, value){
 	console.log("send device command");
 	const requestToken = request.directive.endpoint.scope.token;
-	const base = "";//await getBase(requestToken);
+	const base = await getBase(requestToken);
 	let deviceRequest = base + "?" + SET_COMMAND;
 	let cookieInfos = request.directive.endpoint.cookie;
 	let deviceCommandValue = value;

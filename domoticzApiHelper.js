@@ -21,19 +21,12 @@ global.getDomoticzFromToken = (token) => {
 	return new domoticz(token);
 }
 
-<<<<<<< HEAD
 
 // Alexa discovery full process
 // retrieve user, getdevices, map them to domoticz then return them in Alexa format
 async function alexaDiscoveryEndpoints(requestToken){
 	const domoticzConnector = getDomoticzFromToken(requestToken);
 	const devices = await domoticzConnector.getAllDevices();
-=======
-async function alexaDiscoveryEndpoints(request){
-	const requestToken = request.directive.payload.scope.token;
-	const devices = await getDevices(requestToken);
-	const alexaMapper = new AlexaMapper(ALEXAMAPPING);
->>>>>>> add stop command for set 50 percent command
 	const mappedDevices = alexaMapper.fromDomoticzDevices(devices);
 	return alexaMapper.handleDiscovery(mappedDevices);
 }

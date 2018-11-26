@@ -23,10 +23,6 @@ const PROD_MODE = process.env.PROD_MODE === "true";
 
 process.env.NODE_TLS_REJECT_UNAUTHORIZED = "0"; //self signed ssl certificate
 
-
-/**
- Extract domoticz url informations and store it in a DTO
-**/
 function extractDomoticzUrlData (request) {
   let domoticzUrlData = {domain:null,proto:"HTTP"};
   const result = request.split("//").map((value)=>value.split(":")[0]);
@@ -60,7 +56,6 @@ async function getBase(token){
 	
 	}
 
-//promise to send an HTTP request
 function promiseHttpRequest (request) {
 	const requestLower = request.toLowerCase();
     const httpOrHttps = requestLower.includes("https") ? https : http;
@@ -112,9 +107,7 @@ function configureAlexaDevice(domoDevice, alexaMapping) {
 	});
 
 	const newDiscovery =  JSON.parse(alexaDeviceJson);
-	//const cleanRegex = new RegExp("(?:(?!^[×Þß÷þø])[-'0-9a-zÀ-ÿ ])", 'gui');
-	const cleanRegex = new RegExp("[^-'0-9a-zÀ-ÿ _]", 'gui');
-	newDiscovery.discovery.friendlyName = newDiscovery.discovery.friendlyName.replace(cleanRegex,' ');
+	newDiscovery.discovery.friendlyName = newDiscovery.discovery.friendlyName.replace(/[^\w\s]/gi, ' ');
   	newDiscovery.discovery.endpointId = newDiscovery.discovery.endpointId
   										.split('_')
   										.reduce(
@@ -125,8 +118,6 @@ function configureAlexaDevice(domoDevice, alexaMapping) {
 
 }
 
-//search an Alexa mapping for a given domoticz device
-// matching is done corresponding to domoticz device types , subtypes and switchtypes
 function mapDomoToAlexa(domoDevice,alexaMapping){
 	let result = null;
 	console.log("mapping device --------")
@@ -149,7 +140,6 @@ function mapDomoToAlexa(domoDevice,alexaMapping){
 	return result;
 }
 
-// map alexa to a list of given domoticz devices
 function mapDomoticzDevices(domoDevices,alexaMapping){
 		const mappedDevices = [];
 		domoDevices.forEach( (domoDevice)=>{
@@ -160,11 +150,7 @@ function mapDomoticzDevices(domoDevices,alexaMapping){
 	return mappedDevices;
 }
 
-//use global because it has to be overriden while testing :
-// by re-defining getDevices as device, tests can overwrite it while testing
-// Getdevices do an http request to retrieve domoticz devices
-// Alexa give a token (oauth) then we have to find out which client correspond to the given token
-// and list his devices.
+//global to be overriden
 global.getDevices = async function (token,domoticzDeviceId) {
 	console.log("get devices original");
 	const deviceFilter = domoticzDeviceId ? "&rid="+domoticzDeviceId:"";
@@ -177,15 +163,12 @@ global.getDevices = async function (token,domoticzDeviceId) {
 	return devicesObjList.result;
 }
 
-//map all devices to alexa then return them
 function buildDevices(devices) {
 	const mappedDevices = mapDomoticzDevices(devices,ALEXAMAPPING);
 
 	return mappedDevices;
 }
 
-// Alexa discovery full process
-// retrieve user, getdevices, map them to domoticz then return them in Alexa format
 async function alexaDiscoveryEndpoints(request){
 	const requestToken = request.directive.payload.scope.token;
 	const devices = await getDevices(requestToken);
@@ -227,7 +210,7 @@ async function alexaDiscoveryEndpoints(request){
 }
 
 
-/********* EXPORT FUNCTIONS USED BY INDEX  *****************************/
+/********* EXPORT FILES  *****************************/
 
 exports.alexaDiscovery = alexaDiscoveryEndpoints;
 exports.PROD_MODE = PROD_MODE
@@ -296,7 +279,7 @@ exports.sendAlexaCommandResponse = function(request,context,contextResult,stateR
 exports.sendDeviceCommand = async function (request, value){
 	console.log("send device command");
 	const requestToken = request.directive.endpoint.scope.token;
-	const base = await getBase(requestToken);
+	const base = "";//await getBase(requestToken);
 	let deviceRequest = base + "?" + SET_COMMAND;
 	let cookieInfos = request.directive.endpoint.cookie;
 	let deviceCommandValue = value;
@@ -306,10 +289,10 @@ exports.sendDeviceCommand = async function (request, value){
 	const deviceId = request.directive.endpoint.endpointId.split("_")[0];
 	const subtype = request.directive.endpoint.endpointId.split("_")[2];
 	//const params = overrideParams && typeof overrideParams === "function" ? overrideParams(requestMethod) : DEVICE_HANDLER_COMMANDS_PARAMS[requestMethod];
-	deviceRequest += generate_command(subtype,requestMethod,deviceCommandValue);
+	deviceRequest += generate_command(deviceId,subtype,requestMethod,deviceCommandValue);
 
 	try {
-		PROD_MODE ? await promiseHttpRequest(deviceRequest) : null ;
+		PROD_MODE ? await promiseHttpRequest(deviceRequest) : console.log(deviceRequest) ;
 		console.log("REQUEST SENT");
 		sendStatsd("calls.command."+subtype+":1|c");
 		return "ok";

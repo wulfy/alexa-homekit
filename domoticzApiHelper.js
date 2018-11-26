@@ -32,7 +32,7 @@ async function alexaDiscoveryEndpoints(requestToken){
 }
 
 
-/********* EXPORT FILES  *****************************/
+/********* EXPORT FUNCTIONS USED BY INDEX  *****************************/
 
 exports.alexaDiscovery = alexaDiscoveryEndpoints;
 exports.PROD_MODE = PROD_MODE

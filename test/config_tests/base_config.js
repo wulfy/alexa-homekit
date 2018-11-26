@@ -25,3 +25,33 @@ global.console.log = (data)=>null;
 
 exports.handler = handler;
 exports.ALEXA_DISCOVERY_REQUEST_EXAMPLE = ALEXA_DISCOVERY_REQUEST_EXAMPLE;
+
+
+const Tester = class Tester{
+    constructor(name){
+        this.name = name;
+    }
+
+    test(){
+        //TEST FOR INDEX.JS
+        test('DISCOVERY TESTING ' + this.name , done => {
+
+            const { DOMOTICZ_GET_DEVICES } = require("../mockups/"+this.name+"Mockup");
+
+            global.getDevices = (token,domoticzDeviceId) => {
+                return JSON.parse(DOMOTICZ_GET_DEVICES).result;
+            }
+            let context = {};
+            context.succeed = function (data){
+                const testData = JSON.stringify(data); 
+                expect(testData).toMatchSnapshot();
+                done();
+            };
+            
+            base_config.handler(base_config.ALEXA_DISCOVERY_REQUEST_EXAMPLE,context2);
+
+        });
+    }
+}
+
+exports.Tester;

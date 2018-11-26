@@ -4,6 +4,51 @@ const COMMON_DISCOVERY_MAPPING = {
 		"friendlyName" : "@Name@",
 		"description" : "@Description@",
 }
+
+const COMMON_PERCENTAGE_CAPABILITY = {
+			"interface":"Alexa.PercentageController",
+			"state":{
+				"percentage":"@Level@",
+			},
+			"command":{
+			},
+			"supported": [{
+	            "name": "percentage",
+	            "value" : "@Level@",
+	        }],
+	        "retrievable": true
+		};
+
+const COMMON_BLIND_POWER_CONTROLLER_CAPABILITY = {
+			"interface":"Alexa.PowerController",
+			"state":{
+				"powerState":"ON",
+			},
+			"command":{
+			},
+			"supported": [{
+	            "name": "powerState",
+	            "value": "()=>@Level@ == 100 ? 'OFF' : 'ON'",
+	        }],
+	        "proactivelyReported": true,
+	        "retrievable": true
+		};
+
+const COMMON_POWER_CONTROLLER_CAPABILITY = {
+			"interface":"Alexa.PowerController",
+			"state":{
+				"powerState":"ON",
+			},
+			"command":{
+			},
+			"supported": [{
+	            "name": "powerState",
+	            "value":"()=> '@Status@' === 'On' ? 'ON' : 'OFF'",
+	        }],
+	        "proactivelyReported": true,
+	        "retrievable": true
+		};
+
 const DOMOTICZ_ALEXA_VOLET = {
 	"domoticz_mapping" : {
 		"Type":"Light/Switch",
@@ -19,33 +64,8 @@ const DOMOTICZ_ALEXA_VOLET = {
 		},
 	},
 	"capabilities" : [
-		{
-			"interface":"Alexa.PercentageController",
-			"state":{
-				"percentage":"@Level@",
-			},
-			"command":{
-			},
-			"supported": [{
-	            "name": "percentage",
-	            "value" : "@Level@",
-	        }],
-	        "retrievable": true
-		},
-		{
-			"interface":"Alexa.PowerController",
-			"state":{
-				"powerState":"ON",
-			},
-			"command":{
-			},
-			"supported": [{
-	            "name": "powerState",
-	            "value": "()=>@Level@ == 100 ? 'OFF' : 'ON'",
-	        }],
-	        "proactivelyReported": true,
-	        "retrievable": true
-		}
+		COMMON_PERCENTAGE_CAPABILITY,
+		COMMON_BLIND_POWER_CONTROLLER_CAPABILITY
 	]
 };
 const DOMOTICZ_ALEXA_INVERTED_VOLET = {
@@ -56,7 +76,7 @@ const DOMOTICZ_ALEXA_INVERTED_VOLET = {
 	},
 	"discovery" : DOMOTICZ_ALEXA_VOLET.discovery,
 	"capabilities" : [
-		DOMOTICZ_ALEXA_VOLET.capabilities[0],
+		COMMON_PERCENTAGE_CAPABILITY,
 		{
     	...DOMOTICZ_ALEXA_VOLET.capabilities[1],
 			"supported": [{
@@ -72,7 +92,7 @@ const DOMOTICZ_ALEXA_BLIND_INVERTED_VOLET = {
 	},
 	"discovery" : DOMOTICZ_ALEXA_VOLET.discovery,
 	"capabilities" : [
-		DOMOTICZ_ALEXA_VOLET.capabilities[0],
+		COMMON_PERCENTAGE_CAPABILITY,
 		{
     	...DOMOTICZ_ALEXA_VOLET.capabilities[1],
 			"supported": [{
@@ -92,20 +112,7 @@ const DOMOTICZ_ALEXA_ON_OFF = {
 		"cookie": {},
 	},
 	"capabilities" : [
-		{
-			"interface":"Alexa.PowerController",
-			"state":{
-				"powerState":"ON",
-			},
-			"command":{
-			},
-			"supported": [{
-	            "name": "powerState",
-	            "value":"()=> '@Status@' === 'On' ? 'ON' : 'OFF'",
-	        }],
-	        "proactivelyReported": true,
-	        "retrievable": true
-		}
+		COMMON_POWER_CONTROLLER_CAPABILITY
 	]
 };
 
@@ -119,9 +126,7 @@ const DOMOTICZ_ALEXA_GROUP = {
 
 const DOMOTICZ_ALEXA_RFY_VOLET = {
 	"domoticz_mapping" : {
-		"Type":"RFY",
-		"Subtype": "RFY",
-		"Switchtype": "Blinds"
+		"Type":"RFY"
 	},
 	"discovery" : DOMOTICZ_ALEXA_ON_OFF.discovery,
 	"capabilities" : DOMOTICZ_ALEXA_ON_OFF.capabilities,
@@ -229,33 +234,8 @@ const DOMOTICZ_ALEXA_SELECTOR_MAPPING = {
 		},
 	},
 	"capabilities" : [
-		{
-			"interface":"Alexa.PercentageController",
-			"state":{
-				"percentage":"@Level@",
-			},
-			"command":{
-			},
-			"supported": [{
-	            "name": "percentage",
-	            "value" : "@Level@",
-	        }],
-	        "retrievable": true
-		},
-		{
-			"interface":"Alexa.PowerController",
-			"state":{
-				"powerState":"ON",
-			},
-			"command":{
-			},
-			"supported": [{
-	            "name": "powerState",
-	            "value": "()=>@Level@ == 100 ? 'OFF' : 'ON'",
-	        }],
-	        "proactivelyReported": true,
-	        "retrievable": true
-		}
+		COMMON_PERCENTAGE_CAPABILITY,
+		COMMON_BLIND_POWER_CONTROLLER_CAPABILITY
 	]
 };
 

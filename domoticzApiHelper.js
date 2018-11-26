@@ -15,7 +15,9 @@ const PROD_MODE = process.env.PROD_MODE === "true";
 
 process.env.NODE_TLS_REJECT_UNAUTHORIZED = "0"; //self signed ssl certificate
 
+
 const alexaMapper = new AlexaMapper(ALEXAMAPPING);
+
 
 //use global because it has to be overriden while testing :
 // by re-defining getDevices as device, tests can overwrite it while testing

@@ -27,9 +27,6 @@ global.getDevices = async function getDevices (token,domoticzDeviceId) {
 	return await domoticzConnector.getDevices(domoticzDeviceId);
 }
 
-
-// Alexa discovery full process
-// retrieve user, getdevices, map them to domoticz then return them in Alexa format
 async function alexaDiscoveryEndpoints(request){
 	const requestToken = request.directive.payload.scope.token;
 	const devices = await getDevices(requestToken);
@@ -39,7 +36,7 @@ async function alexaDiscoveryEndpoints(request){
 }
 
 
-/********* EXPORT FUNCTIONS USED BY INDEX  *****************************/
+/********* EXPORT FILES  *****************************/
 
 exports.alexaDiscovery = alexaDiscoveryEndpoints;
 exports.PROD_MODE = PROD_MODE
@@ -83,6 +80,7 @@ exports.sendDeviceCommand = async function (request, value){
 	const deviceId = request.directive.endpoint.endpointId.split("_")[0];
 	const subtype = request.directive.endpoint.endpointId.split("_")[2];
 	const domoticzConnector = new domoticz(requestToken);
+
 
 	return await domoticzConnector.sendCommand(subtype,deviceId,directive,directiveValue)
 }

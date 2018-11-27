@@ -1,4 +1,4 @@
-process.env.PROD_MODE = "true";
+process.env.PROD_MODE = "false";
 const baseProject = "../../"
 const {handler} = require(baseProject+"index")
 const {
@@ -10,12 +10,7 @@ const {
         LIST_DEVICE_REQUEST
     } = require(baseProject+"domoticzApiHelper");
 
-const { ALEXA_REPORTSTATE_REQUEST_EXAMPLE, 
-        ALEXA_SETPERCENT_REQUEST_EXAMPLE,
-        ALEXA_DISCOVERY_REQUEST_EXAMPLE,
-        ALEXA_TURNON_REQUEST,
-        ALEXA_TURNOFF_REQUEST,
-    } = require("../mockups/alexaMockups")
+const mockups = require("../mockups/alexaMockups")
 
 const { 
         DOMOTICZ_STATE_ANSWER, 
@@ -24,8 +19,8 @@ const {
 global.console.log = (data)=>null;
 
 exports.handler = handler;
-exports.ALEXA_DISCOVERY_REQUEST_EXAMPLE = ALEXA_DISCOVERY_REQUEST_EXAMPLE;
-
+exports.mockups = mockups;
+exports.sendDeviceCommand = sendDeviceCommand;
 
 const Tester = class Tester{
     constructor(name){
@@ -48,7 +43,7 @@ const Tester = class Tester{
                 done();
             };
             
-            base_config.handler(base_config.ALEXA_DISCOVERY_REQUEST_EXAMPLE,context2);
+            handler(mockups.ALEXA_DISCOVERY_REQUEST_EXAMPLE,context2);
 
         });
     }

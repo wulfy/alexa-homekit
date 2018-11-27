@@ -15,6 +15,6 @@ test('DISCOVERY TESTING me', done => {
         done();
     };
     
-    base_config.handler(base_config.ALEXA_DISCOVERY_REQUEST_EXAMPLE,context2);
+    base_config.handler(base_config.mockups.ALEXA_DISCOVERY_REQUEST_EXAMPLE,context2);
 
 });

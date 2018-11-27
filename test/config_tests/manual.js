@@ -79,6 +79,8 @@ global.getDevices = (token,domoticzDeviceId) => {
     return JSON.parse(DOMOTICZ_GET_DEVICES).result;
 }*/
 
+global.getBase = (token) => "";
+
 console.log("---- TEST RUNNING ---- ")
 //handleDiscovery(ALEXA_DISCOVERY_REQUEST_EXAMPLE);
 //handleReportState(ALEXA_REPORTSTATE_REQUEST_EXAMPLE);

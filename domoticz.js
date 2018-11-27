@@ -9,7 +9,6 @@ const {promiseHttpRequest} = require('./config/httpUtils');
 const PROD_MODE = process.env.PROD_MODE === "true";
 const {sendStatsd} = require('./config/metrics');
 
-
 class domoticz {
 
 	constructor(token){

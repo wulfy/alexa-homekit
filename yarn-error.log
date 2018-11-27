@@ -7005,6 +7005,7 @@ Lockfile:
       readable-stream "^2.0.0"
 
 Trace: 
+<<<<<<< HEAD
   Error: Command "update" not found.
       at new MessageError (/usr/local/Cellar/yarn/1.5.1_1/libexec/lib/cli.js:186:110)
       at /usr/local/Cellar/yarn/1.5.1_1/libexec/lib/cli.js:87307:17
@@ -7016,3 +7017,18 @@ Trace:
       at /usr/local/Cellar/yarn/1.5.1_1/libexec/lib/cli.js:95:12
       at runCommand (/usr/local/Cellar/yarn/1.5.1_1/libexec/lib/cli.js:87312:22)
       at Object.<anonymous> (/usr/local/Cellar/yarn/1.5.1_1/libexec/lib/cli.js:87412:14)
+=======
+  Error: Command failed.
+  Exit code: 1
+  Command: sh
+  Arguments: -c jest sendCommand
+  Directory: /Users/llasry/Documents/dev/Alexa/homekit/skill
+  Output:
+  
+      at ProcessTermError.MessageError (/usr/local/Cellar/yarn/1.5.1_1/libexec/lib/cli.js:186:110)
+      at new ProcessTermError (/usr/local/Cellar/yarn/1.5.1_1/libexec/lib/cli.js:226:113)
+      at ChildProcess.<anonymous> (/usr/local/Cellar/yarn/1.5.1_1/libexec/lib/cli.js:30281:17)
+      at ChildProcess.emit (events.js:180:13)
+      at maybeClose (internal/child_process.js:936:16)
+      at Process.ChildProcess._handle.onexit (internal/child_process.js:220:5)
+>>>>>>> refacto code

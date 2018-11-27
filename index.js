@@ -53,7 +53,7 @@ exports.handler = async function (request, context) {
     async function handleReportState(request, context) {
         const endpointId = request.directive.endpoint.endpointId;
         const requestToken = request.directive.endpoint.scope.token;
-        const deviceStateContext = getAlexaDeviceState(requestToken,endpointId);
+        const deviceStateContext = await getAlexaDeviceState(requestToken,endpointId);
         sendAlexaCommandResponse(request,context,deviceStateContext,true);
     }
 

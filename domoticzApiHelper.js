@@ -15,8 +15,8 @@ const PROD_MODE = process.env.PROD_MODE === "true";
 
 process.env.NODE_TLS_REJECT_UNAUTHORIZED = "0"; //self signed ssl certificate
 
-
 const alexaMapper = new AlexaMapper(ALEXAMAPPING);
+
 
 //use global because it has to be overriden while testing :
 // by re-defining getDevices as device, tests can overwrite it while testing
@@ -70,7 +70,7 @@ exports.sendAlexaCommandResponse = function(request,context,contextResult,stateR
     };
     console.log("DEBUG: " + responseHeader.namespace + JSON.stringify(response));
     sendStatsd("calls.answer."+responseHeader.name+":1|c");
-    PROD_MODE ? context.succeed(response) : null;
+    context.succeed(response);
 }
 
 //send command to the device handler (ex domoticz)
@@ -84,6 +84,17 @@ exports.sendDeviceCommand = async function (request, value){
 	const subtype = request.directive.endpoint.endpointId.split("_")[2];
 	const domoticzConnector = new domoticz(requestToken);
 
+<<<<<<< HEAD
+=======
+	try {
+		PROD_MODE ? await promiseHttpRequest(deviceRequest) : console.log(deviceRequest) ;
+		console.log("REQUEST SENT");
+		sendStatsd("calls.command."+subtype+":1|c");
+		return deviceRequest;
+	}catch(e){
+		throw e;
+	}
+>>>>>>> add venitian stop command and better tests
 
 	return await domoticzConnector.sendCommand(subtype,deviceId,directive,directiveValue)
 }

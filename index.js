@@ -47,7 +47,7 @@ exports.handler = async function (request, context) {
         const response = {event:{ header: header, payload: endPoints }};
         console.log("DEBUG: Discovery Response >>>>>>>> " + JSON.stringify(response));
 
-        PROD_MODE ? context.succeed(response) : console.log("no context sent");
+        context.succeed(response);
     }
 
     async function handleReportState(request, context) {

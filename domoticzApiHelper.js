@@ -24,8 +24,12 @@ const alexaMapper = new AlexaMapper(ALEXAMAPPING);
 // Alexa give a token (oauth) then we have to find out which client correspond to the given token
 // and list his devices.
 global.getDevices = async function getDevices (token,domoticzDeviceId) {
-	const domoticzConnector = new domoticz(token);
+	const domoticzConnector = getDomoticzFromToken(token);
 	return await domoticzConnector.getDevices(domoticzDeviceId);
+}
+
+global.getDomoticzFromToken = (token) => {
+	return new domoticz(token);
 }
 
 // Alexa discovery full process
@@ -82,19 +86,7 @@ exports.sendDeviceCommand = async function (request, value){
 	const directive = request.directive.header.name;
 	const deviceId = request.directive.endpoint.endpointId.split("_")[0];
 	const subtype = request.directive.endpoint.endpointId.split("_")[2];
-	const domoticzConnector = new domoticz(requestToken);
-
-<<<<<<< HEAD
-=======
-	try {
-		PROD_MODE ? await promiseHttpRequest(deviceRequest) : console.log(deviceRequest) ;
-		console.log("REQUEST SENT");
-		sendStatsd("calls.command."+subtype+":1|c");
-		return deviceRequest;
-	}catch(e){
-		throw e;
-	}
->>>>>>> add venitian stop command and better tests
+	const domoticzConnector = getDomoticzFromToken(requestToken);
 
 	return await domoticzConnector.sendCommand(subtype,deviceId,directive,directiveValue)
 }

@@ -10,6 +10,7 @@ const {
         LIST_DEVICE_REQUEST
     } = require(baseProject+"domoticzApiHelper");
 
+const domoticz = require('../../domoticz');
 const mockups = require("../mockups/alexaMockups")
 
 const { 
@@ -21,6 +22,27 @@ global.console.log = (data)=>null;
 exports.handler = handler;
 exports.mockups = mockups;
 exports.sendDeviceCommand = sendDeviceCommand;
+
+
+class mockedDomoticz extends domoticz {
+    constructor(token) {
+        super(token);
+    }
+
+    getDevices (token,domoticzDeviceId) {
+        return JSON.parse(DOMOTICZ_GET_DEVICES).result;
+    }
+
+    getBase (token){
+        return "";
+    }
+
+}
+
+global.getDomoticzFromToken = (token) => {
+    return new mockedDomoticz(token);
+}
+
 
 const Tester = class Tester{
     constructor(name){

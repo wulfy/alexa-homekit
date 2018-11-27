@@ -131,7 +131,7 @@ exports.ALEXA_TURNON_REQUEST = {
         "type": "BearerToken",
         "token": "a4bf269d3fdd181aee9d73a6dfaaaee058471d54"
       },
-      "endpointId": "2_aeon_Blinds Percentage",
+      "endpointId": "2_aeon_Switch",
       "cookie": {}
     },
     "payload": {}

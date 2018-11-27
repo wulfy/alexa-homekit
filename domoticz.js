@@ -3,9 +3,11 @@ const {getUserData} = require("./config/database");
 const { LIST_DEVICE_REQUEST, 
 		STATE_REQUEST, 
 		SET_COMMAND, 
-		device_handler_command
+		generate_command
 	} = require("./config/domoticzCommands")
 const {promiseHttpRequest} = require('./config/httpUtils');
+const PROD_MODE = process.env.PROD_MODE === "true";
+const {sendStatsd} = require('./config/metrics');
 
 class domoticz {
 
@@ -14,7 +16,7 @@ class domoticz {
 	}
 
 	// get Domoticz credentials corresponding to the token
-	async  getBase(){
+	async getBase(){
 		try {
 			const user_data = await getUserData(this.token);
 			if(!user_data)
@@ -64,18 +66,13 @@ class domoticz {
 		const base = await this.getBase();
 		let deviceRequest = base + "?" + SET_COMMAND;
 		//const params = overrideParams && typeof overrideParams === "function" ? overrideParams(requestMethod) : DEVICE_HANDLER_COMMANDS_PARAMS[requestMethod];
-		const paramsMapper =device_handler_command(deviceSubtype)[directive];
-		deviceRequest += `&idx=${deviceId}&${paramsMapper["command"]}`;
-
-		if(directiveValue && paramsMapper["value"])
-			deviceRequest += `&${paramsMapper["value"]}=${directiveValue}`
-
+		deviceRequest += generate_command(deviceSubtype,deviceId,directive,directiveValue);
 		console.log(deviceRequest);
 		try {
 			PROD_MODE ? await promiseHttpRequest(deviceRequest) : null ;
 			console.log("REQUEST SENT");
 			sendStatsd("calls.command."+deviceSubtype+":1|c");
-			return "ok";
+			return deviceRequest;
 		}catch(e){
 			throw e;
 		}

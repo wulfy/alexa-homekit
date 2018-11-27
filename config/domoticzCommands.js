@@ -26,7 +26,7 @@ device_handler_command = (subType,value)=>({
 	},
 });
 
-exports.generate_command = (deviceId,subtype,command,value) => {
+exports.generate_command = (subtype,deviceId,command,value) => {
 	console.log(subtype + "->" + command + "->" + value)
 	const paramsMapper = device_handler_command(subtype,value)[command];
 	let deviceRequest = `&idx=${deviceId}&${paramsMapper["command"]}`;

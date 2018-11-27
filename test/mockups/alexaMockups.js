@@ -74,15 +74,7 @@ exports.ALEXA_SETPERCENT_REQUEST_BLINDS = {
   }
 }
 
-<<<<<<< HEAD
-<<<<<<< HEAD
 exports.ALEXA_SETPERCENT_REQUEST_VENITIAN = {
-=======
-exports.ALEXA_SETPERCENT_REQUEST_EXAMPLE = {
->>>>>>> add venitian stop command
-=======
-exports.ALEXA_SETPERCENT_REQUEST_EXAMPLE2 = {
->>>>>>> add stop command for set 50 percent command
   "directive": {
     "header": {
       "namespace": "Alexa.PercentageController",
@@ -94,19 +86,8 @@ exports.ALEXA_SETPERCENT_REQUEST_EXAMPLE2 = {
     "endpoint": {
       "scope": {
         "type": "BearerToken",
-<<<<<<< HEAD
         "token": "5a1e219dd51b607ff9b6434a3df829e3def65080"
       },
-      "endpointId": "73_RFXtrx_VenetianBlindsUS",
-=======
-        "token": "access-token-from-skill"
-      },
-<<<<<<< HEAD
-      "endpointId": "2_aeon",
->>>>>>> add venitian stop command
-=======
-      "endpointId": "73_RFXtrx_VenetianBlindsUS",
->>>>>>> add stop command for set 50 percent command
       "cookie": {
       overrideParams: (requestMethod)=> requestMethod === "TurnOn" ||  requestMethod === "TurnOff"? SET_DEVICE_LVL : "",
       overrideValue : (requestMethod)=> requestMethod === "TurnOn" ? "100" : "0",

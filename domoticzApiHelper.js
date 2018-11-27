@@ -62,7 +62,6 @@ exports.sendDeviceCommand = async function (request, value){
 	const subtype = request.directive.endpoint.endpointId.split("_")[2];
 	const domoticzConnector = getDomoticzFromToken(requestToken);
 
-
 	return await domoticzConnector.sendCommand(subtype,deviceId,directive,directiveValue)
 }
 

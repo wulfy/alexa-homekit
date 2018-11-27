@@ -49,6 +49,27 @@ class mockedDomoticz extends domoticz {
 exports.mockedDomoticz = mockedDomoticz;
 
 
+
+class mockedDomoticz extends domoticz {
+    constructor(token) {
+        super(token);
+    }
+
+    getDevices (token,domoticzDeviceId) {
+        return JSON.parse(DOMOTICZ_GET_DEVICES).result;
+    }
+
+    getBase (token){
+        return "";
+    }
+
+}
+
+global.getDomoticzFromToken = (token) => {
+    return new mockedDomoticz(token);
+}
+
+
 const Tester = class Tester{
     constructor(name){
         this.name = name;

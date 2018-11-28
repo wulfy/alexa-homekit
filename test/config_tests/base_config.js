@@ -6,6 +6,7 @@ const {
         getAlexaDevice,
         sendAlexaCommandResponse,
         sendDeviceCommand,
+        getAlexaDeviceState,
         BASE_REQUEST,
         LIST_DEVICE_REQUEST
     } = require(baseProject+"domoticzApiHelper");
@@ -22,6 +23,7 @@ global.console.log = (data)=>null;
 exports.handler = handler;
 exports.mockups = mockups;
 exports.sendDeviceCommand = sendDeviceCommand;
+exports.getAlexaDeviceState = getAlexaDeviceState;
 
 
 class mockedDomoticz extends domoticz {
@@ -36,7 +38,7 @@ class mockedDomoticz extends domoticz {
     }
 
     getDevice() {
-        return "";
+        return JSON.parse(this.MOCKED_ANSWER).result[0];
     }
 
     getBase (token){

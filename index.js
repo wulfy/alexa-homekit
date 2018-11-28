@@ -41,7 +41,8 @@ exports.handler = async function (request, context) {
 
 
     async function handleDiscovery(request,context){
-        const endPoints = await alexaDiscovery(request);
+        const requestToken = request.directive.payload.scope.token;
+        const endPoints = await alexaDiscovery(requestToken);
         let header = request.directive.header;
         header.name = "Discover.Response";
         const response = {event:{ header: header, payload: endPoints }};

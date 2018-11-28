@@ -2,6 +2,9 @@ const base_config = require("../config_tests/base_config");
 
 const { DOMOTICZ_GET_DEVICES } = require("../mockups/client4Mockup");
 
+global.getDomoticzFromToken = (token) => {
+    return new base_config.mockedDomoticz(token);
+}
 
 test('SENDING SET PERCENT ON BLINDS INVERTED', async done => {
     const data = await base_config.sendDeviceCommand(base_config.mockups.ALEXA_SETPERCENT_REQUEST_BLINDS_INVERTED,50);

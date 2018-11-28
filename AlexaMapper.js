@@ -1,9 +1,14 @@
+/**
+CLass used to map dmoticz device to Alexa format
+**/
 class AlexaMapper {
 
 	constructor(alexaMapping){
 		this.alexaMapping =  alexaMapping ? alexaMapping : null;
 	}
 
+	//find and map a domoticz device to his corresponding Alexa forma
+	// out => the Alexa template without context 
 	fromDomoticzDevice(domoticzDevice){
 		if(! this.alexaMapping)
 			return null;
@@ -11,6 +16,7 @@ class AlexaMapper {
 		let result = null;
 		console.log("mapping device --------")
 
+		//serch for the right Alexa format based on domoticz type/sybtype/switchtype
 		this.alexaMapping.forEach((alexaMap) =>{
 	      		const alexaDevice = alexaMap.domoticz_mapping;
 				if(	
@@ -39,10 +45,13 @@ class AlexaMapper {
 		return mappedDevices;
 	}
 
-	//configure an Alexa device
-	//Domoticz device json is provided and an array of alexa mapping json 
-	// the function will search the matching mapping and fill the data with domoticz data
-	// Alexa mapping is a "template" with magic words which should be replaced by domoticz data
+	/**
+		configure an Alexa device
+		Domoticz device json is provided and an array of alexa mapping json 
+	 	the function will search the matching mapping and fill the data with domoticz data
+	 	Alexa mapping is a "template" with magic words which should be replaced by domoticz data
+	 	Fill all the template without context (containing device state)
+	 **/
 	mapAlexaFormatFromDomoticzDevice(domoDevice, alexaFormat) {
 		//deep clone alexaFormat
 		console.log("-----configure---------")
@@ -108,7 +117,10 @@ class AlexaMapper {
 	    return endPoints;
 	}
 
-	handleGetStateForDomoticzDevice(domoticzDevice) {
+	/**
+		return alexa mapped device context (taht contains the device state)
+	**/
+	getAlexaDeviceContextState(domoticzDevice) {
 		const alexaDevice = this.fromDomoticzDevice(domoticzDevice);
 
 		if(!alexaDevice)
@@ -119,21 +131,21 @@ class AlexaMapper {
 		const properties = [];
 		const configuration = alexaDevice.configuration;
 		alexaDevice.capabilities.forEach((capability)=>{
-				const alexaInterface = capability.interface;
-				//TODO remplacer par un reduce
-				const alexaSupported = capability.supported.forEach((support)=>{
-					const newSupport = support;
-					newSupport.value = newSupport.value.indexOf("()") >= 0 ? eval(newSupport.value)() : newSupport.value ;
-					properties.push({
-						      "namespace": alexaInterface,
-						      ...newSupport,
-						      "timeOfSample": new Date().toISOString(),
-						      "uncertaintyInMilliseconds": 500
-						    })
-					
-				});
-				return alexaSupported;
+		const alexaInterface = capability.interface;
+		//TODO remplacer par un reduce
+		const alexaSupported = capability.supported.forEach((support)=>{
+			const newSupport = support;
+			newSupport.value = newSupport.value.indexOf("()") >= 0 ? eval(newSupport.value)() : newSupport.value ;
+			properties.push({
+				      "namespace": alexaInterface,
+				      ...newSupport,
+				      "timeOfSample": new Date().toISOString(),
+				      "uncertaintyInMilliseconds": 500
+				    })
+			
 			});
+			return alexaSupported;
+		});
 
 		let contextResult = {
 	                "properties": properties
@@ -143,7 +155,15 @@ class AlexaMapper {
 	    return contextResult;
 	}
 
-	handleSendCommandResponse(){
+	handleSendCommandResponse(contextResult,requestHeader,requestToken,endpointId){
+		//build response header based on request header
+		let responseHeader = requestHeader;    
+		responseHeader.namespace = "Alexa";
+		//response is an aswer after a command
+		//statereport is an answer after a stateReportRequest
+    	responseHeader.name = stateReport ? "StateReport":"Response";
+    	responseHeader.messageId = responseHeader.messageId + "-R";
+
 		const response = {
 	        context: contextResult,
 	        event: {
@@ -158,8 +178,7 @@ class AlexaMapper {
 	            payload: {}
 	        }
 	    };
-	    console.log("DEBUG: " + responseHeader.namespace + JSON.stringify(response));
-	    sendStatsd("calls.answer."+responseHeader.name+":1|c");
+	    return response;
 	}
 }
 

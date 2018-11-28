@@ -32,6 +32,9 @@ class domoticz {
 		}
 	}
 
+	//extract domoticz url data ex: http://my.domoti.cz 
+	//to retrieve proto (HTTP/HTTPS) and use correct node http or https lib
+	// and domain my.domoti.cz
 	extractDomoticzUrlData (request) {
 	  let domoticzUrlData = {domain:null,proto:"HTTP"};
 	  const result = request.split("//").map((value)=>value.split(":")[0]);
@@ -47,14 +50,14 @@ class domoticz {
 	  return domoticzUrlData;
 	}
 
-	async getDevices (domoticzDeviceId) {
+	//request devices using a filter example: &rid=2
+	async requestDomoticzWithFilter (filter) {
 		if(! this.token)
 			return;
 
 		console.log("get devices original");
-		const deviceFilter = domoticzDeviceId ? "&rid="+domoticzDeviceId:"";
 		const base = await this.getBase();
-		const request = base+"?"+LIST_DEVICE_REQUEST + deviceFilter;
+		const request = base+"?"+LIST_DEVICE_REQUEST + filter;
 		console.log("getDevices " + request);
 		const devicesJsonList = await promiseHttpRequest(request);
 		console.log(devicesJsonList)
@@ -62,6 +65,16 @@ class domoticz {
 		return devicesObjList.result;
 	}
 
+	async getDevice(domoticzDeviceId) {
+		const filter = domoticzDeviceId ? "&rid="+domoticzDeviceId:"";
+		return await this.requestDomoticzWithFilter(filter)[0];
+	}
+
+	async getAllDevices() {
+		return await this.requestDomoticzWithFilter("");
+	}
+
+	//send http or https command to a domoticz device
 	async sendCommand(deviceSubtype,deviceId,directive,directiveValue){
 		const base = await this.getBase();
 		let deviceRequest = base + "?" + SET_COMMAND;

@@ -1,7 +1,6 @@
 /*********
 Helper to translate Amazon commands to Domoticz commands
 ******/
-
 const env = require('dotenv').config();
 const { DOMOTICZ_ALEXA_DISCOVERY_MAPPING, 
 		ALEXAMAPPING
@@ -12,32 +11,22 @@ const domoticz = require('./domoticz');
 const AlexaMapper = require('./AlexaMapper');
 
 const PROD_MODE = process.env.PROD_MODE === "true";
+const alexaMapper = new AlexaMapper(ALEXAMAPPING);
 
 process.env.NODE_TLS_REJECT_UNAUTHORIZED = "0"; //self signed ssl certificate
 
-const alexaMapper = new AlexaMapper(ALEXAMAPPING);
-
-
 //use global because it has to be overriden while testing :
-// by re-defining getDevices as device, tests can overwrite it while testing
-// Getdevices do an http request to retrieve domoticz devices
-// Alexa give a token (oauth) then we have to find out which client correspond to the given token
-// and list his devices.
-global.getDevices = async function getDevices (token,domoticzDeviceId) {
-	const domoticzConnector = getDomoticzFromToken(token);
-	return await domoticzConnector.getDevices(domoticzDeviceId);
-}
-
+// so getDomoticzFromToken can return a domoticz mocked class for tests
 global.getDomoticzFromToken = (token) => {
 	return new domoticz(token);
 }
 
+
 // Alexa discovery full process
 // retrieve user, getdevices, map them to domoticz then return them in Alexa format
-async function alexaDiscoveryEndpoints(request){
-	const requestToken = request.directive.payload.scope.token;
-	const devices = await getDevices(requestToken);
-	const alexaMapper = new AlexaMapper(ALEXAMAPPING);
+async function alexaDiscoveryEndpoints(requestToken){
+	const domoticzConnector = getDomoticzFromToken(requestToken);
+	const devices = await domoticzConnector.getAllDevices();
 	const mappedDevices = alexaMapper.fromDomoticzDevices(devices);
 	return alexaMapper.handleDiscovery(mappedDevices);
 }
@@ -49,31 +38,16 @@ exports.alexaDiscovery = alexaDiscoveryEndpoints;
 exports.PROD_MODE = PROD_MODE
 
 //send alexa response and stop lambda by context.succeed call
+// same response for getState or command
 exports.sendAlexaCommandResponse = function(request,context,contextResult,stateReport){
 	const endpointId = request.directive.endpoint.endpointId;
-    let responseHeader = request.directive.header;
-    responseHeader.namespace = "Alexa";
-    responseHeader.name = stateReport ? "StateReport":"Response";
-    responseHeader.messageId = responseHeader.messageId + "-R";
+    const requestHeader = request.directive.header;
     // get user token pass in request
     const requestToken = request.directive.endpoint.scope.token;
-
-    const response = {
-        context: contextResult,
-        event: {
-            header: responseHeader,
-            endpoint: {
-                scope: {
-                    type: "BearerToken",
-                    token: requestToken
-                },
-                endpointId: endpointId
-            },
-            payload: {}
-        }
-    };
-    console.log("DEBUG: " + responseHeader.namespace + JSON.stringify(response));
-    sendStatsd("calls.answer."+responseHeader.name+":1|c");
+    const response = alexaMapper.handleSendCommandResponse(contextResult,requestHeader,requestToken,endpointId)
+ 
+    console.log("DEBUG: " + requestHeader.namespace + JSON.stringify(response));
+    sendStatsd("calls.answer."+requestHeader.name+":1|c");
     context.succeed(response);
 }
 
@@ -95,11 +69,12 @@ exports.sendDeviceCommand = async function (request, value){
 exports.getAlexaDeviceState= async function (requestToken,endpointId){
 	const domoticzId = endpointId.split("_")[0];
 	console.log("getDevicesState, domo id " + domoticzId);
-	const domoticzState = await getDevices(requestToken,domoticzId);
-	if(! domoticzState) 
+	const domoticzConnector = getDomoticzFromToken(requestToken);
+	const device = await domoticzConnector.getDevice(domoticzId);
+	if(! device) 
 		return null;
 
-	return alexaMapper.handleGetStateForDomoticzDevice(domoticzState[0]);
+	return alexaMapper.getAlexaDeviceContextState(device);
 }
 
 console.log("RUNNING PROD : " + (PROD_MODE ? "ON" : "OFF"));

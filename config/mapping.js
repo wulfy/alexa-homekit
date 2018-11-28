@@ -128,8 +128,11 @@ const DOMOTICZ_ALEXA_RFY_VOLET = {
 	"domoticz_mapping" : {
 		"Type":"RFY"
 	},
-	"discovery" : DOMOTICZ_ALEXA_ON_OFF.discovery,
-	"capabilities" : DOMOTICZ_ALEXA_ON_OFF.capabilities,
+	"discovery" : DOMOTICZ_ALEXA_VOLET.discovery,
+	"capabilities" : [
+		COMMON_POWER_CONTROLLER_CAPABILITY,
+		COMMON_PERCENTAGE_CAPABILITY
+		]
 };
 
 const DOMOTICZ_ALEXA_YEE_LED = {

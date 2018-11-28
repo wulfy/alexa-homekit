@@ -14,7 +14,7 @@ const domoticz = require('../../domoticz');
 const mockups = require("../mockups/alexaMockups")
 
 const { 
-        DOMOTICZ_STATE_ANSWER, 
+        DOMOTICZ_STATE_ANSWER
     } = require("../mockups/domoticzMockups")
 
 global.console.log = (data)=>null;
@@ -25,12 +25,18 @@ exports.sendDeviceCommand = sendDeviceCommand;
 
 
 class mockedDomoticz extends domoticz {
-    constructor(token) {
+
+    constructor(token,MOCKED_ANSWER) {
         super(token);
+        this.MOCKED_ANSWER = MOCKED_ANSWER;
     }
 
-    getDevices (token,domoticzDeviceId) {
-        return JSON.parse(DOMOTICZ_GET_DEVICES).result;
+    getAllDevices() {
+        return JSON.parse(this.MOCKED_ANSWER).result;
+    }
+
+    getDevice() {
+        return "";
     }
 
     getBase (token){
@@ -38,10 +44,7 @@ class mockedDomoticz extends domoticz {
     }
 
 }
-
-global.getDomoticzFromToken = (token) => {
-    return new mockedDomoticz(token);
-}
+exports.mockedDomoticz = mockedDomoticz;
 
 
 const Tester = class Tester{

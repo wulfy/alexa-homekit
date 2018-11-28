@@ -32,7 +32,6 @@ class domoticz {
 		}
 	}
 
-
 	//extract domoticz url data ex: http://my.domoti.cz 
 	//to retrieve proto (HTTP/HTTPS) and use correct node http or https lib
 	// and domain my.domoti.cz
@@ -44,7 +43,6 @@ class domoticz {
 		console.log("get devices original");
 		const base = await this.getBase();
 		const request = base+"?"+LIST_DEVICE_REQUEST + filter;
-
 		console.log("getDevices " + request);
 		const devicesJsonList = await promiseHttpRequest(request);
 		console.log(devicesJsonList)

@@ -21,6 +21,7 @@ global.getDomoticzFromToken = (token) => {
 	return new domoticz(token);
 }
 
+
 // Alexa discovery full process
 // retrieve user, getdevices, map them to domoticz then return them in Alexa format
 async function alexaDiscoveryEndpoints(requestToken){

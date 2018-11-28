@@ -48,7 +48,7 @@ class domoticz {
 	  }
  	  return domoticzUrlData;
 	}
-	
+
 	//extract domoticz url data ex: http://my.domoti.cz 
 	//to retrieve proto (HTTP/HTTPS) and use correct node http or https lib
 	// and domain my.domoti.cz
@@ -84,19 +84,13 @@ class domoticz {
 		let deviceRequest = base + "?" + SET_COMMAND;
 		//const params = overrideParams && typeof overrideParams === "function" ? overrideParams(requestMethod) : DEVICE_HANDLER_COMMANDS_PARAMS[requestMethod];
 		deviceRequest += generate_command(deviceSubtype,deviceId,directive,directiveValue);
-<<<<<<< HEAD
 
-=======
->>>>>>> refacto code
 		console.log(deviceRequest);
 		try {
 			PROD_MODE ? await promiseHttpRequest(deviceRequest) : null ;
 			console.log("REQUEST SENT");
 			sendStatsd("calls.command."+deviceSubtype+":1|c");
-<<<<<<< HEAD
 
-=======
->>>>>>> refacto code
 			return deviceRequest;
 		}catch(e){
 			throw e;

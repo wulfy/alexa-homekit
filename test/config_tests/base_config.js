@@ -49,7 +49,6 @@ class mockedDomoticz extends domoticz {
 exports.mockedDomoticz = mockedDomoticz;
 
 
-
 class mockedDomoticz extends domoticz {
 
     constructor(token,MOCKED_ANSWER) {
@@ -62,7 +61,7 @@ class mockedDomoticz extends domoticz {
     }
 
     getDevice() {
-        return "";
+        return JSON.parse(this.MOCKED_ANSWER).result[0];
     }
 
     getBase (token){

@@ -7,8 +7,12 @@ class AlexaMapper {
 		this.alexaMapping =  alexaMapping ? alexaMapping : null;
 	}
 
-	//find and map a domoticz device to his corresponding Alexa forma
-	// out => the Alexa template without context 
+	/*
+		find and map a domoticz device to his corresponding Alexa format
+		out => the Alexa template without context 
+	* @param object domoticsDevice data (exported from json)
+    * @return object domoticz device mapped to alexa (see mapping.js)
+    */
 	fromDomoticzDevice(domoticzDevice){
 		if(! this.alexaMapping)
 			return null;
@@ -35,6 +39,11 @@ class AlexaMapper {
 		return result;
 	}
 
+	/*
+		get a Alexa device list from a Domoticz device list
+	* @param array of domoticsDevice objects (from json)
+    * @return array of Alexa device objects
+    */
 	fromDomoticzDevices(domoticzDevices){
 		const mappedDevices = [];
 		domoticzDevices.forEach( (domoDevice)=>{
@@ -87,10 +96,11 @@ class AlexaMapper {
 			if(!device) return;
 
 			const capabilitiesHeader = [{
-	                          "type": "AlexaInterface",
-	                          "interface": "Alexa",
-	                          "version": "3"
-	                        }];
+                  "type": "AlexaInterface",
+                  "interface": "Alexa",
+                  "version": "3"
+                }];
+
 			const capabilitiesDetails = device.capabilities.map((capa)=>{
 				return {
 	                "interface": capa.interface,
@@ -105,6 +115,8 @@ class AlexaMapper {
 			});
 			return {
 	                ...device.discovery,
+	                //add alexa interface version precision in each capabilities list
+	                //see alexa doc : https://developer.amazon.com/fr/docs/device-apis/alexa-interface.html#discovery
 	                "capabilities": capabilitiesHeader.concat(capabilitiesDetails),
 	             }
 		});

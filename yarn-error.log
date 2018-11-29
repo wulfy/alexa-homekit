@@ -1,5 +1,5 @@
 Arguments: 
-  /usr/local/Cellar/node/9.10.1/bin/node /usr/local/Cellar/yarn/1.5.1_1/libexec/bin/yarn.js test report
+  /usr/local/Cellar/node/9.10.1/bin/node /usr/local/Cellar/yarn/1.5.1_1/libexec/bin/yarn.js test
 
 PATH: 
   /Users/llasry/.rvm/gems/ruby-2.3.0/bin:/Users/llasry/.rvm/gems/ruby-2.3.0@global/bin:/Users/llasry/.rvm/rubies/ruby-2.3.0/bin:/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin:/usr/local/Cellar/node/7.10.0/bin:/opt/X11/bin:/usr/local/git/bin:/Users/llasry/.rvm/bin
@@ -7008,7 +7008,7 @@ Trace:
   Error: Command failed.
   Exit code: 1
   Command: sh
-  Arguments: -c jest report
+  Arguments: -c jest
   Directory: /Users/llasry/Documents/dev/Alexa/homekit/skill
   Output:
   

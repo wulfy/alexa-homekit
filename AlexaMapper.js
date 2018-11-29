@@ -103,14 +103,14 @@ class AlexaMapper {
 
 			const capabilitiesDetails = device.capabilities.map((capa)=>{
 				return {
-	                "interface": capa.interface,
-	                "version": "3",
-	                "type": "AlexaInterface",
-	                "properties": {
-	                    "supported": capa.supported,
-	                     "retrievable": capa.retrievable,
-	                     "proactivelyReported": capa.proactivelyReported,
-	                }
+		                "interface": capa.interface,
+		                "version": "3",
+		                "type": "AlexaInterface",
+		                "properties": {
+		                    "supported": capa.supported,
+		                     "retrievable": capa.retrievable,
+		                     "proactivelyReported": capa.proactivelyReported,
+		                }
 	             };
 			});
 			return {

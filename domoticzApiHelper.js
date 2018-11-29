@@ -39,12 +39,12 @@ exports.PROD_MODE = PROD_MODE
 
 //send alexa response and stop lambda by context.succeed call
 // same response for getState or command
-exports.sendAlexaCommandResponse = function(request,context,contextResult,stateReport){
+exports.sendAlexaCommandResponse = function(request,context,contextResult,isStateReport){
 	const endpointId = request.directive.endpoint.endpointId;
     const requestHeader = request.directive.header;
     // get user token pass in request
     const requestToken = request.directive.endpoint.scope.token;
-    const response = alexaMapper.handleSendCommandResponse(contextResult,requestHeader,requestToken,endpointId,stateReport)
+    const response = alexaMapper.handleSendCommandResponse(contextResult,requestHeader,requestToken,endpointId,isStateReport)
  
     console.log("DEBUG: " + requestHeader.namespace + JSON.stringify(response));
     sendStatsd("calls.answer."+requestHeader.name+":1|c");

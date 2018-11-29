@@ -167,13 +167,13 @@ class AlexaMapper {
 	    return contextResult;
 	}
 
-	handleSendCommandResponse(contextResult,requestHeader,requestToken,endpointId,stateReport){
+	handleSendCommandResponse(contextResult,requestHeader,requestToken,endpointId,isStateReport){
 		//build response header based on request header
 		let responseHeader = requestHeader;    
 		responseHeader.namespace = "Alexa";
 		//response is an aswer after a command
 		//statereport is an answer after a stateReportRequest
-    	responseHeader.name = stateReport ? "StateReport":"Response";
+    	responseHeader.name = isStateReport ? "StateReport":"Response";
     	responseHeader.messageId = responseHeader.messageId + "-R";
 
 		const response = {

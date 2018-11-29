@@ -167,7 +167,7 @@ class AlexaMapper {
 	    return contextResult;
 	}
 
-	handleSendCommandResponse(contextResult,requestHeader,requestToken,endpointId){
+	handleSendCommandResponse(contextResult,requestHeader,requestToken,endpointId,stateReport){
 		//build response header based on request header
 		let responseHeader = requestHeader;    
 		responseHeader.namespace = "Alexa";

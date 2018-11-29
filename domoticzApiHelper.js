@@ -44,7 +44,7 @@ exports.sendAlexaCommandResponse = function(request,context,contextResult,stateR
     const requestHeader = request.directive.header;
     // get user token pass in request
     const requestToken = request.directive.endpoint.scope.token;
-    const response = alexaMapper.handleSendCommandResponse(contextResult,requestHeader,requestToken,endpointId)
+    const response = alexaMapper.handleSendCommandResponse(contextResult,requestHeader,requestToken,endpointId,stateReport)
  
     console.log("DEBUG: " + requestHeader.namespace + JSON.stringify(response));
     sendStatsd("calls.answer."+requestHeader.name+":1|c");

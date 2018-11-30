@@ -16,6 +16,7 @@ const { ALEXA_REPORTSTATE_REQUEST_EXAMPLE,
         ALEXA_DISCOVERY_REQUEST_EXAMPLE,
         ALEXA_TURNON_REQUEST,
         ALEXA_TURNOFF_REQUEST,
+        ALEXA_SETPERCENT_REQUEST_VENITIAN,
     } = require("../mockups/alexaMockups")
 
 const { 
@@ -93,7 +94,7 @@ context.succeed = (data) => console.log("CONTEXT ENDED");
 //TEST FOR INDEX.JS
 //handler(ALEXA_DISCOVERY_REQUEST_EXAMPLE,context);
 //handler(ALEXA_DISCOVERY_REQUEST_EXAMPLE);
-handler(ALEXA_SETPERCENT_REQUEST_EXAMPLE2);
+handler(ALEXA_SETPERCENT_REQUEST_VENITIAN);
 //handler(ALEXA_REPORTSTATE_REQUEST_EXAMPLE("2_aeon"));
 //handler(ALEXA_TURNON_REQUEST);
 console.log(context);

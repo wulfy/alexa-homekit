@@ -67,11 +67,13 @@ class domoticz {
 
 	async getDevice(domoticzDeviceId) {
 		const filter = domoticzDeviceId ? "&rid="+domoticzDeviceId:"";
-		return await this.requestDomoticzWithFilter(filter)[0];
+		const deviceList = await this.requestDomoticzWithFilter(filter);
+		return deviceList[0];
 	}
 
 	async getAllDevices() {
-		return await this.requestDomoticzWithFilter("");
+		const deviceList = await this.requestDomoticzWithFilter("");
+		return deviceList;
 	}
 
 	//send http or https command to a domoticz device

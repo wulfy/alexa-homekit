@@ -86,7 +86,7 @@ exports.ALEXA_SETPERCENT_REQUEST_VENITIAN = {
     "endpoint": {
       "scope": {
         "type": "BearerToken",
-        "token": "access-token-from-skill"
+        "token": "5a1e219dd51b607ff9b6434a3df829e3def65080"
       },
       "endpointId": "73_RFXtrx_VenetianBlindsUS",
       "cookie": {

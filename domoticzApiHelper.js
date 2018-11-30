@@ -107,8 +107,11 @@ function configureAlexaDevice(domoDevice, alexaMapping) {
 	varToReplace.forEach((toReplace)=>{
 		// @level@ => level
 		const domoticzVar = toReplace.replace(new RegExp("@", 'g'),"");
+		const deviceData = typeof domoDevice[domoticzVar] === 'string' 
+								? domoDevice[domoticzVar].replace(/(?:\r\n|\r|\n)/g,'\\n')
+								: domoDevice[domoticzVar];
  		// get the var from tomoticz and replace it in mapping json
-		alexaDeviceJson = alexaDeviceJson.replace(toReplace,domoDevice[domoticzVar])
+		alexaDeviceJson = alexaDeviceJson.replace(toReplace,deviceData)
 	});
 
 	const newDiscovery =  JSON.parse(alexaDeviceJson);

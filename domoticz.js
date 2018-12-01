@@ -48,7 +48,7 @@ class domoticz {
 	  }
  	  return domoticzUrlData;
 	}
-	
+
 	//extract domoticz url data ex: http://my.domoti.cz 
 	//to retrieve proto (HTTP/HTTPS) and use correct node http or https lib
 	// and domain my.domoti.cz
@@ -92,7 +92,6 @@ class domoticz {
 			sendStatsd("calls.command."+deviceSubtype+":1|c");
 
 			return deviceRequest;
-
 		}catch(e){
 			throw e;
 		}

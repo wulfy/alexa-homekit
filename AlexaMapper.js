@@ -1,3 +1,5 @@
+const escapeSpecialChars = (me) =>   JSON.stringify(""+me);
+
 /**
 CLass used to map dmoticz device to Alexa format
 **/
@@ -8,10 +10,10 @@ class AlexaMapper {
 	}
 
 	/*
-		find and map a domoticz device to his corresponding Alexa format
-		out => the Alexa template without context 
-	* @param object domoticsDevice data (exported from json)
-    * @return object domoticz device mapped to alexa (see mapping.js)
+	*	find and map a domoticz device to his corresponding Alexa format
+	*	out => the Alexa template without context 
+	* 	@param object domoticsDevice data (exported from json)
+    * 	@return object domoticz device mapped to alexa (see mapping.js)
     */
 	fromDomoticzDevice(domoticzDevice){
 		if(! this.alexaMapping)
@@ -40,9 +42,9 @@ class AlexaMapper {
 	}
 
 	/*
-		get a Alexa device list from a Domoticz device list
-	* @param array of domoticsDevice objects (from json)
-    * @return array of Alexa device objects
+	*	get a Alexa device list from a Domoticz device list
+	* 	@param array of domoticsDevice objects (from json)
+    * 	@return array of Alexa device objects
     */
 	fromDomoticzDevices(domoticzDevices){
 		const mappedDevices = [];
@@ -67,16 +69,20 @@ class AlexaMapper {
 		let alexaDeviceJson = JSON.stringify(alexaFormat);
 		const varRegex = /@[^@#]*@/gm;
 		const varToReplace =  alexaDeviceJson.match(varRegex);//get all data to retrieve from Domoticz
-		console.log(alexaDeviceJson);
+		/*console.log(alexaDeviceJson);
 		console.log(varToReplace);
+		console.log(domoDevice);*/
 		//foreach data to replace, get the corresponding value in domoticz
 		varToReplace.forEach((toReplace)=>{
+
 			// @level@ => level
 			const domoticzVar = toReplace.replace(new RegExp("@", 'g'),"");
+			const deviceData = typeof domoDevice[domoticzVar] === 'string' 
+								? domoDevice[domoticzVar].replace(/(?:\r\n|\r|\n)/g,'\\n')
+								: domoDevice[domoticzVar];
 	 		// get the var from tomoticz and replace it in mapping json
-			alexaDeviceJson = alexaDeviceJson.replace(toReplace,domoDevice[domoticzVar])
+			alexaDeviceJson = alexaDeviceJson.replace(toReplace,deviceData);
 		});
-
 		const newAlexaDevice =  JSON.parse(alexaDeviceJson);
 		//const cleanRegex = new RegExp("(?:(?!^[×Þß÷þø])[-'0-9a-zÀ-ÿ ])", 'gui');
 		const cleanRegex = new RegExp("[^-'0-9a-zÀ-ÿ _]", 'gui');
@@ -175,7 +181,6 @@ class AlexaMapper {
 		//statereport is an answer after a stateReportRequest
     	responseHeader.name = isStateReport ? "StateReport":"Response";
     	responseHeader.messageId = responseHeader.messageId + "-R";
-
 		const response = {
 	        context: contextResult,
 	        event: {

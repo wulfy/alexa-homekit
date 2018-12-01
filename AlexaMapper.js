@@ -20,7 +20,7 @@ class AlexaMapper {
 		let result = null;
 		console.log("mapping device --------")
 
-		//serch for the right Alexa format based on domoticz type/sybtype/switchtype
+		//search for the right Alexa format based on domoticz type/sybtype/switchtype
 		this.alexaMapping.forEach((alexaMap) =>{
 	      		const alexaDevice = alexaMap.domoticz_mapping;
 				if(	
@@ -190,6 +190,7 @@ class AlexaMapper {
 	            payload: {}
 	        }
 	    };
+
 	    return response;
 	}
 }

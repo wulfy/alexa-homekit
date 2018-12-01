@@ -6,8 +6,9 @@ const SET_DEVICE_OFF = "switchcmd=Off"
 const SET_VOLET_STOP = "switchcmd=Stop"
 exports.STATE_REQUEST = "type=devices"
 exports.SET_COMMAND = "type=command&param=switchlight"
-const VOLET_SUBTYPE = "BlindsPercentage";
 const VOLET_VENETIAN_SUBTYPE = "VenetianBlindsUS";
+const VOLET_SUBTYPE = "BlindsPercentage";
+const SUBTYPE_TOINVERT = [VOLET_SUBTYPE,VOLET_VENETIAN_SUBTYPE];
 
 device_handler_command = (subType,value)=>({
 	"SetPercentage": {
@@ -19,10 +20,10 @@ device_handler_command = (subType,value)=>({
 					: PERCENT_VALUE + "=" + value,
 	},
 	"TurnOff": {
-		"command" : subType === VOLET_SUBTYPE ? SET_DEVICE_ON : SET_DEVICE_OFF,
+		"command" : SUBTYPE_TOINVERT.includes(subType) ? SET_DEVICE_ON : SET_DEVICE_OFF,
 	},
 	"TurnOn": {
-		"command" : subType === VOLET_SUBTYPE ? SET_DEVICE_OFF : SET_DEVICE_ON,
+		"command" : SUBTYPE_TOINVERT.includes(subType) ? SET_DEVICE_OFF : SET_DEVICE_ON,
 	},
 });
 

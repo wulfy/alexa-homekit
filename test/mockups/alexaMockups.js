@@ -117,7 +117,7 @@ exports.ALEXA_DISCOVERY_REQUEST_EXAMPLE = {
   }
 }
 
-exports.ALEXA_TURNON_REQUEST = {
+const ALEXA_TURNON_REQUEST = {
   "directive": {
     "header": {
       "namespace": "Alexa.PowerController",
@@ -138,7 +138,7 @@ exports.ALEXA_TURNON_REQUEST = {
   }
 }
 
-exports.ALEXA_TURNOFF_REQUEST = {
+const ALEXA_TURNOFF_REQUEST = {
   "directive": {
     "header": {
       "namespace": "Alexa.PowerController",
@@ -157,4 +157,52 @@ exports.ALEXA_TURNOFF_REQUEST = {
     },
     "payload": {}
   }
+}
+
+exports.ALEXA_TURNON_REQUEST = ALEXA_TURNON_REQUEST;
+exports.ALEXA_TURNOFF_REQUEST = ALEXA_TURNOFF_REQUEST;
+
+exports.ALEXA_TURNON_REQUEST_BLINDS = {
+  "directive": {
+      "header":ALEXA_TURNON_REQUEST.directive.header,
+      "name":ALEXA_TURNON_REQUEST.directive.payload,
+      "endpoint": {
+        "scope": {
+          "type": "BearerToken",
+          "token": "a4bf269d3fdd181aee9d73a6dfaaaee058471d54"
+        },
+        "endpointId": "3_aeon_BlindsPercentage",
+        "cookie": {}
+      }
+  }
+}
+
+exports.ALEXA_TURNON_REQUEST_BLINDS_INVERTED = {
+    "directive": {
+      "header":ALEXA_TURNON_REQUEST.directive.header,
+      "name":ALEXA_TURNON_REQUEST.directive.payload,
+      "endpoint": {
+        "scope": {
+          "type": "BearerToken",
+          "token": "a4bf269d3fdd181aee9d73a6dfaaaee058471d54"
+        },
+        "endpointId": "4_aeon_BlindsInverted",
+        "cookie": {}
+      }
+    }
+}
+
+exports.ALEXA_TURNON_REQUEST_VENITIAN = {
+    "directive": {
+      "header":ALEXA_TURNON_REQUEST.directive.header,
+      "name":ALEXA_TURNON_REQUEST.directive.payload,
+      "endpoint": {
+        "scope": {
+          "type": "BearerToken",
+          "token": "a4bf269d3fdd181aee9d73a6dfaaaee058471d54"
+        },
+        "endpointId": "5_RFY_VenetianBlindsUS",
+        "cookie": {}
+      }
+    }
 }

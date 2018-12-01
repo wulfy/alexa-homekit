@@ -46,10 +46,12 @@ class domoticz {
 	  }else{
 	      domoticzUrlData.domain = result[0];
 	  }
-
-	  return domoticzUrlData;
+ 	  return domoticzUrlData;
 	}
-
+	
+	//extract domoticz url data ex: http://my.domoti.cz 
+	//to retrieve proto (HTTP/HTTPS) and use correct node http or https lib
+	// and domain my.domoti.cz
 	//request devices using a filter example: &rid=2
 	async requestDomoticzWithFilter (filter) {
 		if(! this.token)
@@ -82,12 +84,15 @@ class domoticz {
 		let deviceRequest = base + "?" + SET_COMMAND;
 		//const params = overrideParams && typeof overrideParams === "function" ? overrideParams(requestMethod) : DEVICE_HANDLER_COMMANDS_PARAMS[requestMethod];
 		deviceRequest += generate_command(deviceSubtype,deviceId,directive,directiveValue);
+
 		console.log(deviceRequest);
 		try {
 			PROD_MODE ? await promiseHttpRequest(deviceRequest) : null ;
 			console.log("REQUEST SENT");
 			sendStatsd("calls.command."+deviceSubtype+":1|c");
+
 			return deviceRequest;
+
 		}catch(e){
 			throw e;
 		}

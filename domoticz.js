@@ -35,6 +35,23 @@ class domoticz {
 	//extract domoticz url data ex: http://my.domoti.cz 
 	//to retrieve proto (HTTP/HTTPS) and use correct node http or https lib
 	// and domain my.domoti.cz
+	extractDomoticzUrlData (request) {
+	  let domoticzUrlData = {domain:null,proto:"HTTP"};
+	  const result = request.split("//").map((value)=>value.split(":")[0]);
+	  console.log(result)
+	  if(result.length > 1)
+	  {
+	      domoticzUrlData.proto = result[0];
+	      domoticzUrlData.domain = result[1];
+	  }else{
+	      domoticzUrlData.domain = result[0];
+	  }
+ 	  return domoticzUrlData;
+	}
+	
+	//extract domoticz url data ex: http://my.domoti.cz 
+	//to retrieve proto (HTTP/HTTPS) and use correct node http or https lib
+	// and domain my.domoti.cz
 	//request devices using a filter example: &rid=2
 	async requestDomoticzWithFilter (filter) {
 		if(! this.token)

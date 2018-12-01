@@ -16,7 +16,7 @@ device_handler_command = (subType,value)=>({
 					? SET_VOLET_STOP
 					: SET_DEVICE_LVL,
 		"value" : subType === VOLET_VENETIAN_SUBTYPE && 50 === value 
-					? PERCENT_VALUE + "=" + 0
+					? PERCENT_VALUE + "=" + 10
 					: PERCENT_VALUE + "=" + value,
 	},
 	"TurnOff": {

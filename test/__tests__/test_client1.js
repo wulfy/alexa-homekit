@@ -1,13 +1,12 @@
 const base_config = require("../config_tests/base_config");
 
+const { DOMOTICZ_GET_DEVICES } = require("../mockups/client1Mockup");
+global.getDomoticzFromToken = (token) => {
+    return new base_config.mockedDomoticz(token,DOMOTICZ_GET_DEVICES);
+}
+
 //TEST FOR INDEX.JS
 test('DISCOVERY TESTING client1', done => {
-
-    const { DOMOTICZ_GET_DEVICES } = require("../mockups/client1Mockup");
-
-    global.getDevices = (token,domoticzDeviceId) => {
-        return JSON.parse(DOMOTICZ_GET_DEVICES).result;
-    }
     let context = {};
     context.succeed = function (data){
         const testData = JSON.stringify(data); 
@@ -15,6 +14,6 @@ test('DISCOVERY TESTING client1', done => {
         done();
     };
     
-    base_config.handler(base_config.ALEXA_DISCOVERY_REQUEST_EXAMPLE,context);
+    base_config.handler(base_config.mockups.ALEXA_DISCOVERY_REQUEST_EXAMPLE,context);
 
 });

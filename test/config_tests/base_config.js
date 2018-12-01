@@ -1,4 +1,4 @@
-process.env.PROD_MODE = "true";
+process.env.PROD_MODE = "false";
 const baseProject = "../../"
 const {handler} = require(baseProject+"index")
 const {
@@ -6,25 +6,47 @@ const {
         getAlexaDevice,
         sendAlexaCommandResponse,
         sendDeviceCommand,
+        getAlexaDeviceState,
         BASE_REQUEST,
         LIST_DEVICE_REQUEST
     } = require(baseProject+"domoticzApiHelper");
 
-const { ALEXA_REPORTSTATE_REQUEST_EXAMPLE, 
-        ALEXA_SETPERCENT_REQUEST_EXAMPLE,
-        ALEXA_DISCOVERY_REQUEST_EXAMPLE,
-        ALEXA_TURNON_REQUEST,
-        ALEXA_TURNOFF_REQUEST,
-    } = require("../mockups/alexaMockups")
+const domoticz = require('../../domoticz');
+const mockups = require("../mockups/alexaMockups")
 
 const { 
-        DOMOTICZ_STATE_ANSWER, 
+        DOMOTICZ_STATE_ANSWER
     } = require("../mockups/domoticzMockups")
 
 global.console.log = (data)=>null;
 
 exports.handler = handler;
-exports.ALEXA_DISCOVERY_REQUEST_EXAMPLE = ALEXA_DISCOVERY_REQUEST_EXAMPLE;
+exports.mockups = mockups;
+exports.sendDeviceCommand = sendDeviceCommand;
+exports.getAlexaDeviceState = getAlexaDeviceState;
+
+
+class mockedDomoticz extends domoticz {
+
+    constructor(token,MOCKED_ANSWER) {
+        super(token);
+        this.MOCKED_ANSWER = MOCKED_ANSWER;
+    }
+
+    getAllDevices() {
+        return JSON.parse(this.MOCKED_ANSWER).result;
+    }
+
+    getDevice() {
+        return JSON.parse(this.MOCKED_ANSWER).result[0];
+    }
+
+    getBase (token){
+        return "";
+    }
+
+}
+exports.mockedDomoticz = mockedDomoticz;
 
 
 const Tester = class Tester{
@@ -48,7 +70,7 @@ const Tester = class Tester{
                 done();
             };
             
-            base_config.handler(base_config.ALEXA_DISCOVERY_REQUEST_EXAMPLE,context2);
+            handler(mockups.ALEXA_DISCOVERY_REQUEST_EXAMPLE,context2);
 
         });
     }

@@ -22,8 +22,7 @@ exports.ALEXA_REPORTSTATE_REQUEST_EXAMPLE = (endPointID)=> {
   }
 }
 
-
-exports.ALEXA_SETPERCENT_REQUEST_EXAMPLE = {
+exports.ALEXA_SETPERCENT_REQUEST_BLINDS_INVERTED = {
   "directive": {
     "header": {
       "namespace": "Alexa.PercentageController",
@@ -37,7 +36,7 @@ exports.ALEXA_SETPERCENT_REQUEST_EXAMPLE = {
         "type": "BearerToken",
         "token": "access-token-from-skill"
       },
-      "endpointId": "2_aeon",
+      "endpointId": "2_aeon_BlindsPercentageInverted",
       "cookie": {
       overrideParams: (requestMethod)=> requestMethod === "TurnOn" ||  requestMethod === "TurnOff"? SET_DEVICE_LVL : "",
       overrideValue : (requestMethod)=> requestMethod === "TurnOn" ? "100" : "0",
@@ -45,6 +44,58 @@ exports.ALEXA_SETPERCENT_REQUEST_EXAMPLE = {
     },
     "payload": {
       "percentage": 92
+    }
+  }
+}
+
+exports.ALEXA_SETPERCENT_REQUEST_BLINDS = {
+  "directive": {
+    "header": {
+      "namespace": "Alexa.PercentageController",
+      "name": "SetPercentage",
+      "payloadVersion": "3",
+      "messageId": "1bd5d003-31b9-476f-ad03-71d471922820",
+      "correlationToken": "dFMb0z+PgpgdDmluhJ1LddFvSqZ/jCc8ptlAKulUj90jSqg=="
+    },
+    "endpoint": {
+      "scope": {
+        "type": "BearerToken",
+        "token": "access-token-from-skill"
+      },
+      "endpointId": "2_aeon_BlindsPercentage",
+      "cookie": {
+      overrideParams: (requestMethod)=> requestMethod === "TurnOn" ||  requestMethod === "TurnOff"? SET_DEVICE_LVL : "",
+      overrideValue : (requestMethod)=> requestMethod === "TurnOn" ? "100" : "0",
+      }
+    },
+    "payload": {
+      "percentage": 92
+    }
+  }
+}
+
+exports.ALEXA_SETPERCENT_REQUEST_VENITIAN = {
+  "directive": {
+    "header": {
+      "namespace": "Alexa.PercentageController",
+      "name": "SetPercentage",
+      "payloadVersion": "3",
+      "messageId": "1bd5d003-31b9-476f-ad03-71d471922820",
+      "correlationToken": "dFMb0z+PgpgdDmluhJ1LddFvSqZ/jCc8ptlAKulUj90jSqg=="
+    },
+    "endpoint": {
+      "scope": {
+        "type": "BearerToken",
+        "token": "5a1e219dd51b607ff9b6434a3df829e3def65080"
+      },
+      "endpointId": "73_RFXtrx_VenetianBlindsUS",
+      "cookie": {
+      overrideParams: (requestMethod)=> requestMethod === "TurnOn" ||  requestMethod === "TurnOff"? SET_DEVICE_LVL : "",
+      overrideValue : (requestMethod)=> requestMethod === "TurnOn" ? "100" : "0",
+      }
+    },
+    "payload": {
+      "percentage": 50
     }
   }
 }
@@ -80,7 +131,7 @@ exports.ALEXA_TURNON_REQUEST = {
         "type": "BearerToken",
         "token": "a4bf269d3fdd181aee9d73a6dfaaaee058471d54"
       },
-      "endpointId": "2_aeon_Blinds Percentage",
+      "endpointId": "2_aeon_Switch",
       "cookie": {}
     },
     "payload": {}

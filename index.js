@@ -1,6 +1,5 @@
 const {
-        getStateFromAlexaDevice,
-        getAlexaDevice,
+        getAlexaDeviceState,
         sendAlexaCommandResponse,
         sendDeviceCommand,
         alexaDiscovery,
@@ -42,22 +41,20 @@ exports.handler = async function (request, context) {
 
 
     async function handleDiscovery(request,context){
-        const endPoints = await alexaDiscovery(request);
+        const requestToken = request.directive.payload.scope.token;
+        const endPoints = await alexaDiscovery(requestToken);
         let header = request.directive.header;
         header.name = "Discover.Response";
         const response = {event:{ header: header, payload: endPoints }};
         console.log("DEBUG: Discovery Response >>>>>>>> " + JSON.stringify(response));
 
-        PROD_MODE ? context.succeed(response) : console.log("no context sent");
+        context.succeed(response);
     }
 
     async function handleReportState(request, context) {
         const endpointId = request.directive.endpoint.endpointId;
         const requestToken = request.directive.endpoint.scope.token;
-        const alexaDevice = await getAlexaDevice(requestToken,endpointId);
-        if(!alexaDevice) return null;
-
-        const deviceStateContext = getStateFromAlexaDevice(alexaDevice);
+        const deviceStateContext = await getAlexaDeviceState(requestToken,endpointId);
         sendAlexaCommandResponse(request,context,deviceStateContext,true);
     }
 
@@ -68,9 +65,7 @@ exports.handler = async function (request, context) {
         const requestMethod = request.directive.header.name;
         if (requestMethod === "TurnOff" || requestMethod === "TurnOn") {
             await sendDeviceCommand(request,setValue);
-            const alexaDevice = await getAlexaDevice(requestToken,endpointId);
-            if(!alexaDevice) return null;
-            const contextResult = getStateFromAlexaDevice(alexaDevice);
+            const contextResult = await getAlexaDeviceState(requestToken,endpointId);
             sendAlexaCommandResponse(request,context,contextResult);
         }
 
@@ -83,9 +78,7 @@ exports.handler = async function (request, context) {
         const requestMethod = request.directive.header.name;
         if (requestMethod === "SetPercentage") {
             await sendDeviceCommand(request,setValue);
-            const alexaDevice = await getAlexaDevice(requestToken,endpointId);
-            if(!alexaDevice) return null;
-            const contextResult = getStateFromAlexaDevice(alexaDevice);
+            const contextResult = await getAlexaDeviceState(requestToken,endpointId);
             sendAlexaCommandResponse(request,context,contextResult);
         }
     }

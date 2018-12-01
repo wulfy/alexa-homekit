@@ -1,5 +1,6 @@
-process.env.PROD_MODE = "true";
+process.env.PROD_MODE = "false";
 const {handler} = require("../../index")
+
 const {
         getStateFromAlexaDevice,
         getAlexaDevice,
@@ -11,9 +12,11 @@ const {
 
 const { ALEXA_REPORTSTATE_REQUEST_EXAMPLE, 
         ALEXA_SETPERCENT_REQUEST_EXAMPLE,
+        ALEXA_SETPERCENT_REQUEST_EXAMPLE2,
         ALEXA_DISCOVERY_REQUEST_EXAMPLE,
         ALEXA_TURNON_REQUEST,
         ALEXA_TURNOFF_REQUEST,
+        ALEXA_SETPERCENT_REQUEST_VENITIAN,
     } = require("../mockups/alexaMockups")
 
 const { 
@@ -71,10 +74,13 @@ async function test2()
 	console.log("done " + JSON.stringify(data));
 }
 
+
+/*
 global.getDevices = (token,domoticzDeviceId) => {
     return JSON.parse(DOMOTICZ_GET_DEVICES).result;
-}
+}*/
 
+global.getBase = (token) => "";
 
 console.log("---- TEST RUNNING ---- ")
 //handleDiscovery(ALEXA_DISCOVERY_REQUEST_EXAMPLE);
@@ -86,9 +92,9 @@ let context = {};
 context.succeed = (data) => console.log("CONTEXT ENDED");
 
 //TEST FOR INDEX.JS
-handler(ALEXA_DISCOVERY_REQUEST_EXAMPLE,context);
+//handler(ALEXA_DISCOVERY_REQUEST_EXAMPLE,context);
 //handler(ALEXA_DISCOVERY_REQUEST_EXAMPLE);
-//handler(ALEXA_SETPERCENT_REQUEST_EXAMPLE);
+handler(ALEXA_SETPERCENT_REQUEST_VENITIAN);
 //handler(ALEXA_REPORTSTATE_REQUEST_EXAMPLE("2_aeon"));
 //handler(ALEXA_TURNON_REQUEST);
 console.log(context);

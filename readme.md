@@ -58,37 +58,37 @@ Discovery format : https://developer.amazon.com/fr/docs/device-apis/alexa-discov
 (very usefull to undestand formats)
 
 ## Code architecture
-- *Index.js* main file used by Alexa to find commands handlers. Handlers are Alexa specific, they get usefull data from Alexa inputs and call the commands by filling needed inputs.
-- *domoticzApiHelper*  used to implement commands. This helper is (and should be) Alexa "agnostic". It does not know how Alexa is sending data to it, commands are just getting data needed to do the job.
-- *domoticz.js*  Object managing domoticz command and credentials access. It only need a token to retrieve data
-- *alexaMapper.js* Object used to map domoticzDevice to corresponding Alexa format. This object is almost the only one to know the alexa format.
-- */config* contains "common" tools like http connexion, metrics access, security tools, database access/requests, and domoticzCommands (should probably moved in domoticz object).
-*mapping.js* is the most important file: It define the way domoticzDevice should be mapped to Alexa devices. It use '@' char to define variables (ex: @var@) that will be replaced by domoticz device value.
+- **Index.js** main file used by Alexa to find commands handlers. Handlers are Alexa specific, they get usefull data from Alexa inputs and call the commands by filling needed inputs.
+- **domoticzApiHelper**  used to implement commands. This helper is (and should be) Alexa "agnostic". It does not know how Alexa is sending data to it, commands are just getting data needed to do the job.
+- **domoticz.js**  Object managing domoticz command and credentials access. It only need a token to retrieve data
+- **alexaMapper.js** Object used to map domoticzDevice to corresponding Alexa format. This object is almost the only one to know the alexa format.
+- **/config** contains "common" tools like http connexion, metrics access, security tools, database access/requests, and domoticzCommands (should probably moved in domoticz object).
+**mapping.js** is the most important file: It define the way domoticzDevice should be mapped to Alexa devices. It use '@' char to define variables (ex: @var@) that will be replaced by domoticz device value.
 It also define functions when the device status/value should be compute before beeing sent to Alexa (example: depending on device type/subtype the status answer could be different)
-- */test* Contains tests, tools for testing, mocked requests/results and snapshots
-- *package.json* libraries used to develop/deploy the skill
-- *serverless.yml* Serverless configuration which define files that should be deploy (tests and dev files should not be deployed on production lambda) 
+- **/test** Contains tests, tools for testing, mocked requests/results and snapshots
+- **package.json** libraries used to develop/deploy the skill
+- **serverless.yml** Serverless configuration which define files that should be deploy (tests and dev files should not be deployed on production lambda) 
 
 
 ## Tests
 
 ### How data are mocked ?
 All tests are using "base_config".
-This file include the index.js file which export Alexa handlers (to test all the process), domoticzApiHelper to access commands implementation and all tools used to test the skill.
-To override function which need to send http commands or use credentials (oauth/domoticz access), we use "globals" functions and PROD_MODE (which could be defined in env vars or forced in tests).
-- to override domoticz connexion, base_config.js define a "mockedDomoticz" class which extends the domoticz one and override getDevice/getDevices function to return mocked data (setted when creating a new instance of the class)
-- to use mockedDomoticz object in the code instead of domoticz, we use a global function called *getDomoticzFromToken*. This function return a domoticz object from a token. It is defined as globals in index.js AND in base_config.js. Because base_config.js declaration is done after including all files declaration, the base_config one override any other.
+This file include the `index.js` file which export Alexa handlers (to test all the process), `domoticzApiHelper` to access commands implementation and all tools used to test the skill.
+To override function which need to send http commands or use credentials (oauth/domoticz access), we use `globals` functions and `PROD_MODE` (which could be defined in env vars or forced in tests).
+- to override domoticz connexion, `base_config.js` define a `mockedDomoticz` class which extends the domoticz one and override getDevice/getDevices function to return mocked data (setted when creating a new instance of the class)
+- to use **mockedDomoticz** object in the code instead of `domoticz`, we use a global function called **getDomoticzFromToken**. This function return a `domoticz` object from a token. It is defined as globals in index.js AND in base_config.js. Because `base_config.js` declaration is done after including all files declaration, the `base_config` one override any other.
 
 
 ### Automated tests
-Can be run with yarn test (for automated tests)
-Each test based on real life data (client examples) should override getDomoticzFromToken global function to define mocked data corresponding to the tested client.
-All functions and mocked data should be accessed using base_config (to be sure using tools configured by this file and have the same test context).
+Can be run with `yarn test` (for automated tests)
+Each test based on real life data (client examples) should override `getDomoticzFromToken` global function to define mocked data corresponding to the tested client.
+All functions and mocked data should be accessed using `base_config` (to be sure using tools configured by this file and have the same test context).
 
 #### Tests
-- Discovery (snapshot comparaison from real life examples)
-- SendCommand (domoticz request comparaison)
-- GetDeviceState (device context comparaison)
+- **Discovery** (snapshot comparaison from real life examples)
+- **SendCommand** (domoticz request comparaison)
+- **GetDeviceState** (device context comparaison)
 
 ### Manual tests
 You can run manual tests by using this command :
@@ -98,12 +98,12 @@ this file contains commented examples to do some tests.
 Tests using Alexa handlers could use the context object defined in the file to display the result instead of trying to send a success answer to Alexa (only possible on lambda or real server)
 
 #### Mocked test
-In alexaMockups.js you have request example you can use in alexa command handlers or apiHelper commands.
-In domoticzMockups you have domoticz answers example to "simulate" a device or a group of devices with special characters or subtype (for example)
-=> You can use this mode to test discovery response from a domoticz device list (in JSOn format. See domoticzMockups.js).
+In `alexaMockups.js` you have request example you can use in alexa command handlers or apiHelper commands.
+In `domoticzMockups.js` you have domoticz answers example to "simulate" a device or a group of devices with special characters or subtype (for example)
+=> You can use this mode to test discovery response from a domoticz device list (in JSON format. See `domoticzMockups.js`).
 
 #### Test in real condition
-you can set PROD_MOD to "true" to enable http and database access (but you have to run a database in localhost to test oauth access and be aware commands will send data to devices)
+you can set `PROD_MOD` to "true" to enable http and database access (but you have to run a database in localhost to test oauth access and be aware commands will send data to devices)
 => This way is used to debug some clients having problems we can't reproduce by mocking data (so we ask them domoticz credentials and fill the oauth connexion with this)
 
 

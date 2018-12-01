@@ -35,5 +35,5 @@ exports.generate_command = (subtype,deviceId,command,value) => {
 	if(paramsMapper["value"])
 		deviceRequest += `&${paramsMapper["value"]}`
 
-	return deviceRequest;
+	return deviceRequest; 
 }

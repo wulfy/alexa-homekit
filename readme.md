@@ -2,11 +2,11 @@
 
 ## Code installation
 In lambda : use serverless plugin to package and deploy to lambda 
-=> npm run package will do the job. 
+`npm run package` will do the job. 
 
-In a specific server : yarn install then node index.js
+In a specific server : `yarn install` then `node index.js`
 
-Don't forget to configure environment based on .env.dist file 
+Don't forget to configure environment based on `.env.dist` file 
 
 ## How does it work
 This skill is used only to translate Alexa home comands to Domoticz.
@@ -27,8 +27,8 @@ After this action, Alexa will automatically ask for a fresh token when the previ
 
 => The way the skill send commands to domoticz is not 100% secure (http credentials)
 BUT :
-	- risks are extremly low (someone has to hack connection between Amazon servers and the user's modem)
-	- if there is a breach in the user's network, any secured method is potentially vulnerable  
+- risks are extremly low (someone has to hack connection between Amazon servers and the user's modem)
+- if there is a breach in the user's network, any secured method is potentially vulnerable  
 
 ### Oauth server
 Alhau is using a custom oauth server (based on oauth2 kit and a node website)
@@ -76,8 +76,8 @@ It also define functions when the device status/value should be compute before b
 All tests are using "base_config".
 This file include the index.js file which export Alexa handlers (to test all the process), domoticzApiHelper to access commands implementation and all tools used to test the skill.
 To override function which need to send http commands or use credentials (oauth/domoticz access), we use "globals" functions and PROD_MODE (which could be defined in env vars or forced in tests).
-	- to override domoticz connexion, base_config.js define a "mockedDomoticz" class which extends the domoticz one and override getDevice/getDevices function to return mocked data (setted when creating a new instance of the class)
-	- to use mockedDomoticz object in the code instead of domoticz, we use a global function called *getDomoticzFromToken*. This function return a domoticz object from a token. It is defined as globals in index.js AND in base_config.js. Because base_config.js declaration is done after including all files declaration, the base_config one override any other.
+- to override domoticz connexion, base_config.js define a "mockedDomoticz" class which extends the domoticz one and override getDevice/getDevices function to return mocked data (setted when creating a new instance of the class)
+- to use mockedDomoticz object in the code instead of domoticz, we use a global function called *getDomoticzFromToken*. This function return a domoticz object from a token. It is defined as globals in index.js AND in base_config.js. Because base_config.js declaration is done after including all files declaration, the base_config one override any other.
 
 
 ### Automated tests
@@ -92,7 +92,7 @@ All functions and mocked data should be accessed using base_config (to be sure u
 
 ### Manual tests
 You can run manual tests by using this command :
-node test/config_tests/manual.js
+`node test/config_tests/manual.js`
 
 this file contains commented examples to do some tests.
 Tests using Alexa handlers could use the context object defined in the file to display the result instead of trying to send a success answer to Alexa (only possible on lambda or real server)
@@ -108,7 +108,7 @@ you can set PROD_MOD to "true" to enable http and database access (but you have 
 
 
 ## Packaging before sending to lambda
-yarn package (will pack and zip the project to be deployable on amazon Lambda)
+`yarn package` (will pack and zip the project to be deployable on amazon Lambda)
 
 ## Other
 

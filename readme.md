@@ -46,10 +46,10 @@ Be aware, Alexa documentation is not up to date and Alexa webapp is not working 
 If you use an unsupported format of interface or if you send data with unsupported characters, Alexa will ignore the data and do "nothing".
 
 #### Errors
-    - Using non alphanumeric in ID (only _ is supported)
-    - Using special chars in name (Alexa documentation says it is supported by the mobile app do not => the device will work but could not be deleted from the mobile app. In this cas you MUST use the webapp to delete the device)
-    - Using new line and line feed in description
-    - You MUST use a valide SSL certificate on oauth server so Alexa accept to connect to (let's encrypt is NOT supported)
+- Using non alphanumeric in ID (only _ is supported)
+- Using special chars in name (Alexa documentation says it is supported by the mobile app do not => the device will work but could not be deleted from the mobile app. In this cas you MUST use the webapp to delete the device)
+- Using new line and line feed in description
+- You MUST use a valide SSL certificate on oauth server so Alexa accept to connect to (let's encrypt is NOT supported)
 
 ## Supported devices
 Supported interfaces : https://developer.amazon.com/fr/docs/device-apis/list-of-interfaces.html
@@ -58,16 +58,16 @@ Discovery format : https://developer.amazon.com/fr/docs/device-apis/alexa-discov
 (very usefull to undestand formats)
 
 ## Code architecture
-	- *Index.js* main file used by Alexa to find commands handlers. Handlers are Alexa specific, they get usefull data from Alexa inputs and call the commands by filling needed inputs.
-	- *domoticzApiHelper*  used to implement commands. This helper is (and should be) Alexa "agnostic". It does not know how Alexa is sending data to it, commands are just getting data needed to do the job.
-	- *domoticz.js*  Object managing domoticz command and credentials access. It only need a token to retrieve data
-	- *alexaMapper.js* Object used to map domoticzDevice to corresponding Alexa format. This object is almost the only one to know the alexa format.
-	- */config* contains "common" tools like http connexion, metrics access, security tools, database access/requests, and domoticzCommands (should probably moved in domoticz object).
-	*mapping.js* is the most important file: It define the way domoticzDevice should be mapped to Alexa devices. It use '@' char to define variables (ex: @var@) that will be replaced by domoticz device value.
-	It also define functions when the device status/value should be compute before beeing sent to Alexa (example: depending on device type/subtype the status answer could be different)
-	- */test* Contains tests, tools for testing, mocked requests/results and snapshots
-	- *package.json* libraries used to develop/deploy the skill
-	- *serverless.yml* Serverless configuration which define files that should be deploy (tests and dev files should not be deployed on production lambda) 
+- *Index.js* main file used by Alexa to find commands handlers. Handlers are Alexa specific, they get usefull data from Alexa inputs and call the commands by filling needed inputs.
+- *domoticzApiHelper*  used to implement commands. This helper is (and should be) Alexa "agnostic". It does not know how Alexa is sending data to it, commands are just getting data needed to do the job.
+- *domoticz.js*  Object managing domoticz command and credentials access. It only need a token to retrieve data
+- *alexaMapper.js* Object used to map domoticzDevice to corresponding Alexa format. This object is almost the only one to know the alexa format.
+- */config* contains "common" tools like http connexion, metrics access, security tools, database access/requests, and domoticzCommands (should probably moved in domoticz object).
+*mapping.js* is the most important file: It define the way domoticzDevice should be mapped to Alexa devices. It use '@' char to define variables (ex: @var@) that will be replaced by domoticz device value.
+It also define functions when the device status/value should be compute before beeing sent to Alexa (example: depending on device type/subtype the status answer could be different)
+- */test* Contains tests, tools for testing, mocked requests/results and snapshots
+- *package.json* libraries used to develop/deploy the skill
+- *serverless.yml* Serverless configuration which define files that should be deploy (tests and dev files should not be deployed on production lambda) 
 
 
 ## Tests
@@ -86,9 +86,9 @@ Each test based on real life data (client examples) should override getDomoticzF
 All functions and mocked data should be accessed using base_config (to be sure using tools configured by this file and have the same test context).
 
 #### Tests
-	- Discovery (snapshot comparaison from real life examples)
-	- SendCommand (domoticz request comparaison)
-	- GetDeviceState (device context comparaison)
+- Discovery (snapshot comparaison from real life examples)
+- SendCommand (domoticz request comparaison)
+- GetDeviceState (device context comparaison)
 
 ### Manual tests
 You can run manual tests by using this command :

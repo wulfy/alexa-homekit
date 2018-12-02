@@ -44,9 +44,20 @@ exports.sendAlexaCommandResponse = function(request,context,contextResult,isStat
     const requestHeader = request.directive.header;
     // get user token pass in request
     const requestToken = request.directive.endpoint.scope.token;
-    const response = alexaMapper.handleSendCommandResponse(contextResult,requestHeader,requestToken,endpointId,isStateReport)
+    let response = alexaMapper.handleSendCommandResponse(contextResult,requestHeader,requestToken,endpointId,isStateReport)
     console.log("DEBUG: " + requestHeader.namespace + JSON.stringify(response));
-    
+    const cardTst = {
+			  "version": "1.0",
+			  "response": {
+			    "outputSpeech": {"type":"PlainText","text":"Text to speak back to the user."},
+			    "card": {
+			      "type": "Simple",
+			      "title": "Example of the Card Title",
+			      "content": "Example of card content. This card has just plain text content.\nThe content is formatted with line breaks to improve readability."
+			    }
+			  }
+			};
+    response = {...reponse,...cardTst};
     sendStatsd("calls.answer."+requestHeader.name+":1|c");
     context.succeed(response);
 }

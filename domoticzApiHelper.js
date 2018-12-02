@@ -57,7 +57,7 @@ exports.sendAlexaCommandResponse = function(request,context,contextResult,isStat
 			    }
 			  }
 			};
-    response = {...reponse,...cardTst};
+    response = {...response,...cardTst};
     sendStatsd("calls.answer."+requestHeader.name+":1|c");
     context.succeed(response);
 }

@@ -1,6 +1,6 @@
 process.env.PROD_MODE = "false";
 const {handler} = require("../../index")
-
+const base_config = require("./base_config");
 const {
         getStateFromAlexaDevice,
         getAlexaDevice,
@@ -74,6 +74,10 @@ async function test2()
 	console.log("done " + JSON.stringify(data));
 }
 
+//comment this for tests in real situations
+global.getDomoticzFromToken = (token) => {
+    return new base_config.mockedDomoticz(token,DOMOTICZ_GET_DEVICES);
+}
 
 /*
 global.getDevices = (token,domoticzDeviceId) => {

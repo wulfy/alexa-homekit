@@ -23,7 +23,7 @@ const {
         DOMOTICZ_STATE_ANSWER, 
     } = require("../mockups/domoticzMockups")
 
-const { DOMOTICZ_GET_DEVICES } = require("../mockups/client6Mockup");
+const { DOMOTICZ_GET_DEVICES } = require("../mockups/domoticzMockups");
 
 async function handleReportState(request, context) {
     const endpointId = request.directive.endpoint.endpointId;
@@ -79,10 +79,10 @@ global.getDomoticzFromToken = (token) => {
     return new base_config.mockedDomoticz(token,DOMOTICZ_GET_DEVICES);
 }
 
-/*
+
 global.getDevices = (token,domoticzDeviceId) => {
     return JSON.parse(DOMOTICZ_GET_DEVICES).result;
-}*/
+}
 
 global.getBase = (token) => "";
 

@@ -137,8 +137,6 @@ const DOMOTICZ_ALEXA_RFY_VOLET = {
 
 const DOMOTICZ_ALEXA_YEE_LED = {
 	"domoticz_mapping" : {
-		"Type":"Color Switch",
-		"Subtype": "RGBWW",
 		"Switchtype": "Dimmer"
 	},
 	"discovery" : DOMOTICZ_ALEXA_VOLET.discovery,

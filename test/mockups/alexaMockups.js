@@ -206,3 +206,29 @@ exports.ALEXA_TURNON_REQUEST_VENITIAN = {
       }
     }
 }
+
+exports.SET_TARGET_TEMPERATURE_THERMOSTAT = {
+    "directive": {
+        "header": {
+        "namespace": "Alexa.ThermostatController",
+        "name": "SetTargetTemperature",
+        "payloadVersion": "3",
+        "messageId": "1bd5d003-31b9-476f-ad03-71d471922820",
+        "correlationToken": "dFMb0z+PgpgdDmluhJ1LddFvSqZ/jCc8ptlAKulUj90jSqg=="
+      },
+      "endpoint": {
+        "scope": {
+          "type": "BearerToken",
+          "token": "a4bf269d3fdd181aee9d73a6dfaaaee058471d54"
+        },
+        "endpointId": "7_rflink_Thermostat",
+        "cookie": {}
+      },
+      "payload": {
+        "targetSetpoint": {
+          "value": 21.0,
+          "scale": "CELSIUS"
+        }
+      }
+    }
+}

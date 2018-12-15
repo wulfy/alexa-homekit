@@ -18,6 +18,7 @@ const {
         DOMOTICZ_STATE_ANSWER
     } = require("../mockups/domoticzMockups")
 
+//disable console logs for tests
 global.console.log = (data)=>null;
 
 exports.handler = handler;

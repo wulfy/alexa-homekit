@@ -187,6 +187,15 @@ const DOMOTICZ_ALEXA_TEMP = {
     }
 };
 
+const DOMOTICZ_ALEXA_THERMOSTAT = {
+	"domoticz_mapping" : {
+		"Type": "Thermostat"
+	},
+	"discovery" : DOMOTICZ_ALEXA_TEMP.discovery,
+	"capabilities" : DOMOTICZ_ALEXA_TEMP.capabilities,
+};
+
+
 const DOMOTICZ_ALEXA_TEMP_SPECIFIC = {
 	"domoticz_mapping" : {
 		"Type":"Temp + Humidity"
@@ -252,5 +261,6 @@ exports.ALEXAMAPPING = [
 							DOMOTICZ_ALEXA_YEE_LED,
 							DOMOTICZ_ALEXA_TEMP_SPECIFIC,
 							DOMOTICZ_ALEXA_CONTACT,
-							DOMOTICZ_ALEXA_BLIND_INVERTED_VOLET
+							DOMOTICZ_ALEXA_BLIND_INVERTED_VOLET,
+							DOMOTICZ_ALEXA_THERMOSTAT
 						];

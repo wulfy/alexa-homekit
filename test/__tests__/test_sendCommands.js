@@ -58,6 +58,6 @@ test('SENDING TURN OFF', async done => {
 
 test('SENDING THERMOSTAT SET POINT', async done => {
     const data = await base_config.sendDeviceCommand(base_config.mockups.SET_TARGET_TEMPERATURE_THERMOSTAT,21.0);
-    expect(data).toBe("?type=command&param=setsetpoint&idx=7&setpoint=21");
+    expect(data).toBe("?type=command&param=setsetpoint&idx=104&setpoint=21");
     done();
 });

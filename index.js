@@ -89,7 +89,7 @@ exports.handler = async function (request, context) {
         }
     }
 
-    async function ThermostatControl(request, context) {
+    async function handleThermostatControl(request, context) {
         const endpointId = request.directive.endpoint.endpointId;
         const setValue = request.directive.payload.targetSetpoint.value;
         const requestToken = request.directive.endpoint.scope.token;

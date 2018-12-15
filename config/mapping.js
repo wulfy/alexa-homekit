@@ -192,7 +192,33 @@ const DOMOTICZ_ALEXA_THERMOSTAT = {
 		"Type": "Thermostat"
 	},
 	"discovery" : DOMOTICZ_ALEXA_TEMP.discovery,
-	"capabilities" : DOMOTICZ_ALEXA_TEMP.capabilities,
+	"capabilities" : [
+		{
+			"interface":"Alexa.TemperatureSensor",
+			"state":{
+				"temperature":"@data@",
+			},
+			"command":{
+			},
+			"supported": [{
+	            "name": "temperature",
+	            "value":"()=>({value:@data@,scale:'CELSIUS'})",
+	        }],
+	        "proactivelyReported": false,
+	        "retrievable": true
+		},
+		{
+              "interface": "Alexa.ThermostatController",
+              "supported": [
+                  {
+                    "name": "targetSetpoint",
+	            	"value":"()=>({value:@SetPoint@,scale:'CELSIUS'})"
+                  }
+                ],
+                "proactivelyReported": false,
+                "retrievable": true
+         }
+	],
 };
 
 

@@ -207,7 +207,7 @@ exports.ALEXA_TURNON_REQUEST_VENITIAN = {
     }
 }
 
-exports.SET_TARGET_TEMPERATURE_THERMOSTAT = {
+exports.ALEXA_SET_TARGET_TEMPERATURE_THERMOSTAT = {
     "directive": {
         "header": {
         "namespace": "Alexa.ThermostatController",
@@ -221,7 +221,7 @@ exports.SET_TARGET_TEMPERATURE_THERMOSTAT = {
           "type": "BearerToken",
           "token": "a4bf269d3fdd181aee9d73a6dfaaaee058471d54"
         },
-        "endpointId": "7_rflink_Thermostat",
+        "endpointId": "104_rflink_Thermostat",
         "cookie": {}
       },
       "payload": {

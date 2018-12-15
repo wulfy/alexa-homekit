@@ -196,13 +196,13 @@ const DOMOTICZ_ALEXA_THERMOSTAT = {
 		{
 			"interface":"Alexa.TemperatureSensor",
 			"state":{
-				"temperature":"@data@",
+				"temperature":"@Data@",
 			},
 			"command":{
 			},
 			"supported": [{
 	            "name": "temperature",
-	            "value":"()=>({value:@data@,scale:'CELSIUS'})",
+	            "value":"()=>({value:@Data@,scale:'CELSIUS'})",
 	        }],
 	        "proactivelyReported": false,
 	        "retrievable": true

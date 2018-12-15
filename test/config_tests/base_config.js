@@ -19,7 +19,7 @@ const {
     } = require("../mockups/domoticzMockups")
 
 //disable console logs for tests
-//global.console.log = (data)=>null;
+global.console.log = (data)=>null;
 
 exports.handler = handler;
 exports.mockups = mockups;

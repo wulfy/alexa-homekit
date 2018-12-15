@@ -79,7 +79,7 @@ exports.handler = async function (request, context) {
 
     async function handlePercentControl(request, context) {
         const endpointId = request.directive.endpoint.endpointId;
-        const setValue = request.directive.payload.targetSetpoint;
+        const setValue = request.directive.payload.percentage;
         const requestToken = request.directive.endpoint.scope.token;
         const requestMethod = request.directive.header.name;
         if (requestMethod === "SetPercentage") {

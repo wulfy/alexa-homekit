@@ -18,6 +18,7 @@ const {
         DOMOTICZ_STATE_ANSWER
     } = require("../mockups/domoticzMockups")
 
+//disable console logs for tests
 global.console.log = (data)=>null;
 
 exports.handler = handler;
@@ -36,8 +37,15 @@ class mockedDomoticz extends domoticz {
         return JSON.parse(this.MOCKED_ANSWER).result;
     }
 
-    getDevice() {
-        return JSON.parse(this.MOCKED_ANSWER).result[0];
+    getDevice(deviceId) {
+        let jsonDomoticzData = JSON.parse(this.MOCKED_ANSWER);
+        let foundDevice = jsonDomoticzData.result[0];
+        jsonDomoticzData.result.some((device)=>{
+            foundDevice = device
+            console.log(device.idx)
+            return deviceId === device.idx;
+        });
+        return foundDevice;
     }
 
     getBase (token){

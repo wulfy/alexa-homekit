@@ -81,7 +81,7 @@ class domoticz {
 	//send http or https command to a domoticz device
 	async sendCommand(deviceSubtype,deviceId,directive,directiveValue){
 		const base = await this.getBase();
-		let deviceRequest = base + "?" + SET_COMMAND;
+		let deviceRequest = base + "?" + SET_COMMAND + "&";
 		//const params = overrideParams && typeof overrideParams === "function" ? overrideParams(requestMethod) : DEVICE_HANDLER_COMMANDS_PARAMS[requestMethod];
 		deviceRequest += generate_command(deviceSubtype,deviceId,directive,directiveValue);
 

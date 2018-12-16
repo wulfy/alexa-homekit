@@ -33,6 +33,12 @@ exports.handler = async function (request, context) {
          await handlePowerControl(request, context);
         }
     }
+    else if (request.directive.header.namespace === 'Alexa.ThermostatController'){
+        if (request.directive.header.name === 'SetTargetTemperature') {
+            console.log("DEBUG: SetTargetTemperature" + JSON.stringify(request));
+         await handleThermostatControl(request, context);
+        }
+    }
     else if (request.directive.header.namespace === 'Alexa') {
         if (request.directive.header.name === 'ReportState') {
           await handleReportState(request,context);
@@ -77,6 +83,18 @@ exports.handler = async function (request, context) {
         const requestToken = request.directive.endpoint.scope.token;
         const requestMethod = request.directive.header.name;
         if (requestMethod === "SetPercentage") {
+            await sendDeviceCommand(request,setValue);
+            const contextResult = await getAlexaDeviceState(requestToken,endpointId);
+            sendAlexaCommandResponse(request,context,contextResult);
+        }
+    }
+
+    async function handleThermostatControl(request, context) {
+        const endpointId = request.directive.endpoint.endpointId;
+        const setValue = request.directive.payload.targetSetpoint.value;
+        const requestToken = request.directive.endpoint.scope.token;
+        const requestMethod = request.directive.header.name;
+        if (requestMethod === "SetTargetTemperature") {
             await sendDeviceCommand(request,setValue);
             const contextResult = await getAlexaDeviceState(requestToken,endpointId);
             sendAlexaCommandResponse(request,context,contextResult);

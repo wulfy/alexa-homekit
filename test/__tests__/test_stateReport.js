@@ -7,7 +7,7 @@ global.getDomoticzFromToken = (token) => {
 }
 
 test('GET DEVICE STATE', async done => {
-    const data = await base_config.getAlexaDeviceState("notoken","1_RFXtrx_VenetianBlindsUS");
+    const data = await base_config.getAlexaDeviceState("notoken","73_RFY_VenetianBlindsUS");
     //removing timestamp data for tests
     data.properties.forEach(property => property.timeOfSample = null);
     expect(data).toEqual({"properties":

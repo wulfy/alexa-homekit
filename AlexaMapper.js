@@ -78,7 +78,10 @@ class AlexaMapper {
 			// @level@ => level
 			const domoticzVar = toReplace.replace(new RegExp("@", 'g'),"");
 			const deviceData = typeof domoDevice[domoticzVar] === 'string' 
-								? domoDevice[domoticzVar].replace(/(?:\r\n|\r|\n)/g,'\\n').replace(/"/g,'\\"')
+								? domoDevice[domoticzVar]
+									.replace(/(?:\r\n|\r|\n)/g,'\\n')
+									.replace(/"/g,'\\"')
+									.replace("\t",'')
 								: domoDevice[domoticzVar];
 	 		// get the var from tomoticz and replace it in mapping json
 			alexaDeviceJson = alexaDeviceJson.replace(toReplace,deviceData);

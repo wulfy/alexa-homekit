@@ -42,7 +42,6 @@ class mockedDomoticz extends domoticz {
         let foundDevice = jsonDomoticzData.result[0];
         jsonDomoticzData.result.some((device)=>{
             foundDevice = device
-            console.log(device.idx)
             return deviceId === device.idx;
         });
         return foundDevice;

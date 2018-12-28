@@ -116,6 +116,20 @@ const DOMOTICZ_ALEXA_ON_OFF = {
 	]
 };
 
+const DOMOTICZ_ALEXA_PUSH_ON = {
+	"domoticz_mapping" : {
+		"Switchtype": "Push On Button"
+	},
+	"discovery" : {
+		...COMMON_DISCOVERY_MAPPING,
+		"displayCategories" : ["SWITCH"],
+		"cookie": {},
+	},
+	"capabilities" : [
+		COMMON_POWER_CONTROLLER_CAPABILITY
+	]
+};
+
 const DOMOTICZ_ALEXA_GROUP = {
 	"domoticz_mapping" : {
 		"Type":"Group"
@@ -279,6 +293,7 @@ const DOMOTICZ_ALEXA_SELECTOR_MAPPING = {
 exports.ALEXAMAPPING = [
 							DOMOTICZ_ALEXA_VOLET,
 							DOMOTICZ_ALEXA_ON_OFF,
+							DOMOTICZ_ALEXA_PUSH_ON,
 							DOMOTICZ_ALEXA_TEMP,
 							DOMOTICZ_ALEXA_SELECTOR_MAPPING,
 							DOMOTICZ_ALEXA_INVERTED_VOLET,

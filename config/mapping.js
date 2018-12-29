@@ -121,11 +121,10 @@ const DOMOTICZ_ALEXA_PUSH_ON = {
 };
 
 const DOMOTICZ_ALEXA_GROUP = {
+	...DOMOTICZ_ALEXA_ON_OFF,
 	"domoticz_mapping" : {
 		"Type":"Group"
 	},
-	"discovery" : DOMOTICZ_ALEXA_ON_OFF.discovery,
-	"capabilities" : DOMOTICZ_ALEXA_ON_OFF.capabilities,
 };
 
 const DOMOTICZ_ALEXA_TEMP = {
@@ -208,11 +207,10 @@ const DOMOTICZ_ALEXA_THERMOSTAT = {
 
 
 const DOMOTICZ_ALEXA_TEMP_SPECIFIC = {
+	...DOMOTICZ_ALEXA_TEMP,
 	"domoticz_mapping" : {
 		"Type":"Temp + Humidity"
 	},
-	"discovery" : DOMOTICZ_ALEXA_TEMP.discovery,
-	"capabilities" : DOMOTICZ_ALEXA_TEMP.capabilities,
 };
 
 const DOMOTICZ_ALEXA_CONTACT = {

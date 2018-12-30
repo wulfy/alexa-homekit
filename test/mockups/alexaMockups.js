@@ -207,6 +207,36 @@ exports.ALEXA_TURNON_REQUEST_VENITIAN = {
     }
 }
 
+exports.ALEXA_TURNON_REQUEST_PUSH = {
+    "directive": {
+      "header":ALEXA_TURNON_REQUEST.directive.header,
+      "name":ALEXA_TURNON_REQUEST.directive.payload,
+      "endpoint": {
+        "scope": {
+          "type": "BearerToken",
+          "token": "a4bf269d3fdd181aee9d73a6dfaaaee058471d54"
+        },
+        "endpointId": "18_AC_PushOnButton",
+        "cookie": {}
+      }
+    }
+}
+
+exports.ALEXA_TURNOFF_REQUEST_PUSH = {
+    "directive": {
+      "header":ALEXA_TURNOFF_REQUEST.directive.header,
+      "name":ALEXA_TURNOFF_REQUEST.directive.payload,
+      "endpoint": {
+        "scope": {
+          "type": "BearerToken",
+          "token": "a4bf269d3fdd181aee9d73a6dfaaaee058471d54"
+        },
+        "endpointId": "639_Switch_PushOnButton",
+        "cookie": {}
+      }
+    }
+}
+
 exports.ALEXA_SET_TARGET_TEMPERATURE_THERMOSTAT = {
     "directive": {
         "header": {

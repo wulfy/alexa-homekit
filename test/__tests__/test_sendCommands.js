@@ -44,7 +44,7 @@ test('SENDING TURN ON POWER BLINDS INVERTED', async done => {
     done();
 });
 
-test('SENDING TURN ON POWER VENITIAN', async done => {
+test('SENDING TURN OFF POWER VENITIAN', async done => {
     const data = await base_config.sendDeviceCommand(base_config.mockups.ALEXA_TURNON_REQUEST_VENITIAN);
     expect(data).toBe("?type=command&param=switchlight&idx=5&switchcmd=Off");
     done();
@@ -59,5 +59,17 @@ test('SENDING TURN OFF', async done => {
 test('SENDING THERMOSTAT SET POINT', async done => {
     const data = await base_config.sendDeviceCommand(base_config.mockups.ALEXA_SET_TARGET_TEMPERATURE_THERMOSTAT,21.0);
     expect(data).toBe("?type=command&param=setsetpoint&idx=104&setpoint=21");
+    done();
+});
+
+test('SENDING PUSH ON', async done => {
+    const data = await base_config.sendDeviceCommand(base_config.mockups.ALEXA_TURNON_REQUEST_PUSH,21.0);
+    expect(data).toBe("?type=command&param=switchlight&idx=18&switchcmd=On");
+    done();
+});
+
+test('SENDING PUSH OFF', async done => {
+    const data = await base_config.sendDeviceCommand(base_config.mockups.ALEXA_TURNOFF_REQUEST_PUSH,21.0);
+    expect(data).toBe("?type=command&param=switchlight&idx=639&switchcmd=On");
     done();
 });

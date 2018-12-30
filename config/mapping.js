@@ -19,21 +19,6 @@ const COMMON_PERCENTAGE_CAPABILITY = {
 	        "retrievable": true
 		};
 
-const COMMON_BLIND_POWER_CONTROLLER_CAPABILITY = {
-			"interface":"Alexa.PowerController",
-			"state":{
-				"powerState":"ON",
-			},
-			"command":{
-			},
-			"supported": [{
-	            "name": "powerState",
-	            "value": "()=>@Level@ == 100 ? 'OFF' : 'ON'",
-	        }],
-	        "proactivelyReported": true,
-	        "retrievable": true
-		};
-
 const COMMON_POWER_CONTROLLER_CAPABILITY = {
 			"interface":"Alexa.PowerController",
 			"state":{
@@ -43,7 +28,7 @@ const COMMON_POWER_CONTROLLER_CAPABILITY = {
 			},
 			"supported": [{
 	            "name": "powerState",
-	            "value":"()=> '@Status@' === 'On' ? 'ON' : 'OFF'",
+	            "value":"()=> ('@Data@' === 'On' || '@Data@' === 'Open') ? 'ON' : 'OFF'",
 	        }],
 	        "proactivelyReported": true,
 	        "retrievable": true
@@ -65,43 +50,48 @@ const DOMOTICZ_ALEXA_VOLET = {
 	},
 	"capabilities" : [
 		COMMON_PERCENTAGE_CAPABILITY,
-		COMMON_BLIND_POWER_CONTROLLER_CAPABILITY
+		COMMON_POWER_CONTROLLER_CAPABILITY
 	]
 };
+
 const DOMOTICZ_ALEXA_INVERTED_VOLET = {
+	...DOMOTICZ_ALEXA_VOLET,
 	"domoticz_mapping" : {
 		"Type":"Light/Switch",
 		"Subtype": "Switch",
 		"Switchtype": "Blinds Percentage Inverted"
-	},
-	"discovery" : DOMOTICZ_ALEXA_VOLET.discovery,
-	"capabilities" : [
-		COMMON_PERCENTAGE_CAPABILITY,
-		{
-    	...DOMOTICZ_ALEXA_VOLET.capabilities[1],
-			"supported": [{
-	            "name": "powerState",
-	            "value": "()=>@Level@ == 100 ? 'ON' : 'OFF'",
-	    }],
-     }
-	]
+	}
 };
+
+const DOMOTICZ_ALEXA_BLINDS = {
+	...DOMOTICZ_ALEXA_VOLET,
+	"domoticz_mapping" : {
+		"Subtype" : "Switch",
+		"Switchtype" : "Blinds",
+	}
+};
+
+const DOMOTICZ_ALEXA_YEE_LED = {
+	...DOMOTICZ_ALEXA_VOLET,
+	"domoticz_mapping" : {
+		"Switchtype": "Dimmer"
+	},
+};
+
 const DOMOTICZ_ALEXA_BLIND_INVERTED_VOLET = {
+	...DOMOTICZ_ALEXA_VOLET,
 	"domoticz_mapping" : {
 		"Switchtype": "Blinds Inverted"
 	},
-	"discovery" : DOMOTICZ_ALEXA_VOLET.discovery,
-	"capabilities" : [
-		COMMON_PERCENTAGE_CAPABILITY,
-		{
-    	...DOMOTICZ_ALEXA_VOLET.capabilities[1],
-			"supported": [{
-	            "name": "powerState",
-	            "value": "()=>@Level@ == 100 ? 'ON' : 'OFF'",
-	    }],
-     }
-	]
 };
+
+const DOMOTICZ_ALEXA_RFY_VOLET = {
+	...DOMOTICZ_ALEXA_VOLET,
+	"domoticz_mapping" : {
+		"Type":"RFY"
+	},
+};
+
 const DOMOTICZ_ALEXA_ON_OFF = {
 	"domoticz_mapping" : {
 		"Switchtype": "On/Off"
@@ -131,30 +121,10 @@ const DOMOTICZ_ALEXA_PUSH_ON = {
 };
 
 const DOMOTICZ_ALEXA_GROUP = {
+	...DOMOTICZ_ALEXA_ON_OFF,
 	"domoticz_mapping" : {
 		"Type":"Group"
 	},
-	"discovery" : DOMOTICZ_ALEXA_ON_OFF.discovery,
-	"capabilities" : DOMOTICZ_ALEXA_ON_OFF.capabilities,
-};
-
-const DOMOTICZ_ALEXA_RFY_VOLET = {
-	"domoticz_mapping" : {
-		"Type":"RFY"
-	},
-	"discovery" : DOMOTICZ_ALEXA_VOLET.discovery,
-	"capabilities" : [
-		COMMON_POWER_CONTROLLER_CAPABILITY,
-		COMMON_PERCENTAGE_CAPABILITY
-		]
-};
-
-const DOMOTICZ_ALEXA_YEE_LED = {
-	"domoticz_mapping" : {
-		"Switchtype": "Dimmer"
-	},
-	"discovery" : DOMOTICZ_ALEXA_VOLET.discovery,
-	"capabilities" : DOMOTICZ_ALEXA_VOLET.capabilities,
 };
 
 const DOMOTICZ_ALEXA_TEMP = {
@@ -237,11 +207,10 @@ const DOMOTICZ_ALEXA_THERMOSTAT = {
 
 
 const DOMOTICZ_ALEXA_TEMP_SPECIFIC = {
+	...DOMOTICZ_ALEXA_TEMP,
 	"domoticz_mapping" : {
 		"Type":"Temp + Humidity"
 	},
-	"discovery" : DOMOTICZ_ALEXA_TEMP.discovery,
-	"capabilities" : DOMOTICZ_ALEXA_TEMP.capabilities,
 };
 
 const DOMOTICZ_ALEXA_CONTACT = {
@@ -273,20 +242,11 @@ const DOMOTICZ_ALEXA_CONTACT = {
 };
 
 const DOMOTICZ_ALEXA_SELECTOR_MAPPING = {
+	...DOMOTICZ_ALEXA_VOLET,
 	"domoticz_mapping" : {
 		"Type":"Light/Switch",
 		"Subtype": "Selector Switch"
 	},
-	"discovery" : {
-		...COMMON_DISCOVERY_MAPPING,
-		"displayCategories" : ["LIGHT"],
-		"cookie": {
-		},
-	},
-	"capabilities" : [
-		COMMON_PERCENTAGE_CAPABILITY,
-		COMMON_BLIND_POWER_CONTROLLER_CAPABILITY
-	]
 };
 
 
@@ -303,5 +263,6 @@ exports.ALEXAMAPPING = [
 							DOMOTICZ_ALEXA_TEMP_SPECIFIC,
 							DOMOTICZ_ALEXA_CONTACT,
 							DOMOTICZ_ALEXA_BLIND_INVERTED_VOLET,
+							DOMOTICZ_ALEXA_BLINDS,
 							DOMOTICZ_ALEXA_THERMOSTAT
 						];

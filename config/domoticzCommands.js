@@ -11,7 +11,9 @@ exports.STATE_REQUEST = "type=devices";
 exports.SET_COMMAND = "type=command";
 const VOLET_VENETIAN_SUBTYPE = "VenetianBlindsUS";
 const VOLET_SUBTYPE = "BlindsPercentage";
+const PUSH_BUTTON = "PushOnButton";
 const SUBTYPE_TOINVERT = [VOLET_SUBTYPE,VOLET_VENETIAN_SUBTYPE];
+const SUBTYPE_TO_FORCE_ON = [PUSH_BUTTON];
 
 device_handler_command = (subType,value)=>({
 	"SetPercentage": {
@@ -24,7 +26,7 @@ device_handler_command = (subType,value)=>({
 					: PERCENT_VALUE + "=" + value,
 	},
 	"TurnOff": {
-		"command" : SUBTYPE_TOINVERT.includes(subType) ? SET_DEVICE_ON : SET_DEVICE_OFF,
+		"command" : (SUBTYPE_TOINVERT.includes(subType) || SUBTYPE_TO_FORCE_ON.includes(subType)) ? SET_DEVICE_ON : SET_DEVICE_OFF,
 		"param" : SWITCH_PARAM,
 	},
 	"TurnOn": {

@@ -28,7 +28,7 @@ const COMMON_POWER_CONTROLLER_CAPABILITY = {
 			},
 			"supported": [{
 	            "name": "powerState",
-	            "value":"()=> ('@Data@' === 'On' || '@Data@' === 'Open') ? 'ON' : 'OFF'",
+	            "value":"()=> ('@Data@' === 'Off' || '@Data@' === 'Closed') ? 'OFF' : 'ON'",
 	        }],
 	        "proactivelyReported": true,
 	        "retrievable": true

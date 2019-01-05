@@ -5,7 +5,7 @@ const COMMON_DISCOVERY_MAPPING = {
 		"description" : "@Description@",
 }
 
-const COMMON_PERCENTAGE_CAPABILITY = {
+const COMMON_LEVEL_CAPABILITY = {
 			"interface":"Alexa.PercentageController",
 			"state":{
 				"percentage":"@Level@",
@@ -15,6 +15,20 @@ const COMMON_PERCENTAGE_CAPABILITY = {
 			"supported": [{
 	            "name": "percentage",
 	            "value" : "@Level@",
+	        }],
+	        "retrievable": true
+		};
+
+const COMMON_PERCENTAGE_CAPABILITY = {
+			"interface":"Alexa.PercentageController",
+			"state":{
+				"percentage":"()=>parseInt('@Data@')",
+			},
+			"command":{
+			},
+			"supported": [{
+	            "name": "percentage",
+	            "value" : "()=>parseInt('@Data@')",
 	        }],
 	        "retrievable": true
 		};
@@ -34,6 +48,21 @@ const COMMON_POWER_CONTROLLER_CAPABILITY = {
 	        "retrievable": true
 		};
 
+const DOMOTICZ_ALEXA_PERCENT_SENSOR = {
+	"domoticz_mapping" : {
+		"Subtype": "Percentage",
+	},
+	"discovery" : {
+		...COMMON_DISCOVERY_MAPPING,
+		"displayCategories" : ["LIGHT"],
+		"cookie": {
+		},
+	},
+	"capabilities" : [
+		COMMON_PERCENTAGE_CAPABILITY
+	]
+}
+
 const DOMOTICZ_ALEXA_VOLET = {
 	"domoticz_mapping" : {
 		"Type":"Light/Switch",
@@ -49,7 +78,7 @@ const DOMOTICZ_ALEXA_VOLET = {
 		},
 	},
 	"capabilities" : [
-		COMMON_PERCENTAGE_CAPABILITY,
+		COMMON_LEVEL_CAPABILITY,
 		COMMON_POWER_CONTROLLER_CAPABILITY
 	]
 };
@@ -264,5 +293,6 @@ exports.ALEXAMAPPING = [
 							DOMOTICZ_ALEXA_CONTACT,
 							DOMOTICZ_ALEXA_BLIND_INVERTED_VOLET,
 							DOMOTICZ_ALEXA_BLINDS,
-							DOMOTICZ_ALEXA_THERMOSTAT
+							DOMOTICZ_ALEXA_THERMOSTAT,
+							DOMOTICZ_ALEXA_PERCENT_SENSOR
 						];

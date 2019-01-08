@@ -39,6 +39,18 @@ exports.handler = async function (request, context) {
          await handleThermostatControl(request, context);
         }
     }
+    else if (request.directive.header.namespace === 'Alexa.ColorController'){
+        if (request.directive.header.name === 'SetColor') {
+            console.log("DEBUG: SetColor" + JSON.stringify(request));
+         await handleColorControl(request, context);
+        }
+    }
+    else if (request.directive.header.namespace === 'Alexa.BrightnessController'){
+        if (request.directive.header.name === 'SetBrightness') {
+            console.log("DEBUG: SetBrightness" + JSON.stringify(request));
+         await handlePercentControl(request, context);
+        }
+    }
     else if (request.directive.header.namespace === 'Alexa') {
         if (request.directive.header.name === 'ReportState') {
           await handleReportState(request,context);
@@ -89,12 +101,36 @@ exports.handler = async function (request, context) {
         }
     }
 
+    async function handlePercentControl(request, context) {
+        const endpointId = request.directive.endpoint.endpointId;
+        const setValue = request.directive.payload.brightness;
+        const requestToken = request.directive.endpoint.scope.token;
+        const requestMethod = request.directive.header.name;
+        if (requestMethod === "SetBrightness") {
+            await sendDeviceCommand(request,setValue);
+            const contextResult = await getAlexaDeviceState(requestToken,endpointId);
+            sendAlexaCommandResponse(request,context,contextResult);
+        }
+    }
+
     async function handleThermostatControl(request, context) {
         const endpointId = request.directive.endpoint.endpointId;
         const setValue = request.directive.payload.targetSetpoint.value;
         const requestToken = request.directive.endpoint.scope.token;
         const requestMethod = request.directive.header.name;
         if (requestMethod === "SetTargetTemperature") {
+            await sendDeviceCommand(request,setValue);
+            const contextResult = await getAlexaDeviceState(requestToken,endpointId);
+            sendAlexaCommandResponse(request,context,contextResult);
+        }
+    }
+
+    async function handleColorControl(request, context) {
+        const endpointId = request.directive.endpoint.endpointId;
+        const setValue = request.directive.payload.color;
+        const requestToken = request.directive.endpoint.scope.token;
+        const requestMethod = request.directive.header.name;
+        if (requestMethod === "SetColor") {
             await sendDeviceCommand(request,setValue);
             const contextResult = await getAlexaDeviceState(requestToken,endpointId);
             sendAlexaCommandResponse(request,context,contextResult);

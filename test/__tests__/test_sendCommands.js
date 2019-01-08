@@ -73,3 +73,31 @@ test('SENDING PUSH OFF', async done => {
     expect(data).toBe("?type=command&param=switchlight&idx=639&switchcmd=On");
     done();
 });
+
+test('SENDING SET COLOR', async done => {
+    const HSLvalue = {
+                "hue": 350.5,
+                "saturation": 0.7138,
+                "brightness": 0.6524
+            };
+    const data = await base_config.sendDeviceCommand(base_config.mockups.ALEXA_SET_COLOR,HSLvalue);
+    expect(data).toBe("?type=command&param=setcolbrightnessvalue&idx=37&hue=350.5&brightness=65.24&iswhite=false");
+    done();
+});
+
+test('SENDING SET COLOR WHITE', async done => {
+    const HSLvalue = {
+                "hue": 350.5,
+                "saturation": 0,
+                "brightness": 0.6524
+            };
+    const data = await base_config.sendDeviceCommand(base_config.mockups.ALEXA_SET_COLOR,HSLvalue);
+    expect(data).toBe("?type=command&param=setcolbrightnessvalue&idx=37&hue=350.5&brightness=65.24&iswhite=true");
+    done();
+});
+
+test('SENDING SET BRIGHTNESS', async done => {
+    const data = await base_config.sendDeviceCommand(base_config.mockups.ALEXA_SET_BRIGHTNESS,42);
+    expect(data).toBe("?type=command&param=switchlight&idx=37&switchcmd=Set%20Level&level=42");
+    done();
+});

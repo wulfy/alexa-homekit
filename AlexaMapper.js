@@ -1,3 +1,5 @@
+const {rgbToHsl} = require('./config/utils');
+
 const escapeSpecialChars = (me) =>   JSON.stringify(""+me);
 
 /**
@@ -63,7 +65,16 @@ class AlexaMapper {
 	 	Alexa mapping is a "template" with magic words which should be replaced by domoticz data
 	 	Fill all the template without context (containing device state)
 	 **/
-	mapAlexaFormatFromDomoticzDevice(domoDevice, alexaFormat) {
+	mapAlexaFormatFromDomoticzDevice(device, alexaFormat) {
+		let domoDevice = device;
+		if(domoDevice["Color"])
+		{
+			const RGBcolor = JSON.parse(domoDevice["Color"]);
+			const HLScolor = rgbToHsl(RGBcolor.r,RGBcolor.g,RGBcolor.b);
+			domoDevice["hue"] = HLScolor[0];
+			domoDevice["saturation"] = HLScolor[1];
+			domoDevice["brightness"] = HLScolor[2];
+		}
 		//deep clone alexaFormat
 		console.log("-----configure---------")
 		let alexaDeviceJson = JSON.stringify(alexaFormat);
@@ -156,7 +167,7 @@ class AlexaMapper {
 		//TODO remplacer par un reduce
 		const alexaSupported = capability.supported.forEach((support)=>{
 			const newSupport = support;
-			newSupport.value = newSupport.value.indexOf("()") >= 0 ? eval(newSupport.value)() : newSupport.value ;
+			newSupport.value = typeof newSupport.value === "string" && newSupport.value.indexOf("()") >= 0 ? eval(newSupport.value)() : newSupport.value ;
 			properties.push({
 				      "namespace": alexaInterface,
 				      ...newSupport,

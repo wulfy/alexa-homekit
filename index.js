@@ -48,7 +48,7 @@ exports.handler = async function (request, context) {
     else if (request.directive.header.namespace === 'Alexa.BrightnessController'){
         if (request.directive.header.name === 'SetBrightness') {
             console.log("DEBUG: SetBrightness" + JSON.stringify(request));
-         await handlePercentControl(request, context);
+         await handleBrightnessControl(request, context);
         }
     }
     else if (request.directive.header.namespace === 'Alexa') {
@@ -101,7 +101,7 @@ exports.handler = async function (request, context) {
         }
     }
 
-    async function handlePercentControl(request, context) {
+    async function handleBrightnessControl(request, context) {
         const endpointId = request.directive.endpoint.endpointId;
         const setValue = request.directive.payload.brightness;
         const requestToken = request.directive.endpoint.scope.token;

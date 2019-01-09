@@ -4,8 +4,9 @@ const PERCENT_VALUE = "level";
 const SET_DEVICE_ON = "switchcmd=On";
 const SET_DEVICE_OFF = "switchcmd=Off";
 const SET_VOLET_STOP = "switchcmd=Stop";
-const SET_POINT_VAUE = "setpoint";
+const SET_POINT_VALUE = "setpoint";
 const SETPOINT_PARAM = "param=setsetpoint";
+const SETCOLOR_PARAM = "param=setcolbrightnessvalue";
 const SWITCH_PARAM = "param=switchlight";
 exports.STATE_REQUEST = "type=devices";
 exports.SET_COMMAND = "type=command";
@@ -27,6 +28,11 @@ device_handler_command = (subType,value)=>({
 					? PERCENT_VALUE + "=" + 0
 					: PERCENT_VALUE + "=" + value,
 	},
+	"SetBrightness": {
+		"command" : SET_DEVICE_LVL,
+		"param" : SWITCH_PARAM,
+		"value" : PERCENT_VALUE + "=" + value,
+	},
 	"TurnOff": {
 		"command" : (SUBTYPE_TOINVERT.includes(subType) || SUBTYPE_TO_FORCE_ON.includes(subType)) ? SET_DEVICE_ON : SET_DEVICE_OFF,
 		"param" : SWITCH_PARAM,
@@ -37,7 +43,13 @@ device_handler_command = (subType,value)=>({
 	},
 	"SetTargetTemperature": {
 		"param" : SETPOINT_PARAM,
-		"value" : SET_POINT_VAUE+"="+value,
+		"value" : SET_POINT_VALUE+"="+value,
+	},
+	"SetColor": {
+		"param" : SETCOLOR_PARAM,
+		"value" : (value
+					?("hue="+value.hue+"&brightness="+ (value.brightness*100)+"&iswhite=" + (value.saturation == 0 ? 'true':'false'))
+					: null),
 	}
 });
 

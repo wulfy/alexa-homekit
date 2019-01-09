@@ -48,6 +48,31 @@ const COMMON_POWER_CONTROLLER_CAPABILITY = {
 	        "retrievable": true
 		};
 
+const COMMON_COLOR_CONTROLLER_CAPABILITY = {
+			"interface":"Alexa.ColorController",
+			"command":{
+			},
+			"supported": [{
+	            "name": "color",
+	            "value":"()=>({'hue': @hue@,'saturation': (@saturation@/100), 'brightness': (@Level@/100)})",
+	        }],
+	        "proactivelyReported": true,
+	        "retrievable": true
+		};
+
+const COMMON_BRIGHT_CONTROLLER_CAPABILITY = {
+			"interface":"Alexa.BrightnessController",
+			"command":{
+			},
+			"supported": [{
+	            "name": "brightness",
+	            "value": "()=>parseInt(@Level@)",
+	        }],
+	        "proactivelyReported": true,
+	        "retrievable": true
+		};
+
+
 const DOMOTICZ_ALEXA_PERCENT_SENSOR = {
 	"domoticz_mapping" : {
 		"Subtype": "Percentage",
@@ -278,6 +303,23 @@ const DOMOTICZ_ALEXA_SELECTOR_MAPPING = {
 	},
 };
 
+const DOMOTICZ_ALEXA_COLOR_LIGHT = {
+	"domoticz_mapping" : {
+		"Type": "Color Switch"
+	},
+	"discovery" : {
+		...COMMON_DISCOVERY_MAPPING,
+		"displayCategories" : ["LIGHT"],
+		"cookie": {
+		},
+	},
+	"capabilities" : [
+		COMMON_BRIGHT_CONTROLLER_CAPABILITY,
+		COMMON_COLOR_CONTROLLER_CAPABILITY,
+		COMMON_POWER_CONTROLLER_CAPABILITY
+	]
+}
+
 
 exports.ALEXAMAPPING = [
 							DOMOTICZ_ALEXA_VOLET,
@@ -294,5 +336,6 @@ exports.ALEXAMAPPING = [
 							DOMOTICZ_ALEXA_BLIND_INVERTED_VOLET,
 							DOMOTICZ_ALEXA_BLINDS,
 							DOMOTICZ_ALEXA_THERMOSTAT,
-							DOMOTICZ_ALEXA_PERCENT_SENSOR
+							DOMOTICZ_ALEXA_PERCENT_SENSOR,
+							DOMOTICZ_ALEXA_COLOR_LIGHT,
 						];

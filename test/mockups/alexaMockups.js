@@ -262,3 +262,53 @@ exports.ALEXA_SET_TARGET_TEMPERATURE_THERMOSTAT = {
       }
     }
 }
+
+exports.ALEXA_SET_BRIGHTNESS = {
+  "directive": {
+    "header": {
+      "namespace": "Alexa.BrightnessController",
+      "name": "SetBrightness",
+      "payloadVersion": "3",
+      "messageId": "abc-123-def-456",
+      "correlationToken": "dFMb0z+PgpgdDmluhJ1LddFvSqZ/jCc8ptlAKulUj90jSqg=="
+    },
+    "endpoint": {
+      "scope": {
+        "type": "BearerToken",
+        "token": "a4bf269d3fdd181aee9d73a6dfaaaee058471d54"
+      },
+      "endpointId": "37_dimmer_light",
+      "cookie": {}
+    },
+    "payload": {
+      "brightness": 42
+    }
+  }
+}
+
+exports.ALEXA_SET_COLOR = {
+    "directive": {
+        "header": {
+            "namespace": "Alexa.ColorController",
+            "name": "SetColor",
+            "payloadVersion": "3",
+            "messageId": "abc-123-def-456",
+            "correlationToken": "dFMb0z+PgpgdDmluhJ1LddFvSqZ/jCc8ptlAKulUj90jSqg=="
+        },
+        "endpoint": {
+            "scope": {
+                "type": "BearerToken",
+                "token": "a4bf269d3fdd181aee9d73a6dfaaaee058471d54"
+            },
+            "endpointId": "37_dimmer_light",
+            "cookie": {}
+        },
+        "payload": {
+            "color": {
+                "hue": 350.5,
+                "saturation": 0.7138,
+                "brightness": 0.6524
+            }
+        }
+    }
+}

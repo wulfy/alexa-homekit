@@ -17,14 +17,16 @@ const { ALEXA_REPORTSTATE_REQUEST_EXAMPLE,
         ALEXA_TURNON_REQUEST,
         ALEXA_TURNOFF_REQUEST,
         ALEXA_SETPERCENT_REQUEST_VENITIAN,
-        ALEXA_SET_TARGET_TEMPERATURE_THERMOSTAT
+        ALEXA_SET_TARGET_TEMPERATURE_THERMOSTAT,
+        ALEXA_SET_COLOR,
+        ALEXA_SET_BRIGHTNESS
     } = require("../mockups/alexaMockups")
 
 const { 
         DOMOTICZ_STATE_ANSWER, 
     } = require("../mockups/domoticzMockups")
 
-const { DOMOTICZ_GET_DEVICES } = require("../mockups/client12Mockup.js");
+const { DOMOTICZ_GET_DEVICES } = require("../mockups/domoticzMockups.js");
 
 async function handleReportState(request, context) {
     const endpointId = request.directive.endpoint.endpointId;
@@ -97,7 +99,9 @@ let context = {};
 context.succeed = (data) => console.log("CONTEXT ENDED");
 
 //TEST FOR INDEX.JS
-handler(ALEXA_DISCOVERY_REQUEST_EXAMPLE,context);
+//handler(ALEXA_DISCOVERY_REQUEST_EXAMPLE,context);
+//handler(ALEXA_SET_BRIGHTNESS,context);
+handler(ALEXA_SET_COLOR,context);
 //handler(ALEXA_DISCOVERY_REQUEST_EXAMPLE);
 //handler(ALEXA_SETPERCENT_REQUEST_VENITIAN);
 //handler(ALEXA_REPORTSTATE_REQUEST_EXAMPLE("2_aeon"));

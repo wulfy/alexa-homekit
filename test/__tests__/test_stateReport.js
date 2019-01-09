@@ -186,3 +186,45 @@ test('GET DEVICE STATE DIMMER', async done => {
     done();
 });
 
+test('GET DEVICE STATE COLOR', async done => {
+
+    const { DOMOTICZ_GET_DEVICES } = require("../mockups/domoticzMockups");
+    global.getDomoticzFromToken = (token) => {
+        return new base_config.mockedDomoticz(token,DOMOTICZ_GET_DEVICES);
+    }
+
+    const data = await base_config.getAlexaDeviceState("notoken","37_Switch_Dimmer");
+    //removing timestamp data for tests
+    data.properties.forEach(property => property.timeOfSample = null);
+    expect(data).toEqual({"properties":
+                                    [
+                                        {
+                                            "name": "brightness", 
+                                            "namespace": "Alexa.BrightnessController",
+                                            "timeOfSample":null, 
+                                            "uncertaintyInMilliseconds": 500, 
+                                            "value": 41
+                                        },
+                                        {
+                                            "name": "color", 
+                                            "namespace": "Alexa.ColorController",
+                                            "timeOfSample":null, 
+                                            "uncertaintyInMilliseconds": 500, 
+                                            "value": {
+                                                "hue":273,
+                                                "brightness":41,
+                                                "saturation":100
+                                            }
+                                        },
+                                        {
+                                            "name": "powerState", 
+                                            "namespace": "Alexa.PowerController",
+                                            "timeOfSample":null, 
+                                            "uncertaintyInMilliseconds": 500, 
+                                            "value": "ON"
+                                        }, 
+                                    ]
+                    });
+    done();
+});
+

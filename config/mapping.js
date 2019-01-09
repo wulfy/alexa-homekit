@@ -54,11 +54,7 @@ const COMMON_COLOR_CONTROLLER_CAPABILITY = {
 			},
 			"supported": [{
 	            "name": "color",
-	            "value":{
-			                "hue": "@hue@",
-			                "saturation": "@saturation@",
-			                "brightness": "@Level@"
-			            },
+	            "value":"()=>({'hue': @hue@,'saturation': @saturation@, 'brightness': @Level@})",
 	        }],
 	        "proactivelyReported": true,
 	        "retrievable": true
@@ -70,7 +66,7 @@ const COMMON_BRIGHT_CONTROLLER_CAPABILITY = {
 			},
 			"supported": [{
 	            "name": "brightness",
-	            "value": "@Level@",
+	            "value": "()=>parseInt('@Level@')",
 	        }],
 	        "proactivelyReported": true,
 	        "retrievable": true

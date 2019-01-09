@@ -1,10 +1,7 @@
-/*****
-
-AUTHOR MJACKSON
-https://gist.github.com/mjackson/5311256
-
-**/
-
+/***
+AUTHOR POINTY (STACK OVERFLOW) - https://stackoverflow.com/users/182668/pointy
+https://stackoverflow.com/questions/2348597/why-doesnt-this-javascript-rgb-to-hsl-code-work
+***/
 
 /**
  * Converts an RGB color value to HSL. Conversion formula
@@ -37,6 +34,14 @@ exports.rgbToHsl = (r, g, b)=>{
 
     return [Math.floor(h * 360), Math.floor(s * 100), Math.floor(l * 100)];
 }
+
+
+/*****
+
+AUTHOR MJACKSON
+https://gist.github.com/mjackson/5311256
+
+**/
 
 /**
  * Converts an HSL color value to RGB. Conversion formula

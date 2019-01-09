@@ -212,8 +212,8 @@ test('GET DEVICE STATE COLOR', async done => {
                                             "uncertaintyInMilliseconds": 500, 
                                             "value": {
                                                 "hue":273,
-                                                "brightness":41,
-                                                "saturation":100
+                                                "brightness":0.41,
+                                                "saturation":1
                                             }
                                         },
                                         {

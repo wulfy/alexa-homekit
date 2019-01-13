@@ -161,17 +161,10 @@ const DOMOTICZ_ALEXA_ON_OFF = {
 };
 
 const DOMOTICZ_ALEXA_PUSH_ON = {
+	...DOMOTICZ_ALEXA_ON_OFF,
 	"domoticz_mapping" : {
 		"Switchtype": "Push On Button"
-	},
-	"discovery" : {
-		...COMMON_DISCOVERY_MAPPING,
-		"displayCategories" : ["SWITCH"],
-		"cookie": {},
-	},
-	"capabilities" : [
-		COMMON_POWER_CONTROLLER_CAPABILITY
-	]
+	}
 };
 
 const DOMOTICZ_ALEXA_GROUP = {
@@ -260,10 +253,17 @@ const DOMOTICZ_ALEXA_THERMOSTAT = {
 };
 
 
-const DOMOTICZ_ALEXA_TEMP_SPECIFIC = {
+const DOMOTICZ_ALEXA_TEMP_HUMIDITY = {
 	...DOMOTICZ_ALEXA_TEMP,
 	"domoticz_mapping" : {
 		"Type":"Temp + Humidity"
+	},
+};
+
+const DOMOTICZ_ALEXA_TEMP_HUMIDITY_BARO = {
+	...DOMOTICZ_ALEXA_TEMP,
+	"domoticz_mapping" : {
+		"Type":"Temp + Humidity + Baro"
 	},
 };
 
@@ -331,7 +331,8 @@ exports.ALEXAMAPPING = [
 							DOMOTICZ_ALEXA_GROUP,
 							DOMOTICZ_ALEXA_RFY_VOLET,
 							DOMOTICZ_ALEXA_YEE_LED,
-							DOMOTICZ_ALEXA_TEMP_SPECIFIC,
+							DOMOTICZ_ALEXA_TEMP_HUMIDITY,
+							DOMOTICZ_ALEXA_TEMP_HUMIDITY_BARO,
 							DOMOTICZ_ALEXA_CONTACT,
 							DOMOTICZ_ALEXA_BLIND_INVERTED_VOLET,
 							DOMOTICZ_ALEXA_BLINDS,

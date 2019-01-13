@@ -97,10 +97,17 @@ class AlexaMapper {
 	 		// get the var from tomoticz and replace it in mapping json
 			alexaDeviceJson = alexaDeviceJson.replace(toReplace,deviceData);
 		});
+
 		const newAlexaDevice =  JSON.parse(alexaDeviceJson);
 		//const cleanRegex = new RegExp("(?:(?!^[×Þß÷þø])[-'0-9a-zÀ-ÿ ])", 'gui');
+
+		const overrideRegex = new RegExp(".*Alexa_Name:\s*([^\n]*)");
+		const description = newAlexaDevice.discovery.description;
+		const overrideData = overrideRegex.exec(description);
+		const friendlyName =  overrideData ? overrideData[1] : newAlexaDevice.discovery.friendlyName;
+
 		const cleanRegex = new RegExp("[^-'0-9a-zÀ-ÿ _]", 'gui');
-		newAlexaDevice.discovery.friendlyName = newAlexaDevice.discovery.friendlyName.replace(cleanRegex,' ');
+		newAlexaDevice.discovery.friendlyName = friendlyName.replace(cleanRegex,' ');
 	  	newAlexaDevice.discovery.endpointId = newAlexaDevice.discovery.endpointId
 	  										.split('_')
 	  										.reduce(

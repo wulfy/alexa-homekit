@@ -161,17 +161,10 @@ const DOMOTICZ_ALEXA_ON_OFF = {
 };
 
 const DOMOTICZ_ALEXA_PUSH_ON = {
+	...DOMOTICZ_ALEXA_ON_OFF,
 	"domoticz_mapping" : {
 		"Switchtype": "Push On Button"
-	},
-	"discovery" : {
-		...COMMON_DISCOVERY_MAPPING,
-		"displayCategories" : ["SWITCH"],
-		"cookie": {},
-	},
-	"capabilities" : [
-		COMMON_POWER_CONTROLLER_CAPABILITY
-	]
+	}
 };
 
 const DOMOTICZ_ALEXA_GROUP = {

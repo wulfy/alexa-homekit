@@ -286,6 +286,31 @@ exports.ALEXA_SET_BRIGHTNESS = {
   }
 }
 
+exports.ALEXA_SETPERCENT_MAXDIM = {
+  "directive": {
+    "header": {
+      "namespace": "Alexa.PercentageController",
+      "name": "SetPercentage",
+      "payloadVersion": "3",
+      "messageId": "1bd5d003-31b9-476f-ad03-71d471922820",
+      "correlationToken": "dFMb0z+PgpgdDmluhJ1LddFvSqZ/jCc8ptlAKulUj90jSqg=="
+    },
+    "endpoint": {
+      "scope": {
+        "type": "BearerToken",
+        "token": "access-token-from-skill"
+      },
+      "endpointId": "1503_AC_DIO",
+      "cookie": {
+        MaxDimLevel:15
+      }
+    },
+    "payload": {
+      "percentage": 73
+    }
+  }
+}
+
 exports.ALEXA_SET_COLOR = {
     "directive": {
         "header": {

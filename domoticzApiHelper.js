@@ -56,8 +56,16 @@ exports.sendDeviceCommand = async function (request, value){
 	console.log("send device command");
 	const requestToken = request.directive.endpoint.scope.token;
 	let cookieInfos = request.directive.endpoint.cookie;
-	let directiveValue = value;
 	const directive = request.directive.header.name;
+	let directiveValue = value;
+
+	//take care of MaxDimLevel if percentage
+	if(directive === "SetPercentage" && cookieInfos["MaxDimLevel"])
+	{
+		proportionalValue = parseInt(value) * (parseInt(cookieInfos["MaxDimLevel"])+1) / 100;
+		directiveValue = Math.round(proportionalValue);
+	}
+
 	const deviceId = request.directive.endpoint.endpointId.split("_")[0];
 	const subtype = request.directive.endpoint.endpointId.split("_")[2];
 	const domoticzConnector = getDomoticzFromToken(requestToken);

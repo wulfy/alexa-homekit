@@ -101,3 +101,9 @@ test('SENDING SET BRIGHTNESS', async done => {
     expect(data).toBe("?type=command&param=switchlight&idx=37&switchcmd=Set%20Level&level=42");
     done();
 });
+
+test('SENDING TO DEVICE WITH MAXDIM', async done => {
+    const data = await base_config.sendDeviceCommand(base_config.mockups.ALEXA_SETPERCENT_MAXDIM,73);
+    expect(data).toBe("?type=command&param=switchlight&idx=1503&switchcmd=Set%20Level&level=12");
+    done();
+});

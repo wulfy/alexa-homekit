@@ -98,8 +98,7 @@ const DOMOTICZ_ALEXA_VOLET = {
 		...COMMON_DISCOVERY_MAPPING,
 		"displayCategories" : ["LIGHT"],
 		"cookie": {
-			/*overrideParams: (requestMethod)=> requestMethod === "TurnOn" ||  requestMethod === "TurnOff"? SET_DEVICE_LVL : null,
-			overrideValue : (requestMethod)=> requestMethod === "TurnOn" ? "100" : "0",*/
+			MaxDimLevel:"@MaxDimLevel@"
 		},
 	},
 	"capabilities" : [

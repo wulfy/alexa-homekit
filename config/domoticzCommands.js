@@ -1,4 +1,4 @@
-exports.LIST_DEVICE_REQUEST = "type=devices&used=true&order=Name";
+exports.LIST_DEVICE_REQUEST = "type=devices&used=true&order=Name&filter=all";
 const SET_DEVICE_LVL = "switchcmd=Set%20Level";
 const PERCENT_VALUE = "level";
 const SET_DEVICE_ON = "switchcmd=On";

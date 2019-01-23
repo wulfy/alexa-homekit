@@ -17,6 +17,7 @@ const COMMON_SCENE_MAPPING_CAPABILITY = {
 			"supported": [],
 		};
 
+
 const COMMON_LEVEL_CAPABILITY = {
 			"interface":"Alexa.PercentageController",
 			"state":{
@@ -97,7 +98,29 @@ const DOMOTICZ_ALEXA_SCENE = {
 		},
 	},
 	"capabilities" : [
-		COMMON_SCENE_MAPPING_CAPABILITY
+		{
+			...COMMON_SCENE_MAPPING_CAPABILITY,
+			"supportsDeactivation" : false,
+		}
+	]
+}
+
+const DOMOTICZ_GROUP_SCENE = {
+	"domoticz_mapping" : {
+		"Type": "Group",
+	},
+	"discovery" : {
+		...COMMON_DISCOVERY_MAPPING,
+		"displayCategories" : ["ACTIVITY_TRIGGER"],
+		"cookie": {
+			"type":"scene"
+		},
+	},
+	"capabilities" : [
+		{
+			...COMMON_SCENE_MAPPING_CAPABILITY,
+			"supportsDeactivation" : true,
+		}
 	]
 }
 

@@ -204,10 +204,12 @@ class AlexaMapper {
     	responseHeader.name = isStateReport ? "StateReport":"Response";
     	responseHeader.messageId = responseHeader.messageId + "-R";
 
+    	let response  = "";
+
     	if(requestHeader.namespace === "Alexa.SceneController")
     	{
     		responseHeader.name = requestHeader.name === "Activate" ? "ActivationStarted" : "DeactivationStarted";
-    		const response = {
+    		response = {
 		        context: {},
 		        event: {
 		            header: responseHeader,
@@ -228,7 +230,7 @@ class AlexaMapper {
 
     	}else
     	{
-			const response = {
+			response = {
 		        context: contextResult,
 		        event: {
 		            header: responseHeader,

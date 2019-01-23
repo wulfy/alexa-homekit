@@ -149,7 +149,7 @@ exports.handler = async function (request, context) {
         const requestToken = request.directive.endpoint.scope.token;
         const requestMethod = request.directive.header.name;
         await sendDeviceCommand(request,setValue);
-        const contextResult = await getAlexaDeviceState(requestToken,endpointId);
+        const contextResult = await getAlexaDeviceState(requestToken,endpointId,true);
         sendAlexaCommandResponse(request,context,contextResult);
     }
 

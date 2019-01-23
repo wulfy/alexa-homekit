@@ -74,11 +74,11 @@ exports.sendDeviceCommand = async function (request, value){
 }
 
 //return an alexa device using an alexa command using the alexa endpointId
-exports.getAlexaDeviceState= async function (requestToken,endpointId){
+exports.getAlexaDeviceState= async function (requestToken,endpointId,isScene){
 	const domoticzId = endpointId.split("_")[0];
 	console.log("getDevicesState, domo id " + domoticzId);
 	const domoticzConnector = getDomoticzFromToken(requestToken);
-	const device = await domoticzConnector.getDevice(domoticzId);
+	const device = await domoticzConnector.getDevice(domoticzId,isScene);
 	if(! device) 
 		return null;
 

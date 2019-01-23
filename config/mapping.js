@@ -217,12 +217,13 @@ const DOMOTICZ_ALEXA_PUSH_ON = {
 	}
 };
 
+/*
 const DOMOTICZ_ALEXA_GROUP = {
 	...DOMOTICZ_ALEXA_ON_OFF,
 	"domoticz_mapping" : {
 		"Type":"Group"
 	},
-};
+};*/
 
 const DOMOTICZ_ALEXA_TEMP = {
 	"domoticz_mapping" : {
@@ -378,7 +379,7 @@ exports.ALEXAMAPPING = [
 							DOMOTICZ_ALEXA_TEMP,
 							DOMOTICZ_ALEXA_SELECTOR_MAPPING,
 							DOMOTICZ_ALEXA_INVERTED_VOLET,
-							DOMOTICZ_ALEXA_GROUP,
+							DOMOTICZ_GROUP_SCENE,
 							DOMOTICZ_ALEXA_RFY_VOLET,
 							DOMOTICZ_ALEXA_YEE_LED,
 							DOMOTICZ_ALEXA_TEMP_HUMIDITY,

@@ -107,3 +107,15 @@ test('SENDING TO DEVICE WITH MAXDIM', async done => {
     expect(data).toBe("?type=command&param=switchlight&idx=1503&switchcmd=Set%20Level&level=12");
     done();
 });
+
+test('SENDING ACTIVATE TO SCENE', async done => {
+    const data = await base_config.sendDeviceCommand(base_config.mockups.ALEXA_ACTIVATE_SCENE);
+    expect(data).toBe("?type=command&param=switchscene&idx=1&switchcmd=On");
+    done();
+});
+
+test('SENDING DEACTIVATE TO SCENE', async done => {
+    const data = await base_config.sendDeviceCommand(base_config.mockups.ALEXA_DEACTIVATE_SCENE);
+    expect(data).toBe("?type=command&param=switchscene&idx=1&switchcmd=Off");
+    done();
+});

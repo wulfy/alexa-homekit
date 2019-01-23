@@ -337,3 +337,45 @@ exports.ALEXA_SET_COLOR = {
         }
     }
 }
+
+exports.ALEXA_ACTIVATE_SCENE = {
+  "directive": {
+    "header": {
+      "namespace": "Alexa.SceneController",
+      "name": "Activate",
+      "messageId": "abc-123-def-456",
+      "correlationToken": "dFMb0z+PgpgdDmluhJ1LddFvSqZ/jCc8ptlAKulUj90jSqg==",
+      "payloadVersion": "3"
+    },
+     "endpoint": {
+      "scope": {
+        "type": "BearerToken",
+        "token": "a4bf269d3fdd181aee9d73a6dfaaaee058471d54"
+      },
+      "endpointId": "1_undefined_undefined"
+    },
+    "payload": {
+    }
+  }
+}
+
+exports.ALEXA_DEACTIVATE_SCENE = {
+  "directive": {
+    "header": {
+      "namespace": "Alexa.SceneController",
+      "name": "Deactivate",
+      "messageId": "abc-123-def-456",
+      "correlationToken": "dFMb0z+PgpgdDmluhJ1LddFvSqZ/jCc8ptlAKulUj90jSqg==",
+      "payloadVersion": "3"
+    },
+     "endpoint": {
+      "scope": {
+        "type": "BearerToken",
+        "token": "a4bf269d3fdd181aee9d73a6dfaaaee058471d54"
+      },
+      "endpointId": "1_undefined_undefined"
+    },
+    "payload": {
+    }
+  }
+}

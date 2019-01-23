@@ -137,7 +137,8 @@ class AlexaMapper {
 		                    "supported": capa.supported,
 		                     "retrievable": capa.retrievable,
 		                     "proactivelyReported": capa.proactivelyReported,
-		                }
+		                },
+		                "supportsDeactivation": capa.supportsDeactivation
 	             };
 			});
 			return {
@@ -202,20 +203,46 @@ class AlexaMapper {
 		//statereport is an answer after a stateReportRequest
     	responseHeader.name = isStateReport ? "StateReport":"Response";
     	responseHeader.messageId = responseHeader.messageId + "-R";
-		const response = {
-	        context: contextResult,
-	        event: {
-	            header: responseHeader,
-	            endpoint: {
-	                scope: {
-	                    type: "BearerToken",
-	                    token: requestToken
-	                },
-	                endpointId: endpointId
-	            },
-	            payload: {}
-	        }
-	    };
+
+    	if(requestHeader.namespace === "Alexa.SceneController")
+    	{
+    		responseHeader.name = requestHeader.name === "Activate" ? "ActivationStarted" : "DeactivationStarted";
+    		const response = {
+		        context: {},
+		        event: {
+		            header: responseHeader,
+		            endpoint: {
+		                scope: {
+		                    type: "BearerToken",
+		                    token: requestToken
+		                },
+		                endpointId: endpointId
+		            },
+		            "payload": {
+					      "cause" : {
+						        "type" : "VOICE_INTERACTION"
+						      },
+						  }
+		        }
+		    };
+
+    	}else
+    	{
+			const response = {
+		        context: contextResult,
+		        event: {
+		            header: responseHeader,
+		            endpoint: {
+		                scope: {
+		                    type: "BearerToken",
+		                    token: requestToken
+		                },
+		                endpointId: endpointId
+		            },
+		            payload: {}
+		        }
+		    };
+		}
 
 	    return response;
 	}

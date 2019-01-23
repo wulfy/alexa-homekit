@@ -782,7 +782,45 @@ exports.DOMOTICZ_GET_DEVICES = JSON.stringify(
          "XOffset": "0",
          "YOffset": "0",
          "idx": "37"
-         }
+         },
+         {
+            Data: "Off",
+            Description: "",
+            Favorite: 0,
+            LastUpdate: "2018-04-29 22:29:59",
+            Name: "porte",
+            PlanID: "",
+            PlanIDs: [
+            0
+            ],
+            Protected: false,
+            Status: "Off",
+            Type: "Scene",
+            TypeImg: "scene",
+            UsedByCamera: false,
+            XOffset: 0,
+            YOffset: 0,
+            idx: "1"
+         },
+         {
+            Data: "On",
+            Description: "",
+            Favorite: 1,
+            LastUpdate: "2019-01-21 22:50:09",
+            Name: "test",
+            PlanID: "",
+            PlanIDs: [
+            0
+            ],
+            Protected: false,
+            Status: "On",
+            Type: "Scene",
+            TypeImg: "scene",
+            UsedByCamera: false,
+            XOffset: 0,
+            YOffset: 0,
+            idx: "2"
+         },
    ],
    "status" : "OK",
    "title" : "Devices"

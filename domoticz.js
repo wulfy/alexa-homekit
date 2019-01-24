@@ -71,7 +71,19 @@ class domoticz {
 	async getDevice(domoticzDeviceId,isScene) {
 		const filter = domoticzDeviceId ? "&rid="+domoticzDeviceId:"";
 		const deviceList = await this.requestDomoticzWithFilter(filter,isScene);
-		return deviceList[0];
+		let returnDevice = null;
+
+		deviceList.some(function(device)
+		{
+			returnDevice = device;
+
+			if(device["idx"]===domoticzDeviceId)
+			{
+				return null;
+			}
+		});
+
+		return returnDevice;
 	}
 
 	async getAllDevices() {

@@ -1,6 +1,7 @@
 const {decrypt} = require("./config/security");
 const {getUserData} = require("./config/database");
-const { LIST_DEVICE_REQUEST, 
+const { LIST_DEVICE_REQUEST,
+		LIST_SCENE_REQUEST, 
 		STATE_REQUEST, 
 		SET_COMMAND, 
 		generate_command

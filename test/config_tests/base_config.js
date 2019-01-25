@@ -25,6 +25,7 @@ exports.handler = handler;
 exports.mockups = mockups;
 exports.sendDeviceCommand = sendDeviceCommand;
 exports.getAlexaDeviceState = getAlexaDeviceState;
+exports.sendAlexaCommandResponse = sendAlexaCommandResponse;
 
 class mockedDomoticz extends domoticz {
 
@@ -38,12 +39,14 @@ class mockedDomoticz extends domoticz {
     }
 
     getDevice(deviceId) {
+        console.log(this.MOCKED_ANSWER);
         let jsonDomoticzData = JSON.parse(this.MOCKED_ANSWER);
         let foundDevice = jsonDomoticzData.result[0];
         jsonDomoticzData.result.some((device)=>{
             foundDevice = device
             return deviceId === device.idx;
         });
+
         return foundDevice;
     }
 

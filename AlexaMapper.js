@@ -222,7 +222,8 @@ class AlexaMapper {
 					      "cause" : {
 						        "type" : "VOICE_INTERACTION"
 						      },
-						  }
+						  },
+				    "timestamp": new Date().toISOString(),
 		        }
 		    };
 

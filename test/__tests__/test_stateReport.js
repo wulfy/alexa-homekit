@@ -244,7 +244,7 @@ test('GET SCENE STATE', async done => {
     //removing timestamp data for tests
     data.properties.forEach(property => property.timeOfSample = null);
     base_config.sendAlexaCommandResponse(ALEXA_ACTIVATE_SCENE,context,data);
-    context.response.event.timestamp = null;
+    context.response.event.payload.timestamp = null;
     expect(context.response).toEqual({"context": {},
                                         "event": {
                                             "header": {
@@ -264,9 +264,9 @@ test('GET SCENE STATE', async done => {
                                             "payload": {
                                                 "cause": {
                                                     "type": "VOICE_INTERACTION"
-                                                }
-                                            },
-                                            "timestamp": null
+                                                },
+                                                "timestamp": null
+                                            }
                                         }
                                     });
     done();

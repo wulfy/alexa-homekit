@@ -1,6 +1,7 @@
 const {decrypt} = require("./config/security");
 const {getUserData} = require("./config/database");
-const { LIST_DEVICE_REQUEST, 
+const { LIST_DEVICE_REQUEST,
+		LIST_SCENE_REQUEST, 
 		STATE_REQUEST, 
 		SET_COMMAND, 
 		generate_command
@@ -53,13 +54,13 @@ class domoticz {
 	//to retrieve proto (HTTP/HTTPS) and use correct node http or https lib
 	// and domain my.domoti.cz
 	//request devices using a filter example: &rid=2
-	async requestDomoticzWithFilter (filter) {
+	async requestDomoticzWithFilter (filter,isScene) {
 		if(! this.token)
 			return;
 
 		console.log("get devices original");
 		const base = await this.getBase();
-		const request = base+"?"+LIST_DEVICE_REQUEST + filter;
+		const request = base +"?" + (isScene ? LIST_SCENE_REQUEST : LIST_DEVICE_REQUEST) + filter;
 		console.log("getDevices " + request);
 		const devicesJsonList = await promiseHttpRequest(request);
 		console.log(devicesJsonList)
@@ -67,14 +68,27 @@ class domoticz {
 		return devicesObjList.result;
 	}
 
-	async getDevice(domoticzDeviceId) {
+	async getDevice(domoticzDeviceId,isScene) {
 		const filter = domoticzDeviceId ? "&rid="+domoticzDeviceId:"";
-		const deviceList = await this.requestDomoticzWithFilter(filter);
-		return deviceList[0];
+		const deviceList = await this.requestDomoticzWithFilter(filter,isScene);
+		let returnDevice = null;
+
+		deviceList.some(function(device)
+		{
+			returnDevice = device;
+
+			if(device["idx"]===domoticzDeviceId)
+			{
+				return null;
+			}
+		});
+
+		return returnDevice;
 	}
 
 	async getAllDevices() {
-		const deviceList = await this.requestDomoticzWithFilter("");
+		const filter ="&filter=all";
+		const deviceList = await this.requestDomoticzWithFilter(filter);
 		return deviceList;
 	}
 

@@ -1,4 +1,5 @@
 exports.LIST_DEVICE_REQUEST = "type=devices&used=true&order=Name";
+exports.LIST_SCENE_REQUEST = "type=scenes&used=true&order=Name";
 const SET_DEVICE_LVL = "switchcmd=Set%20Level";
 const PERCENT_VALUE = "level";
 const SET_DEVICE_ON = "switchcmd=On";
@@ -7,6 +8,7 @@ const SET_VOLET_STOP = "switchcmd=Stop";
 const SET_POINT_VALUE = "setpoint";
 const SETPOINT_PARAM = "param=setsetpoint";
 const SETCOLOR_PARAM = "param=setcolbrightnessvalue";
+const SCENE_PARAM = "param=switchscene";
 const SWITCH_PARAM = "param=switchlight";
 exports.STATE_REQUEST = "type=devices";
 exports.SET_COMMAND = "type=command";
@@ -50,7 +52,16 @@ device_handler_command = (subType,value)=>({
 		"value" : (value
 					?("hue="+value.hue+"&brightness="+ (value.brightness*100)+"&iswhite=" + (value.saturation == 0 ? 'true':'false'))
 					: null),
+	},
+	"Activate": {
+		"param" : SCENE_PARAM,
+		"value" : "switchcmd=On"
+	},
+	"Deactivate": {
+		"param" : SCENE_PARAM,
+		"value" : "switchcmd=Off",
 	}
+
 });
 
 exports.generate_command = (subtype,deviceId,command,value) => {

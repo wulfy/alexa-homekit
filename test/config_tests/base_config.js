@@ -25,6 +25,7 @@ exports.handler = handler;
 exports.mockups = mockups;
 exports.sendDeviceCommand = sendDeviceCommand;
 exports.getAlexaDeviceState = getAlexaDeviceState;
+exports.sendAlexaCommandResponse = sendAlexaCommandResponse;
 
 class mockedDomoticz extends domoticz {
 

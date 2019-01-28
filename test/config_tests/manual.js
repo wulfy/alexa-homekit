@@ -26,7 +26,7 @@ const {
         DOMOTICZ_STATE_ANSWER, 
     } = require("../mockups/domoticzMockups")
 
-const { DOMOTICZ_GET_DEVICES } = require("../mockups/client13Mockup.js");
+const { DOMOTICZ_GET_DEVICES } = require("../mockups/domoticzMockups.js");
 
 async function handleReportState(request, context) {
     const endpointId = request.directive.endpoint.endpointId;

@@ -5,6 +5,19 @@ const COMMON_DISCOVERY_MAPPING = {
 		"description" : "@Description@",
 }
 
+const COMMON_SCENE_MAPPING_CAPABILITY = {
+			"interface":"Alexa.SceneController",
+			"version" : "3",
+            "supportsDeactivation" : false,
+			"state":{
+				"status":"@Status@",
+			},
+			"command":{
+			},
+			"supported": [],
+		};
+
+
 const COMMON_LEVEL_CAPABILITY = {
 			"interface":"Alexa.PercentageController",
 			"state":{
@@ -72,6 +85,44 @@ const COMMON_BRIGHT_CONTROLLER_CAPABILITY = {
 	        "retrievable": true
 		};
 
+
+const DOMOTICZ_ALEXA_SCENE = {
+	"domoticz_mapping" : {
+		"Type": "Scene",
+	},
+	"discovery" : {
+		...COMMON_DISCOVERY_MAPPING,
+		"displayCategories" : ["ACTIVITY_TRIGGER"],
+		"cookie": {
+			"type":"scene"
+		},
+	},
+	"capabilities" : [
+		{
+			...COMMON_SCENE_MAPPING_CAPABILITY,
+			"supportsDeactivation" : false,
+		}
+	]
+}
+
+const DOMOTICZ_GROUP_SCENE = {
+	"domoticz_mapping" : {
+		"Type": "Group",
+	},
+	"discovery" : {
+		...COMMON_DISCOVERY_MAPPING,
+		"displayCategories" : ["ACTIVITY_TRIGGER"],
+		"cookie": {
+			"type":"scene"
+		},
+	},
+	"capabilities" : [
+		{
+			...COMMON_SCENE_MAPPING_CAPABILITY,
+			"supportsDeactivation" : true,
+		}
+	]
+}
 
 const DOMOTICZ_ALEXA_PERCENT_SENSOR = {
 	"domoticz_mapping" : {
@@ -166,12 +217,13 @@ const DOMOTICZ_ALEXA_PUSH_ON = {
 	}
 };
 
+/*
 const DOMOTICZ_ALEXA_GROUP = {
 	...DOMOTICZ_ALEXA_ON_OFF,
 	"domoticz_mapping" : {
 		"Type":"Group"
 	},
-};
+};*/
 
 const DOMOTICZ_ALEXA_TEMP = {
 	"domoticz_mapping" : {
@@ -327,7 +379,7 @@ exports.ALEXAMAPPING = [
 							DOMOTICZ_ALEXA_TEMP,
 							DOMOTICZ_ALEXA_SELECTOR_MAPPING,
 							DOMOTICZ_ALEXA_INVERTED_VOLET,
-							DOMOTICZ_ALEXA_GROUP,
+							DOMOTICZ_GROUP_SCENE,
 							DOMOTICZ_ALEXA_RFY_VOLET,
 							DOMOTICZ_ALEXA_YEE_LED,
 							DOMOTICZ_ALEXA_TEMP_HUMIDITY,
@@ -338,4 +390,5 @@ exports.ALEXAMAPPING = [
 							DOMOTICZ_ALEXA_THERMOSTAT,
 							DOMOTICZ_ALEXA_PERCENT_SENSOR,
 							DOMOTICZ_ALEXA_COLOR_LIGHT,
+							DOMOTICZ_ALEXA_SCENE,
 						];

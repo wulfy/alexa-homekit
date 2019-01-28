@@ -67,6 +67,54 @@ exports.DOMOTICZ_STATE_ANSWER = {
    "title" : "Devices"
 };
 
+exports.DOMOTICZ_GET_SCENES = JSON.stringify({
+               ActTime: 1548367595,
+               AllowWidgetOrdering: true,
+               AstrTwilightEnd: "19:18",
+               AstrTwilightStart: "06:27",
+               CivTwilightEnd: "18:07",
+               CivTwilightStart: "07:39",
+               DayLength: "09:23",
+               NautTwilightEnd: "18:43",
+               NautTwilightStart: "07:02",
+               ServerTime: "2019-01-24 23:06:35",
+               SunAtSouth: "12:05",
+               Sunrise: "08:11",
+               Sunset: "17:34",
+               result: [
+               {
+               Description: "",
+               Favorite: 0,
+               LastUpdate: "2018-04-29 22:29:59",
+               Name: "porte",
+               OffAction: "",
+               OnAction: "",
+               Protected: false,
+               Status: "Off",
+               Timers: "false",
+               Type: "Scene",
+               UsedByCamera: false,
+               idx: "1"
+               },
+               {
+               Description: "",
+               Favorite: 1,
+               LastUpdate: "2019-01-24 22:08:31",
+               Name: "test",
+               OffAction: "",
+               OnAction: "",
+               Protected: false,
+               Status: "On",
+               Timers: "false",
+               Type: "Group",
+               UsedByCamera: false,
+               idx: "2"
+               }
+               ],
+               status: "OK",
+               title: "Scenes"
+});
+
 exports.DOMOTICZ_OBJ_EXAMPLE = [{
          "AddjMulti" : 1.0,
          "AddjMulti2" : 1.0,
@@ -782,7 +830,45 @@ exports.DOMOTICZ_GET_DEVICES = JSON.stringify(
          "XOffset": "0",
          "YOffset": "0",
          "idx": "37"
-         }
+         },
+         {
+            Data: "Off",
+            Description: "",
+            Favorite: 0,
+            LastUpdate: "2018-04-29 22:29:59",
+            Name: "porte",
+            PlanID: "",
+            PlanIDs: [
+            0
+            ],
+            Protected: false,
+            Status: "Off",
+            Type: "Scene",
+            TypeImg: "scene",
+            UsedByCamera: false,
+            XOffset: 0,
+            YOffset: 0,
+            idx: "1"
+         },
+         {
+            Data: "On",
+            Description: "",
+            Favorite: 1,
+            LastUpdate: "2019-01-21 22:50:09",
+            Name: "test",
+            PlanID: "",
+            PlanIDs: [
+            0
+            ],
+            Protected: false,
+            Status: "On",
+            Type: "Scene",
+            TypeImg: "scene",
+            UsedByCamera: false,
+            XOffset: 0,
+            YOffset: 0,
+            idx: "2"
+         },
    ],
    "status" : "OK",
    "title" : "Devices"

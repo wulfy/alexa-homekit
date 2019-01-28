@@ -51,6 +51,12 @@ exports.handler = async function (request, context) {
          await handleBrightnessControl(request, context);
         }
     }
+    else if (request.directive.header.namespace === 'Alexa.SceneController'){
+        if (request.directive.header.name === 'Activate' || request.directive.header.name === 'Deactivate') {
+            console.log("DEBUG: SetBrightness" + JSON.stringify(request));
+         await handleSceneController(request, context);
+        }
+    }
     else if (request.directive.header.namespace === 'Alexa') {
         if (request.directive.header.name === 'ReportState') {
           await handleReportState(request,context);
@@ -135,6 +141,16 @@ exports.handler = async function (request, context) {
             const contextResult = await getAlexaDeviceState(requestToken,endpointId);
             sendAlexaCommandResponse(request,context,contextResult);
         }
+    }
+
+    async function handleSceneController(request, context) {
+        const endpointId = request.directive.endpoint.endpointId;
+        const setValue = request.directive.payload.color;
+        const requestToken = request.directive.endpoint.scope.token;
+        const requestMethod = request.directive.header.name;
+        await sendDeviceCommand(request,setValue);
+        const contextResult = await getAlexaDeviceState(requestToken,endpointId,true);
+        sendAlexaCommandResponse(request,context,contextResult);
     }
 
     const totalDuration = parseInt(performance.now() - durationStart);

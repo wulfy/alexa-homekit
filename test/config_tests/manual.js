@@ -92,7 +92,6 @@ global.getBase = (token) => "";
 console.log("---- TEST RUNNING ---- ")
 //handleDiscovery(ALEXA_DISCOVERY_REQUEST_EXAMPLE);
 //handleReportState(ALEXA_REPORTSTATE_REQUEST_EXAMPLE);
-//console.log("GO")
 //handlePercentControl(ALEXA_SETPERCENT_REQUEST_EXAMPLE)
 
 let context = {};

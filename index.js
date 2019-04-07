@@ -10,50 +10,52 @@ const {sendStatsd} = require('./config/metrics');
 
 const { performance } = require('perf_hooks');
 
+const {debugLogger, prodLogger} = require('./config/logger.js');
+
 exports.handler = async function (request, context) {
     let durationStart = performance.now();
 
     //send stats about request receive
     sendStatsd("request."+request.directive.header.namespace+"."+request.directive.header.name+":1|c");
 
-    console.log(request);
+    debugLogger(request);
     if (request.directive.header.namespace === 'Alexa.Discovery' && request.directive.header.name === 'Discover') {
-        console.log("DEBUG: Discover request " + JSON.stringify(request));
+        prodLogger("DEBUG: Discover request " + JSON.stringify(request));
         await handleDiscovery(request, context, "");
     }
     else if (request.directive.header.namespace === 'Alexa.PercentageController') {
         if (request.directive.header.name === 'SetPercentage') {
-            console.log("DEBUG: SetPercentage " + JSON.stringify(request));
+            prodLogger("DEBUG: SetPercentage " + JSON.stringify(request));
          await handlePercentControl(request, context);
         }
     }
     else if (request.directive.header.namespace === 'Alexa.PowerController'){
         if (request.directive.header.name === 'TurnOff' || request.directive.header.name === 'TurnOn') {
-            console.log("DEBUG: switch on/off " + JSON.stringify(request));
+            prodLogger("DEBUG: switch on/off " + JSON.stringify(request));
          await handlePowerControl(request, context);
         }
     }
     else if (request.directive.header.namespace === 'Alexa.ThermostatController'){
         if (request.directive.header.name === 'SetTargetTemperature') {
-            console.log("DEBUG: SetTargetTemperature" + JSON.stringify(request));
+            prodLogger("DEBUG: SetTargetTemperature" + JSON.stringify(request));
          await handleThermostatControl(request, context);
         }
     }
     else if (request.directive.header.namespace === 'Alexa.ColorController'){
         if (request.directive.header.name === 'SetColor') {
-            console.log("DEBUG: SetColor" + JSON.stringify(request));
+            prodLogger("DEBUG: SetColor" + JSON.stringify(request));
          await handleColorControl(request, context);
         }
     }
     else if (request.directive.header.namespace === 'Alexa.BrightnessController'){
         if (request.directive.header.name === 'SetBrightness') {
-            console.log("DEBUG: SetBrightness" + JSON.stringify(request));
+            prodLogger("DEBUG: SetBrightness" + JSON.stringify(request));
          await handleBrightnessControl(request, context);
         }
     }
     else if (request.directive.header.namespace === 'Alexa.SceneController'){
         if (request.directive.header.name === 'Activate' || request.directive.header.name === 'Deactivate') {
-            console.log("DEBUG: SetBrightness" + JSON.stringify(request));
+            prodLogger("DEBUG: SetBrightness" + JSON.stringify(request));
          await handleSceneController(request, context);
         }
     }
@@ -70,7 +72,7 @@ exports.handler = async function (request, context) {
         let header = request.directive.header;
         header.name = "Discover.Response";
         const response = {event:{ header: header, payload: endPoints }};
-        console.log("DEBUG: Discovery Response >>>>>>>> " + JSON.stringify(response));
+        prodLogger("DEBUG: Discovery Response >>>>>>>> " + JSON.stringify(response));
 
         context.succeed(response);
     }
@@ -154,6 +156,6 @@ exports.handler = async function (request, context) {
     }
 
     const totalDuration = parseInt(performance.now() - durationStart);
-    console.log("Duration : " + totalDuration + " ms");
+    prodLogger("Duration : " + totalDuration + " ms");
     sendStatsd("request."+request.directive.header.namespace+"."+request.directive.header.name+":"+totalDuration+"|ms");
 };

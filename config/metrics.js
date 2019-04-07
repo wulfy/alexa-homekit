@@ -1,5 +1,6 @@
 require('dotenv').config();
 const { METRICS_BASE } = require('./constants');
+const {statsLogger} = require('./logger.js');
 
 const net = require('net');
 const udp = require('dgram');
@@ -11,7 +12,7 @@ exports.sendStatsd = (data) => {
 	  if(error){
 	    client.close();
 	  }else{
-	    console.log('Data sent !!!');
+	    statsLogger('Data sent !!!');
 	    client.close();
 	  }
 	});
@@ -48,13 +49,13 @@ class metricsSocket {
 		{
 			this.close();
 		}
-		console.log("connecting");
+		statsLogger("connecting");
 
 		this._socket = net.createConnection({port:process.env.METRICS_PORT,host:process.env.METRICS_HOST},() => {
 		  // 'connect' listener
-		  console.log('connected to server!');
+		  statsLogger('connected to server!');
 		  
-		}).once('error', ()=> console.log("error"));
+		}).once('error', ()=> statsLogger("error"));
 	}
 
 	write(metrics,timestamp){
@@ -71,7 +72,7 @@ class metricsSocket {
 		    const value = metrics[key];
 		    lines += [key, value, timestamp].join(' ') + " \n";
 		}
-		console.log("writing " + lines);
+		statsLogger("writing " + lines);
 		this._socket.write(lines, ()=>this.close());
 	}
 }

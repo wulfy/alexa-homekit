@@ -6,6 +6,8 @@ const { DOMOTICZ_ALEXA_DISCOVERY_MAPPING,
 		ALEXAMAPPING
 	} = require("./config/mapping")
 
+const {debugLogger, prodLogger} = require('./config/logger.js');
+
 const {sendStatsd} = require('./config/metrics');
 const domoticz = require('./domoticz');
 const AlexaMapper = require('./AlexaMapper');
@@ -45,7 +47,7 @@ exports.sendAlexaCommandResponse = function(request,context,contextResult,isStat
     // get user token pass in request
     const requestToken = request.directive.endpoint.scope.token;
     const response = alexaMapper.handleSendCommandResponse(contextResult,requestHeader,requestToken,endpointId,isStateReport)
-    console.log("DEBUG: " + requestHeader.namespace + JSON.stringify(response));
+    debugLogger("DEBUG: " + requestHeader.namespace + JSON.stringify(response));
 
     sendStatsd("calls.answer."+requestHeader.name+":1|c");
     context.succeed(response);
@@ -53,7 +55,7 @@ exports.sendAlexaCommandResponse = function(request,context,contextResult,isStat
 
 //send command to the device handler (ex domoticz)
 exports.sendDeviceCommand = async function (request, value){
-	console.log("send device command");
+	prodLogger("send device command");
 	const requestToken = request.directive.endpoint.scope.token;
 	let cookieInfos = request.directive.endpoint.cookie;
 	const directive = request.directive.header.name;
@@ -76,7 +78,7 @@ exports.sendDeviceCommand = async function (request, value){
 //return an alexa device using an alexa command using the alexa endpointId
 exports.getAlexaDeviceState= async function (requestToken,endpointId,isScene){
 	const domoticzId = endpointId.split("_")[0];
-	console.log("getDevicesState, domo id " + domoticzId);
+	prodLogger("getDevicesState, domo id " + domoticzId);
 	const domoticzConnector = getDomoticzFromToken(requestToken);
 	const device = await domoticzConnector.getDevice(domoticzId,isScene);
 	if(! device) 
@@ -85,4 +87,4 @@ exports.getAlexaDeviceState= async function (requestToken,endpointId,isScene){
 	return alexaMapper.getAlexaDeviceContextState(device);
 }
 
-console.log("RUNNING PROD : " + (PROD_MODE ? "ON" : "OFF"));
+prodLogger("RUNNING PROD : " + (PROD_MODE ? "ON" : "OFF"));

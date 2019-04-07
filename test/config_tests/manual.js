@@ -1,3 +1,5 @@
+const {testLogger} = require('../../config/logger.js');
+
 process.env.PROD_MODE = "false";
 const {handler} = require("../../index")
 const base_config = require("./base_config");
@@ -65,7 +67,7 @@ async function handlePercentControl(request, context) {
 async function test()
 {
     const request = BASE_REQUEST+"?"+LIST_DEVICE_REQUEST
-    console.log(request)
+    testLogger(request)
 	const devices = await getDevices();
 
 	return devices;
@@ -74,7 +76,7 @@ async function test()
 async function test2()
 {
 	const data = await test();
-	console.log("done " + JSON.stringify(data));
+	testLogger("done " + JSON.stringify(data));
 }
 
 //comment this for tests in real situations
@@ -89,7 +91,7 @@ global.getDevices = (token,domoticzDeviceId) => {
 
 global.getBase = (token) => "";
 
-console.log("---- TEST RUNNING ---- ")
+testLogger("---- TEST RUNNING ---- ")
 //handleDiscovery(ALEXA_DISCOVERY_REQUEST_EXAMPLE);
 //handleReportState(ALEXA_REPORTSTATE_REQUEST_EXAMPLE);
 //handlePercentControl(ALEXA_SETPERCENT_REQUEST_EXAMPLE)
@@ -106,5 +108,5 @@ context.succeed = (data) => console.log("CONTEXT ENDED");
 //handler(ALEXA_REPORTSTATE_REQUEST_EXAMPLE("2_aeon"));
 handler(ALEXA_TURNON_REQUEST);
 //handler(ALEXA_SET_TARGET_TEMPERATURE_THERMOSTAT,context);
-console.log(context);
-console.log("---- TEST ENDED ---- ")
+testLogger(context);
+testLogger("---- TEST ENDED ---- ");

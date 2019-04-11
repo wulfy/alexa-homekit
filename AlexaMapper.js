@@ -98,7 +98,7 @@ class AlexaMapper {
 			alexaDeviceJson = alexaDeviceJson.replace(toReplace,deviceData);
 		});
 
-		const newAlexaDevice =  JSON.parse(alexaDeviceJson);
+		let newAlexaDevice =  JSON.parse(alexaDeviceJson);
 		//const cleanRegex = new RegExp("(?:(?!^[×Þß÷þø])[-'0-9a-zÀ-ÿ ])", 'gui');
 
 		const overrideRegex = new RegExp(".*Alexa_Name:\s*([^\n]*)");
@@ -113,6 +113,11 @@ class AlexaMapper {
 	  										.reduce(
 	  											(accumulator, currentValue) => (accumulator? accumulator + '_' : '') + currentValue.replace(/[^\w]/gi, '')
 	  										);
+
+	   	newAlexaDevice.discovery.description = 
+			newAlexaDevice.discovery.description.length >= 1 
+			? newAlexaDevice.discovery.description 
+			: "(pas de description)";
 	  	
 	  return newAlexaDevice;
 

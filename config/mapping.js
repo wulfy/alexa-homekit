@@ -2,7 +2,7 @@ const COMMON_DISCOVERY_MAPPING = {
 		"endpointId" : "@idx@_@HardwareName@_@SwitchType@",
 		"manufacturerName" : "@HardwareName@",
 		"friendlyName" : "@Name@",
-		"description" : "desc: @Description@",
+		"description" : "@Description@",
 }
 
 const COMMON_SCENE_MAPPING_CAPABILITY = {

@@ -1,5 +1,5 @@
 const mysql = require( 'mysql' );
-const {databaseLogger} = require('./logger.js');
+const {databaseLogger, debugLogger} = require('./logger.js');
 const {DBCONFIG} = require('./constants')
 const {sendStatsd} = require('./metrics');
 
@@ -56,7 +56,7 @@ const getUserData = (token) => {
                                      LEFT JOIN user_data as ud ON ud.user_id = ot.user_id 
                                      WHERE ot.access_token = ? `, 
     [token]).then( results => {
-        databaseLogger(results[0])
+        debugLogger(results[0])
         let data = results[0];
         if(!data) 
             throw "ERROR NO TOKEN FOUND";

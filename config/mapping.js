@@ -196,6 +196,13 @@ const DOMOTICZ_ALEXA_RFY_VOLET = {
 	},
 };
 
+const DOMOTICZ_ALEXA_VENITIAN_EU_VOLET = {
+	...DOMOTICZ_ALEXA_VOLET,
+	"domoticz_mapping" : {
+		"Switchtype":"Venetian Blinds EU"
+	},
+};
+
 const DOMOTICZ_ALEXA_ON_OFF = {
 	"domoticz_mapping" : {
 		"Switchtype": "On/Off"
@@ -390,5 +397,6 @@ exports.ALEXAMAPPING = [
 							DOMOTICZ_ALEXA_THERMOSTAT,
 							DOMOTICZ_ALEXA_PERCENT_SENSOR,
 							DOMOTICZ_ALEXA_COLOR_LIGHT,
+							DOMOTICZ_ALEXA_VENITIAN_EU_VOLET,
 							DOMOTICZ_ALEXA_SCENE,
 						];

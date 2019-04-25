@@ -48,8 +48,18 @@ class mockedDomoticz extends domoticz {
         return foundDevice;
     }
 
-    getBase (token){
-        return "";
+    getConnectionConfig (token){
+        const basicAuth = 'Basic ' + Buffer.from(`foo:bar`).toString('base64');
+        return {
+                proto: "http",
+                hostname: "192.168.1.27",
+                port: "8080",
+                path: '/json.htm',
+                method: 'GET',
+                headers: {
+                  'Authorization': basicAuth,
+                }
+            };
     }
 
 }

@@ -3,11 +3,12 @@ const https = require('https');
 
 //promise to send an HTTP request
 exports.promiseHttpRequest =  (request) => {
-	const requestLower = request.toLowerCase();
+    const requestLower = request.toLowerCase();
     const httpOrHttps = requestLower.includes("https") ? https : http;
+    const escapedRequest = encodeURIComponent(request);
 
     return new Promise ((resolve, reject) => {
-        httpOrHttps.get(request, (resp) => {
+        httpOrHttps.get(escapedRequest, (resp) => {
           let data = '';
           // A chunk of data has been recieved.
           resp.on('data', (chunk) => {

@@ -255,18 +255,7 @@ const DOMOTICZ_ALEXA_TEMP = {
 	        }],
 	        "proactivelyReported": false,
 	        "retrievable": true
-		},
-		{
-              "interface": "Alexa.ThermostatController",
-              "supported": [
-                  {
-                    "name": "targetSetpoint",
-	            "value":"()=>({value:@Temp@,scale:'CELSIUS'})"
-                  }
-                ],
-                "proactivelyReported": false,
-                "retrievable": true
-         }
+		}
 	],
 	"configuration": {
               "supportsScheduling": false,

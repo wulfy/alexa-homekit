@@ -238,7 +238,7 @@ const DOMOTICZ_ALEXA_TEMP = {
 	},
 	"discovery" : {
 		...COMMON_DISCOVERY_MAPPING,
-		"displayCategories" : ["THERMOSTAT"],
+		"displayCategories" : ["TEMPERATURE_SENSOR"],
 		"cookie": {},
 	},
 	"capabilities" : [
@@ -257,19 +257,17 @@ const DOMOTICZ_ALEXA_TEMP = {
 	        "retrievable": true
 		}
 	],
-	"configuration": {
-              "supportsScheduling": false,
-              "supportedModes": [
-                "AUTO"
-              ]
-    }
 };
 
 const DOMOTICZ_ALEXA_THERMOSTAT = {
 	"domoticz_mapping" : {
 		"Type": "Thermostat"
 	},
-	"discovery" : DOMOTICZ_ALEXA_TEMP.discovery,
+	"discovery" : {
+		...COMMON_DISCOVERY_MAPPING,
+		"displayCategories" : ["THERMOSTAT"],
+		"cookie": {},
+	},
 	"capabilities" : [
 		{
 			"interface":"Alexa.TemperatureSensor",
@@ -291,12 +289,22 @@ const DOMOTICZ_ALEXA_THERMOSTAT = {
                   {
                     "name": "targetSetpoint",
 	            	"value":"()=>({value:@SetPoint@,scale:'CELSIUS'})"
+                  },
+                  {
+                  	"name": "thermostatMode",
+	            	"value":"HEAT"
                   }
                 ],
                 "proactivelyReported": false,
                 "retrievable": true
          }
 	],
+	"configuration": {
+              "supportsScheduling": false,
+              "supportedModes": [
+                "AUTO"
+              ]
+    }
 };
 
 

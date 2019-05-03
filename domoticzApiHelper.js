@@ -62,7 +62,7 @@ exports.sendDeviceCommand = async function (request, value){
 	//take care of MaxDimLevel if percentage
 	if(directive === "SetPercentage" && cookieInfos["MaxDimLevel"])
 	{
-		const proportionalValue = parseInt(value) * (parseInt(cookieInfos["MaxDimLevel"])+1) / 100;
+		const proportionalValue = parseInt(value) * (parseInt(cookieInfos["MaxDimLevel"])) / 100;
 		directiveValue = Math.round(proportionalValue);
 	}
 

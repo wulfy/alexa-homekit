@@ -52,7 +52,7 @@ class domoticz {
 	extractDomoticzUrlData (request) {
 	  let domoticzUrlData = {domain:null,proto:"HTTP"};
 	  const result = request.split("//").map((value)=>value.split(":")[0]);
-	  debugLogger(result)
+	  debugLogger('%j',result)
 	  if(result.length > 1)
 	  {
 	      domoticzUrlData.proto = result[0];
@@ -76,7 +76,7 @@ class domoticz {
 		conConfig.path += "?" + (isScene ? LIST_SCENE_REQUEST : LIST_DEVICE_REQUEST) + filter;
 		debugLogger("getDevices " + conConfig.path);
 		const devicesJsonList = await promiseHttpRequest(conConfig);
-		debugLogger(devicesJsonList)
+		debugLogger('%j',devicesJsonList)
 		const devicesObjList = JSON.parse(devicesJsonList);
 		return devicesObjList.result;
 	}
@@ -112,7 +112,7 @@ class domoticz {
 		//const params = overrideParams && typeof overrideParams === "function" ? overrideParams(requestMethod) : DEVICE_HANDLER_COMMANDS_PARAMS[requestMethod];
 		conConfig.path += generate_command(deviceSubtype,deviceId,directive,directiveValue);
 
-		debugLogger(conConfig.path);
+		debugLogger('%j',conConfig.path);
 		try {
 			PROD_MODE ? await promiseHttpRequest(conConfig) : null ;
 			prodLogger("REQUEST SENT");

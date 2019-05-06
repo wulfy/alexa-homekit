@@ -1,10 +1,5 @@
-const createDebug = require('debug')
-createDebug.formatters.h = (v) => {
-  return JSON.stringify(v);
-};
-
-exports.prodLogger = createDebug('prod');
-exports.debugLogger = createDebug('debug');
-exports.databaseLogger = createDebug('database');
-exports.statsLogger = createDebug('stats');
-exports.testLogger = createDebug('test');
+exports.prodLogger = require('debug')('prod');
+exports.debugLogger = require('debug')('debug');
+exports.databaseLogger = require('debug')('database');
+exports.statsLogger = require('debug')('stats');
+exports.testLogger = require('debug')('test');

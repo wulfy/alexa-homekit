@@ -35,7 +35,7 @@ class AlexaMapper {
 				)
 				{
 			      	prodLogger("---------mapping----------");
-			      	debugLogger(domoticzDevice);
+			      	debugLogger('%j',domoticzDevice);
 					result = this.mapAlexaFormatFromDomoticzDevice(domoticzDevice,alexaMap);
 					prodLogger("---------END mapping----------");		
 			        return ;
@@ -156,7 +156,7 @@ class AlexaMapper {
 	            endpoints: discoveryContext,
 	        };
 		prodLogger("answer ---------- ");
-		debugLogger(endPoints);
+		debugLogger('%j',endPoints);
 
 	    return endPoints;
 	}
@@ -171,7 +171,7 @@ class AlexaMapper {
 			return;
 
 		prodLogger("GET STATE")
-		debugLogger(alexaDevice);
+		debugLogger('%j',alexaDevice);
 		const properties = [];
 		const configuration = alexaDevice.configuration;
 		alexaDevice.capabilities.forEach((capability)=>{

@@ -108,5 +108,5 @@ context.succeed = (data) => console.log("CONTEXT ENDED");
 //handler(ALEXA_REPORTSTATE_REQUEST_EXAMPLE("2_aeon"));
 handler(ALEXA_TURNON_REQUEST);
 //handler(ALEXA_SET_TARGET_TEMPERATURE_THERMOSTAT,context);
-testLogger(context);
+testLogger('%j',context);
 testLogger("---- TEST ENDED ---- ");

@@ -2,12 +2,12 @@ const http = require('http');
 const https = require('https');
 
 //promise to send an HTTP request
-exports.promiseHttpRequest =  (request) => {
-	const requestLower = request.toLowerCase();
-    const httpOrHttps = requestLower.includes("https") ? https : http;
+exports.promiseHttpRequest =  (options) => {
+    const protoLower = options.proto.toLowerCase();
+    const httpOrHttps = protoLower.includes("https") ? https : http;
 
     return new Promise ((resolve, reject) => {
-        httpOrHttps.get(request, (resp) => {
+        httpOrHttps.get(options, (resp) => {
           let data = '';
           // A chunk of data has been recieved.
           resp.on('data', (chunk) => {

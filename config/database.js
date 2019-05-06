@@ -37,7 +37,7 @@ class Database {
     }
 }
 
-console.log(DBCONFIG)
+//console.log(DBCONFIG)
 const getDatabase = () => {
     if(database) return database;
     database = new Database(DBCONFIG);

@@ -17,7 +17,7 @@ class domoticz {
 	}
 
 	// get Domoticz credentials corresponding to the token
-	async getBase(){
+	async getConnectionConfig(){
 		try {
 			const user_data = await getUserData(this.token);
 			if(!user_data)
@@ -26,7 +26,19 @@ class domoticz {
 			const password = decrypt(user_data.domoticzPassword).slice(1,-1);
 			//console.log("after decrypt " + password)
 			const { proto, domain } = this.extractDomoticzUrlData(user_data.domoticzHost);
-			return `${proto}://${user_data.domoticzLogin}:${password}@${domain}:${user_data.domoticzPort}/json.htm`
+			//return `${proto}://${user_data.domoticzLogin}:${password}@${domain}:${user_data.domoticzPort}/json.htm`
+			const basicAuth = 'Basic ' + Buffer.from(`${user_data.domoticzLogin}:${password}`).toString('base64');
+			const options = {
+				proto: proto,
+			    hostname: domain,
+			    port: user_data.domoticzPort,
+			    path: '/json.htm',
+			    method: 'GET',
+			    headers: {
+			      'Authorization': basicAuth,
+			    }
+			};
+			return options;
 		}catch(e){
 			throw e.message;
 			console.log(e);
@@ -59,10 +71,10 @@ class domoticz {
 			return;
 
 		console.log("get devices original");
-		const base = await this.getBase();
-		const request = base +"?" + (isScene ? LIST_SCENE_REQUEST : LIST_DEVICE_REQUEST) + filter;
-		console.log("getDevices " + request);
-		const devicesJsonList = await promiseHttpRequest(request);
+		let conConfig = await this.getConnectionConfig();
+		conConfig.path += "?" + (isScene ? LIST_SCENE_REQUEST : LIST_DEVICE_REQUEST) + filter;
+		console.log("getDevices " + conConfig.path);
+		const devicesJsonList = await promiseHttpRequest(conConfig);
 		console.log(devicesJsonList)
 		const devicesObjList = JSON.parse(devicesJsonList);
 		return devicesObjList.result;
@@ -94,18 +106,18 @@ class domoticz {
 
 	//send http or https command to a domoticz device
 	async sendCommand(deviceSubtype,deviceId,directive,directiveValue){
-		const base = await this.getBase();
-		let deviceRequest = base + "?" + SET_COMMAND + "&";
+		let conConfig = await this.getConnectionConfig();
+		conConfig.path += "?" + SET_COMMAND + "&";
 		//const params = overrideParams && typeof overrideParams === "function" ? overrideParams(requestMethod) : DEVICE_HANDLER_COMMANDS_PARAMS[requestMethod];
-		deviceRequest += generate_command(deviceSubtype,deviceId,directive,directiveValue);
+		conConfig.path += generate_command(deviceSubtype,deviceId,directive,directiveValue);
 
-		console.log(deviceRequest);
+		console.log(conConfig.path);
 		try {
-			PROD_MODE ? await promiseHttpRequest(deviceRequest) : null ;
+			PROD_MODE ? await promiseHttpRequest(conConfig) : null ;
 			console.log("REQUEST SENT");
 			sendStatsd("calls.command."+deviceSubtype+":1|c");
 
-			return deviceRequest;
+			return conConfig.path;
 		}catch(e){
 			throw e;
 		}

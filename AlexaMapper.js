@@ -35,7 +35,7 @@ class AlexaMapper {
 				)
 				{
 			      	prodLogger("---------mapping----------");
-			      	prodLogger(domoticzDevice);
+			      	debugLogger('%o',domoticzDevice);
 					result = this.mapAlexaFormatFromDomoticzDevice(domoticzDevice,alexaMap);
 					prodLogger("---------END mapping----------");		
 			        return ;

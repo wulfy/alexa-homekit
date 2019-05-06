@@ -1,3 +1,5 @@
+const {prodLogger} = require('./logger.js');
+
 exports.LIST_DEVICE_REQUEST = "type=devices&used=true&order=Name";
 exports.LIST_SCENE_REQUEST = "type=scenes&used=true&order=Name";
 const SET_DEVICE_LVL = "switchcmd=Set%20Level";
@@ -66,7 +68,7 @@ device_handler_command = (subType,value)=>({
 });
 
 exports.generate_command = (subtype,deviceId,command,value) => {
-	console.log(subtype + "->" + command + "->" + value)
+	prodLogger(subtype + "->" + command + "->" + value)
 	const paramsMapper = device_handler_command(subtype,value)[command];
 	let deviceRequest = `${paramsMapper["param"]}&idx=${deviceId}`;
 

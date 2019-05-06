@@ -1,3 +1,4 @@
+const {debugLogger, prodLogger} = require('./config/logger.js');
 const {rgbToHsl} = require('./config/utils');
 
 const escapeSpecialChars = (me) =>   JSON.stringify(""+me);
@@ -22,7 +23,7 @@ class AlexaMapper {
 			return null;
 
 		let result = null;
-		console.log("mapping device --------")
+		prodLogger("mapping device --------")
 
 		//search for the right Alexa format based on domoticz type/sybtype/switchtype
 		this.alexaMapping.forEach((alexaMap) =>{
@@ -33,10 +34,10 @@ class AlexaMapper {
 					(!alexaDevice.Switchtype|| alexaDevice.Switchtype === domoticzDevice.SwitchType)
 				)
 				{
-			      	console.log("---------mapping----------");
-			      	console.log(domoticzDevice);
+			      	prodLogger("---------mapping----------");
+			      	debugLogger('%j',domoticzDevice);
 					result = this.mapAlexaFormatFromDomoticzDevice(domoticzDevice,alexaMap);
-					console.log("---------END mapping----------");		
+					prodLogger("---------END mapping----------");		
 			        return ;
 				}
 			});
@@ -76,13 +77,11 @@ class AlexaMapper {
 			domoDevice["brightness"] = HLScolor[2];
 		}
 		//deep clone alexaFormat
-		console.log("-----configure---------")
+		prodLogger("-----configure---------")
 		let alexaDeviceJson = JSON.stringify(alexaFormat);
 		const varRegex = /@[^@#]*@/gm;
 		const varToReplace =  alexaDeviceJson.match(varRegex);//get all data to retrieve from Domoticz
-		/*console.log(alexaDeviceJson);
-		console.log(varToReplace);
-		console.log(domoDevice);*/
+
 		//foreach data to replace, get the corresponding value in domoticz
 		varToReplace.forEach((toReplace)=>{
 
@@ -156,8 +155,8 @@ class AlexaMapper {
 		const endPoints = {
 	            endpoints: discoveryContext,
 	        };
-		console.log("answer ---------- ");
-		console.log(JSON.stringify(endPoints));
+		prodLogger("answer ---------- ");
+		debugLogger('%j',endPoints);
 
 	    return endPoints;
 	}
@@ -171,8 +170,8 @@ class AlexaMapper {
 		if(!alexaDevice)
 			return;
 
-		console.log("GET STATE")
-		console.log(alexaDevice)
+		prodLogger("GET STATE")
+		debugLogger('%j',alexaDevice);
 		const properties = [];
 		const configuration = alexaDevice.configuration;
 		alexaDevice.capabilities.forEach((capability)=>{

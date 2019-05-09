@@ -75,14 +75,26 @@ test('SENDING THERMOSTAT SET POINT', async done => {
 });
 
 test('SENDING PUSH ON', async done => {
-    const data = await base_config.sendDeviceCommand(base_config.mockups.ALEXA_TURNON_REQUEST_PUSH,21.0);
+    const data = await base_config.sendDeviceCommand(base_config.mockups.ALEXA_TURNON_REQUEST_PUSH_FORCE_ON);
     expect(data).toBe("/json.htm?type=command&param=switchlight&idx=18&switchcmd=On");
     done();
 });
 
 test('SENDING PUSH OFF', async done => {
-    const data = await base_config.sendDeviceCommand(base_config.mockups.ALEXA_TURNOFF_REQUEST_PUSH,21.0);
+    const data = await base_config.sendDeviceCommand(base_config.mockups.ALEXA_TURNOFF_REQUEST_PUSH_FORCE_ON);
     expect(data).toBe("/json.htm?type=command&param=switchlight&idx=639&switchcmd=On");
+    done();
+});
+
+test('SENDING PUSH ON FORCING OFF', async done => {
+    const data = await base_config.sendDeviceCommand(base_config.mockups.ALEXA_TURNON_REQUEST_PUSH_FORCE_OFF);
+    expect(data).toBe("/json.htm?type=command&param=switchlight&idx=11&switchcmd=Off");
+    done();
+});
+
+test('SENDING PUSH OFF FORCING ON', async done => {
+    const data = await base_config.sendDeviceCommand(base_config.mockups.ALEXA_TURNOFF_REQUEST_PUSH_FORCE_OFF);
+    expect(data).toBe("/json.htm?type=command&param=switchlight&idx=69&switchcmd=Off");
     done();
 });
 

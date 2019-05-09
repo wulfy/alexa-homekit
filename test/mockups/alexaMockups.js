@@ -237,7 +237,7 @@ exports.ALEXA_TURNOFF_REQUEST_VENITIAN_EU = {
     }
 }
 
-exports.ALEXA_TURNON_REQUEST_PUSH = {
+exports.ALEXA_TURNON_REQUEST_PUSH_FORCE_ON = {
     "directive": {
       "header":ALEXA_TURNON_REQUEST.directive.header,
       "name":ALEXA_TURNON_REQUEST.directive.payload,
@@ -252,7 +252,7 @@ exports.ALEXA_TURNON_REQUEST_PUSH = {
     }
 }
 
-exports.ALEXA_TURNOFF_REQUEST_PUSH = {
+exports.ALEXA_TURNOFF_REQUEST_PUSH_FORCE_ON = {
     "directive": {
       "header":ALEXA_TURNOFF_REQUEST.directive.header,
       "name":ALEXA_TURNOFF_REQUEST.directive.payload,
@@ -262,6 +262,36 @@ exports.ALEXA_TURNOFF_REQUEST_PUSH = {
           "token": "a4bf269d3fdd181aee9d73a6dfaaaee058471d54"
         },
         "endpointId": "639_Switch_PushOnButton",
+        "cookie": {}
+      }
+    }
+}
+
+exports.ALEXA_TURNON_REQUEST_PUSH_FORCE_OFF = {
+    "directive": {
+      "header":ALEXA_TURNON_REQUEST.directive.header,
+      "name":ALEXA_TURNON_REQUEST.directive.payload,
+      "endpoint": {
+        "scope": {
+          "type": "BearerToken",
+          "token": "a4bf269d3fdd181aee9d73a6dfaaaee058471d54"
+        },
+        "endpointId": "11_AC_PushOffButton",
+        "cookie": {}
+      }
+    }
+}
+
+exports.ALEXA_TURNOFF_REQUEST_PUSH_FORCE_OFF = {
+    "directive": {
+      "header":ALEXA_TURNOFF_REQUEST.directive.header,
+      "name":ALEXA_TURNOFF_REQUEST.directive.payload,
+      "endpoint": {
+        "scope": {
+          "type": "BearerToken",
+          "token": "a4bf269d3fdd181aee9d73a6dfaaaee058471d54"
+        },
+        "endpointId": "69_Switch_PushOffButton",
         "cookie": {}
       }
     }

@@ -18,9 +18,11 @@ const VOLET_VENETIAN_US_SUBTYPE = "VenetianBlindsUS";
 const VOLET_VENETIAN_EU_SUBTYPE = "VenetianBlindsEU";
 const VOLET_SUBTYPE = "BlindsPercentage";
 const VOLET_BLINDS = "Blinds";
-const PUSH_BUTTON = "PushOnButton";
+const PUSH_ON_BUTTON = "PushOnButton";
+const PUSH_OFF_BUTTON = "PushOffButton";
 const SUBTYPE_TO_INVERT = [VOLET_SUBTYPE,VOLET_VENETIAN_US_SUBTYPE,VOLET_VENETIAN_EU_SUBTYPE,VOLET_BLINDS];
-const SUBTYPE_TO_FORCE_ON = [PUSH_BUTTON];
+const SUBTYPE_TO_FORCE_ON = [PUSH_ON_BUTTON];
+const SUBTYPE_TO_FORCE_OFF = [PUSH_OFF_BUTTON];
 const SUBTYPE_TO_STOP = [VOLET_VENETIAN_US_SUBTYPE,VOLET_VENETIAN_EU_SUBTYPE,VOLET_BLINDS];
 
 device_handler_command = (subType,value)=>({
@@ -43,7 +45,7 @@ device_handler_command = (subType,value)=>({
 		"param" : SWITCH_PARAM,
 	},
 	"TurnOn": {
-		"command" : SUBTYPE_TO_INVERT.includes(subType) ? SET_DEVICE_OFF : SET_DEVICE_ON,
+		"command" : (SUBTYPE_TO_INVERT.includes(subType) || SUBTYPE_TO_FORCE_OFF.includes(subType)) ? SET_DEVICE_OFF : SET_DEVICE_ON,
 		"param" : SWITCH_PARAM,
 	},
 	"SetTargetTemperature": {

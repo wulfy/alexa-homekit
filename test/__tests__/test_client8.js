@@ -6,7 +6,7 @@ global.getDomoticzFromToken = (token) => {
 }
 
 //TEST FOR INDEX.JS
-test('DISCOVERY TESTING client8', done => {
+test('DISCOVERY TESTING client 8', done => {
     let context = {};
     context.succeed = function (data){
         const testData = JSON.stringify(data); 

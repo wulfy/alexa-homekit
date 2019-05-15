@@ -35,7 +35,7 @@ async function alexaDiscoveryEndpoints(requestToken){
 
 
 /********* EXPORT FUNCTIONS USED BY INDEX  *****************************/
-
+exports.alexaMapper = alexaMapper;
 exports.alexaDiscovery = alexaDiscoveryEndpoints;
 exports.PROD_MODE = PROD_MODE
 

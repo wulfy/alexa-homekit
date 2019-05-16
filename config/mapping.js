@@ -349,7 +349,34 @@ const DOMOTICZ_ALEXA_CONTACT = {
 			},
 			"supported": [{
 	            "name": "detectionState",
-	            "value":"()=>@Level@>0:'DETECTED':'NOT DETECTED'",
+	            "value":"()=>@Level@>0?'DETECTED':'NOT DETECTED'",
+	        }],
+	        "proactivelyReported": false,
+	        "retrievable": true
+		}
+	]
+};
+
+const DOMOTICZ_ALEXA_DOOR_CONTACT = {
+	"domoticz_mapping" : {
+		"Switchtype": "Door Contact"
+	},
+	"discovery" : {
+		...COMMON_DISCOVERY_MAPPING,
+		"displayCategories" : ["CONTACT_SENSOR"],
+		"cookie": {},
+	},
+	"capabilities" : [
+		{
+			"interface":"Alexa.ContactSensor",
+			"state":{
+				"detectionState":"",
+			},
+			"command":{
+			},
+			"supported": [{
+	            "name": "detectionState",
+	            "value":"()=>'@Status@'=='Closed'?'NOT DETECTED':'DETECTED'",
 	        }],
 	        "proactivelyReported": false,
 	        "retrievable": true
@@ -397,6 +424,7 @@ exports.ALEXAMAPPING = [
 							DOMOTICZ_ALEXA_TEMP_HUMIDITY,
 							DOMOTICZ_ALEXA_TEMP_HUMIDITY_BARO,
 							DOMOTICZ_ALEXA_CONTACT,
+							DOMOTICZ_ALEXA_DOOR_CONTACT,
 							DOMOTICZ_ALEXA_BLIND_INVERTED_VOLET,
 							DOMOTICZ_ALEXA_BLINDS,
 							DOMOTICZ_ALEXA_THERMOSTAT,

@@ -289,7 +289,7 @@ test('GET DOOR CONTACT CLOSED', async done => {
                                             "namespace": "Alexa.ContactSensor",
                                             "timeOfSample":null, 
                                             "uncertaintyInMilliseconds": 500, 
-                                            "value": "NOT DETECTED"
+                                            "value": "NOT_DETECTED"
                                         }
                                     ]
                     });

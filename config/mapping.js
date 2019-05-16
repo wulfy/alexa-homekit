@@ -349,7 +349,7 @@ const DOMOTICZ_ALEXA_CONTACT = {
 			},
 			"supported": [{
 	            "name": "detectionState",
-	            "value":"()=>@Level@>0?'DETECTED':'NOT DETECTED'",
+	            "value":"()=>@Level@>0?'DETECTED':'NOT_DETECTED'",
 	        }],
 	        "proactivelyReported": false,
 	        "retrievable": true
@@ -376,7 +376,7 @@ const DOMOTICZ_ALEXA_DOOR_CONTACT = {
 			},
 			"supported": [{
 	            "name": "detectionState",
-	            "value":"()=>'@Status@'=='Closed'?'NOT DETECTED':'DETECTED'",
+	            "value":"()=>'@Status@'=='Closed'?'NOT_DETECTED':'DETECTED'",
 	        }],
 	        "proactivelyReported": false,
 	        "retrievable": true

@@ -272,6 +272,18 @@ test('GET SCENE STATE', async done => {
     done();
 });
 
+test('LIMIT DESCRIPTION', async done => {
+
+    const { DOMOTICZ_GET_DEVICES } = require("../mockups/client19Mockup");
+    const domoticzConnector = new base_config.mockedDomoticz("token",DOMOTICZ_GET_DEVICES);
+    const domoticzDevice = domoticzConnector.getDevice("7");
+    const mappedDevice = base_config.alexaMapper.fromDomoticzDevice(domoticzDevice);
+    const discoveryResponse = base_config.alexaMapper.handleDiscovery([mappedDevice]);
+
+    expect(discoveryResponse.endpoints[0].description).toEqual("Spécifie le mode de gestion de la VMC (OFF; pilotage par l'hygrométrie de la salle de bain; Automati ...");
+    done();
+});
+
 test('GET DOOR CONTACT CLOSED', async done => {
 
     const { DOMOTICZ_GET_DEVICES } = require("../mockups/client18Mockup");

@@ -3,7 +3,7 @@ const baseProject = "../../"
 const {handler} = require(baseProject+"index")
 const {
         getStateFromAlexaDevice,
-        getAlexaDevice,
+        alexaMapper,
         sendAlexaCommandResponse,
         sendDeviceCommand,
         getAlexaDeviceState,
@@ -20,7 +20,7 @@ const {
 
 //disable console logs for tests
 //global.console.log = (data)=>null;
-
+exports.alexaMapper = alexaMapper;
 exports.handler = handler;
 exports.mockups = mockups;
 exports.sendDeviceCommand = sendDeviceCommand;

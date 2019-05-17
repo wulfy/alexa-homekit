@@ -59,6 +59,18 @@ class AlexaMapper {
 		return mappedDevices;
 	}
 
+	formatDescription(description) {
+		let formatedDescription  = description.length >= 1 
+									? (
+										description.length > 126
+										? description.substring(0,100) + " ..."
+										: description
+									  )
+									: "(pas de description)";
+
+		return formatedDescription;
+	}
+
 	/**
 		configure an Alexa device
 		Domoticz device json is provided and an array of alexa mapping json 
@@ -113,10 +125,8 @@ class AlexaMapper {
 	  											(accumulator, currentValue) => (accumulator? accumulator + '_' : '') + currentValue.replace(/[^\w]/gi, '')
 	  										);
 
-	   	newAlexaDevice.discovery.description = 
-			newAlexaDevice.discovery.description.length >= 1 
-			? newAlexaDevice.discovery.description 
-			: "(pas de description)";
+	   	newAlexaDevice.discovery.description = this.formatDescription(newAlexaDevice.discovery.description);
+			
 	  	
 	  return newAlexaDevice;
 

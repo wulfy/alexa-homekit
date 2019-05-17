@@ -272,3 +272,50 @@ test('GET SCENE STATE', async done => {
     done();
 });
 
+test('GET DOOR CONTACT CLOSED', async done => {
+
+    const { DOMOTICZ_GET_DEVICES } = require("../mockups/client18Mockup");
+    global.getDomoticzFromToken = (token) => {
+        return new base_config.mockedDomoticz(token,DOMOTICZ_GET_DEVICES);
+    }
+
+    const data = await base_config.getAlexaDeviceState("notoken","245_Switch_Contact");
+    //removing timestamp data for tests
+    data.properties.forEach(property => property.timeOfSample = null);
+    expect(data).toEqual({"properties":
+                                    [
+                                        {
+                                            "name": "detectionState", 
+                                            "namespace": "Alexa.ContactSensor",
+                                            "timeOfSample":null, 
+                                            "uncertaintyInMilliseconds": 500, 
+                                            "value": "NOT_DETECTED"
+                                        }
+                                    ]
+                    });
+    done();
+});
+
+test('GET DOOR CONTACT OPEN', async done => {
+
+    const { DOMOTICZ_GET_DEVICES } = require("../mockups/domoticzMockups");
+    global.getDomoticzFromToken = (token) => {
+        return new base_config.mockedDomoticz(token,DOMOTICZ_GET_DEVICES);
+    }
+
+    const data = await base_config.getAlexaDeviceState("notoken","15_Switch_Contact");
+    //removing timestamp data for tests
+    data.properties.forEach(property => property.timeOfSample = null);
+    expect(data).toEqual({"properties":
+                                    [
+                                        {
+                                            "name": "detectionState", 
+                                            "namespace": "Alexa.ContactSensor",
+                                            "timeOfSample":null, 
+                                            "uncertaintyInMilliseconds": 500, 
+                                            "value": "DETECTED"
+                                        }
+                                    ]
+                    });
+    done();
+});

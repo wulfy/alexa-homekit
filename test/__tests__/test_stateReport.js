@@ -302,6 +302,13 @@ test('GET DOOR CONTACT CLOSED', async done => {
                                             "timeOfSample":null, 
                                             "uncertaintyInMilliseconds": 500, 
                                             "value": "NOT_DETECTED"
+                                        },
+                                        {
+                                            "name": "connectivity", 
+                                            "namespace": "Alexa.EndpointHealth", 
+                                            "timeOfSample": null, 
+                                            "uncertaintyInMilliseconds": 500, 
+                                            "value": {"value": "OK"}
                                         }
                                     ]
                     });
@@ -326,6 +333,13 @@ test('GET DOOR CONTACT OPEN', async done => {
                                             "timeOfSample":null, 
                                             "uncertaintyInMilliseconds": 500, 
                                             "value": "DETECTED"
+                                        },
+                                        {
+                                            "name": "connectivity", 
+                                            "namespace": "Alexa.EndpointHealth", 
+                                            "timeOfSample": null, 
+                                            "uncertaintyInMilliseconds": 500, 
+                                            "value": {"value": "OK"}
                                         }
                                     ]
                     });

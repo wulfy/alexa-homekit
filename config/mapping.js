@@ -363,7 +363,7 @@ const DOMOTICZ_ALEXA_CONTACT = {
 			           "value": "OK"
 			        }
 	    	}]
-    	} 
+    	}
 	]
 };
 
@@ -400,7 +400,7 @@ const DOMOTICZ_ALEXA_DOOR_CONTACT = {
 			           "value": "OK"
 			        }
 	    	}]
-    	} 
+    	}
 	]
 };
 

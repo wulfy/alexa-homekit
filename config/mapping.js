@@ -353,7 +353,17 @@ const DOMOTICZ_ALEXA_CONTACT = {
 	        }],
 	        "proactivelyReported": false,
 	        "retrievable": true
-		}
+		},
+		{
+        	"interface": "Alexa.EndpointHealth",
+        	"supported": [{
+	            "name": "connectivity",
+	            "value": 
+			        {
+			           "value": "OK"
+			        }
+	    	}]
+    	} 
 	]
 };
 
@@ -380,7 +390,17 @@ const DOMOTICZ_ALEXA_DOOR_CONTACT = {
 	        }],
 	        "proactivelyReported": false,
 	        "retrievable": true
-		}
+		},
+		{
+        	"interface": "Alexa.EndpointHealth",
+        	"supported": [{
+	            "name": "connectivity",
+	            "value": 
+			        {
+			           "value": "OK"
+			        }
+	    	}]
+    	} 
 	]
 };
 

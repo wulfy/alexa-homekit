@@ -106,6 +106,9 @@ In `domoticzMockups.js` you have domoticz answers example to "simulate" a device
 you can set `PROD_MOD` to "true" to enable http and database access (but you have to run a database in localhost to test oauth access and be aware commands will send data to devices)
 => This way is used to debug some clients having problems we can't reproduce by mocking data (so we ask them domoticz credentials and fill the oauth connexion with this)
 
+#### Test with logs
+` DEBUG=* node test/config_tests/manual.js ` 
+
 
 ## Packaging before sending to lambda
 `yarn package` (will pack and zip the project to be deployable on amazon Lambda)

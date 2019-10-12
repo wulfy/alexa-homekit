@@ -94,7 +94,7 @@ All functions and mocked data should be accessed using `base_config` (to be sure
 You can run manual tests by using this command :
 `node test/config_tests/manual.js`
 
-This file contains commented examples to do some tests.
+this file contains commented examples to do some tests.
 Tests using Alexa handlers could use the context object defined in the file to display the result instead of trying to send a success answer to Alexa (only possible on lambda or real server)
 
 #### Mocked test

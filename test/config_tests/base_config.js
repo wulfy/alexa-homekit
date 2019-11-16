@@ -1,4 +1,11 @@
+/**
+** Export mocked objects to test skill without using Alexa
+** Mocked object could use hard coded answers or do real request to a domoticz server
+**/
+
+
 process.env.PROD_MODE = "false";
+const {debugLogger, prodLogger} = require('../../config/logger.js');
 const baseProject = "../../"
 const {handler} = require(baseProject+"index")
 const {
@@ -35,10 +42,16 @@ class mockedDomoticz extends domoticz {
     }
 
     getAllDevices() {
-        return JSON.parse(this.MOCKED_ANSWER).result;
+        return this.MOCKED_ANSWER 
+         ? JSON.parse(this.MOCKED_ANSWER).result
+         : super.getAllDevices();
     }
 
     getDevice(deviceId) {
+        if(!this.MOCKED_ANSWER)
+        {
+            return super.getDevice();
+        }
         let jsonDomoticzData = JSON.parse(this.MOCKED_ANSWER);
         let foundDevice = jsonDomoticzData.result[0];
         jsonDomoticzData.result.some((device)=>{
@@ -50,9 +63,10 @@ class mockedDomoticz extends domoticz {
 
     getConnectionConfig (token){
         const basicAuth = 'Basic ' + Buffer.from(`foo:bar`).toString('base64');
+        prodLogger("CONFIG MOCKED");
         return {
                 proto: "http",
-                hostname: "192.168.1.27",
+                hostname: "foo.bar.com",
                 port: "8080",
                 path: '/json.htm',
                 method: 'GET',
@@ -63,8 +77,6 @@ class mockedDomoticz extends domoticz {
     }
 
 }
-exports.mockedDomoticz = mockedDomoticz;
-
 
 const Tester = class Tester{
     constructor(name){
@@ -93,4 +105,5 @@ const Tester = class Tester{
     }
 }
 
+exports.mockedDomoticz = mockedDomoticz;
 exports.Tester;

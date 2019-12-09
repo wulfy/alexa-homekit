@@ -1,7 +1,7 @@
 const {override} = require("./functions_override");
 const {testLogger} = require('../../config/logger.js');
 const {handler} = require("../../index")
-
+const { DOMOTICZ_GET_DEVICES } = require("../mockups/client23Mockup.js");
 const { ALEXA_REPORTSTATE_REQUEST_EXAMPLE, 
         ALEXA_SETPERCENT_REQUEST_EXAMPLE,
         ALEXA_SETPERCENT_REQUEST_EXAMPLE2,
@@ -15,7 +15,7 @@ const { ALEXA_REPORTSTATE_REQUEST_EXAMPLE,
     } = require("../mockups/alexaMockups")
 
 // true to use mockedData, false to use real domoticz access
-override(true);
+override(DOMOTICZ_GET_DEVICES);
 
 testLogger("---- TEST RUNNING ---- ")
 //handleDiscovery(ALEXA_DISCOVERY_REQUEST_EXAMPLE);

@@ -117,7 +117,7 @@ class AlexaMapper {
 		const overrideData = overrideRegex.exec(description);
 		const friendlyName =  overrideData ? overrideData[1] : newAlexaDevice.discovery.friendlyName;
 
-		const cleanRegex = new RegExp("[^-'0-9a-zÀ-ÿ _]", 'gui');
+		const cleanRegex = new RegExp("[^0-9a-zÀ-ÿ ]", 'gui');
 		newAlexaDevice.discovery.friendlyName = friendlyName.replace(cleanRegex,' ');
 	  	newAlexaDevice.discovery.endpointId = newAlexaDevice.discovery.endpointId
 	  										.split('_')

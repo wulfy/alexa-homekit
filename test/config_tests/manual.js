@@ -1,7 +1,7 @@
 const {override} = require("./functions_override");
 const {testLogger} = require('../../config/logger.js');
 const {handler} = require("../../index")
-const { DOMOTICZ_GET_DEVICES } = require("../mockups/client23Mockup.js");
+const { DOMOTICZ_GET_DEVICES } = require("../mockups/client25Mockup.js");
 const { ALEXA_REPORTSTATE_REQUEST_EXAMPLE, 
         ALEXA_SETPERCENT_REQUEST_EXAMPLE,
         ALEXA_SETPERCENT_REQUEST_EXAMPLE2,

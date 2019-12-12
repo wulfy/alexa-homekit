@@ -404,6 +404,14 @@ const DOMOTICZ_ALEXA_DOOR_CONTACT = {
 	]
 };
 
+const DOMOTICZ_ALEXA_AC_MAPPING = {
+	...DOMOTICZ_ALEXA_VOLET,
+	"domoticz_mapping" : {
+		"Type":"Light/Switch",
+		"Subtype": "AC"
+	},
+};
+
 const DOMOTICZ_ALEXA_SELECTOR_MAPPING = {
 	...DOMOTICZ_ALEXA_VOLET,
 	"domoticz_mapping" : {
@@ -452,4 +460,5 @@ exports.ALEXAMAPPING = [
 							DOMOTICZ_ALEXA_COLOR_LIGHT,
 							DOMOTICZ_ALEXA_VENITIAN_EU_VOLET,
 							DOMOTICZ_ALEXA_SCENE,
+							DOMOTICZ_ALEXA_AC_MAPPING,
 						];

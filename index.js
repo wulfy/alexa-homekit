@@ -21,6 +21,7 @@ exports.handler = async function (request, context) {
     debugLogger(request);
     if (request.directive.header.namespace === 'Alexa.Discovery' && request.directive.header.name === 'Discover') {
         prodLogger("DEBUG: Discover request " + JSON.stringify(request));
+        console.log("handler");
         await handleDiscovery(request, context, "");
     }
     else if (request.directive.header.namespace === 'Alexa.PercentageController') {
@@ -73,7 +74,7 @@ exports.handler = async function (request, context) {
         header.name = "Discover.Response";
         const response = {event:{ header: header, payload: endPoints }};
         prodLogger("DEBUG: Discovery Response >>>>>>>> " + JSON.stringify(response));
-
+        console.log("succeed");
         context.succeed(response);
     }
 

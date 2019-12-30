@@ -3,21 +3,43 @@ const {override} = require("../config_tests/functions_override");
 
 let file = '';
 let domoticz_mockup = '';
-describe('Testing all clients', () => { 
-    for(let i = 10; i < 13; i++){
-    	file = "../mockups/client"+i+"Mockup";
-		domoticz_mockup = { DOMOTICZ_GET_DEVICES } = require(file);
-		override(domoticz_mockup.DOMOTICZ_GET_DEVICES);
 
-		it('DISCOVERY TESTING client' + i, done => {
+const doTest = async _ => {
+	for(let id = 10; id < 25; id++){
+		let file = "../mockups/client"+id+"Mockup";
+		let domoticz_mockup = { DOMOTICZ_GET_DEVICES } = require(file);
+
+		console.log("test " + id);
+		let context = {};
+		override(domoticz_mockup.DOMOTICZ_GET_DEVICES);
+		context.succeed = function (data){
+			const testData = JSON.stringify(data); 
+			expect(testData).toMatchSnapshot();
+		};
+		await base_config.handler(base_config.mockups.ALEXA_DISCOVERY_REQUEST_EXAMPLE,context);
+	}
+	sleep(4000);
+}
+
+let testData = '';
+
+beforeEach(() => testData = '');
+
+describe('Testing all clients', () => { 
+	for(let id = 10; id < 25; id++){
+		it('Testing client id ' + id, async () => { 
+			let file = "../mockups/client"+id+"Mockup";
+			let domoticz_mockup = { DOMOTICZ_GET_DEVICES } = require(file);
+
+			console.log("test " + id);
 			let context = {};
-			context.succeed = function (data){
-				const testData = JSON.stringify(data); 
-				expect(testData).toMatchSnapshot();
-				done();
+			
+			override(domoticz_mockup.DOMOTICZ_GET_DEVICES);
+			context.succeed = (data) => {
+				testData = JSON.stringify(data);
 			};
 			base_config.handler(base_config.mockups.ALEXA_DISCOVERY_REQUEST_EXAMPLE,context);
-			console.log("testing");
+			expect(testData).toMatchSnapshot();
 		});
 	}
 });

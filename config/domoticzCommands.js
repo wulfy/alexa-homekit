@@ -27,7 +27,7 @@ const SUBTYPE_TO_STOP = [VOLET_VENETIAN_US_SUBTYPE,VOLET_VENETIAN_EU_SUBTYPE,VOL
 
 device_handler_command = (subType,value)=>({
 	"SetPercentage": {
-		"command" : subType === VOLET_VENETIAN_US_SUBTYPE && 50 === value 
+		"command" : SUBTYPE_TO_STOP.includes(subType) && 50 === value 
 					? SET_VOLET_STOP
 					: SET_DEVICE_LVL,
 		"param" : SWITCH_PARAM,

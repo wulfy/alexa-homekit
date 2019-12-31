@@ -170,7 +170,6 @@ const DOMOTICZ_ALEXA_INVERTED_VOLET = {
 const DOMOTICZ_ALEXA_BLINDS = {
 	...DOMOTICZ_ALEXA_VOLET,
 	"domoticz_mapping" : {
-		"Subtype" : "Switch",
 		"Switchtype" : "Blinds",
 	}
 };

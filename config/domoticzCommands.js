@@ -2,7 +2,7 @@ const {prodLogger} = require('./logger.js');
 
 exports.LIST_DEVICE_REQUEST = "type=devices&used=true&order=Name";
 exports.LIST_SCENE_REQUEST = "type=scenes&used=true&order=Name";
-const SET_DEVICE_LVL = "switchcmd=Set%20Level";
+const SET_DEVICE_LVL = "switchcmd=Set Level";
 const PERCENT_VALUE = "level";
 const SET_DEVICE_ON = "switchcmd=On";
 const SET_DEVICE_OFF = "switchcmd=Off";
@@ -55,7 +55,9 @@ device_handler_command = (subType,value)=>({
 	"SetColor": {
 		"param" : SETCOLOR_PARAM,
 		"value" : (value
-					?("hue="+value.hue+"&brightness="+ (value.brightness*100)+"&iswhite=" + (value.saturation == 0 ? 'true':'false'))
+					?  value.saturation == 0 
+					    ? 'brightness='+ (value.brightness*100) + '&color={"m":3,"t":0,"r":255,"g":255,"b":255,"cw":0,"ww":0}'
+					    : ("hue="+value.hue+"&brightness="+ (value.brightness*100)+"&iswhite=" + (value.saturation == 0 ? 'true':'false'))
 					: null),
 	},
 	"Activate": {
@@ -80,5 +82,5 @@ exports.generate_command = (subtype,deviceId,command,value) => {
 	if(paramsMapper["value"])
 		deviceRequest += `&${paramsMapper["value"]}`
 
-	return deviceRequest;
+	return encodeURI(deviceRequest);
 }

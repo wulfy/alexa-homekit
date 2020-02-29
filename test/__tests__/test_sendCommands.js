@@ -116,7 +116,7 @@ test('SENDING SET COLOR WHITE', async done => {
                 "brightness": 0.6524
             };
     const data = await base_config.sendDeviceCommand(base_config.mockups.ALEXA_SET_COLOR,HSLvalue);
-    expect(data).toBe("/json.htm?type=command&param=setcolbrightnessvalue&idx=37&brightness=65.24&color=%7B%22m%22:3,%22t%22:0,%22r%22:255,%22g%22:255,%22b%22:255,%22cw%22:0,%22ww%22:0%7D");
+    expect(data).toBe("/json.htm?type=command&param=setcolbrightnessvalue&idx=37&brightness=65.24&color=%7B%22m%22:3,%22t%22:0,%22r%22:254,%22g%22:254,%22b%22:254,%22cw%22:0,%22ww%22:0%7D");
     done();
 });
 

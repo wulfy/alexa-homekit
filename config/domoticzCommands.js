@@ -56,7 +56,7 @@ device_handler_command = (subType,value)=>({
 		"param" : SETCOLOR_PARAM,
 		"value" : (value
 					?  value.saturation == 0 
-					    ? 'brightness='+ (value.brightness*100) + '&color={"m":3,"t":0,"r":255,"g":255,"b":255,"cw":0,"ww":0}'
+					    ? 'brightness='+ (value.brightness*100) + '&color={"m":3,"t":0,"r":254,"g":254,"b":254,"cw":0,"ww":0}'
 					    : ("hue="+value.hue+"&brightness="+ (value.brightness*100)+"&iswhite=" + (value.saturation == 0 ? 'true':'false'))
 					: null),
 	},

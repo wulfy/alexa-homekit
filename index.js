@@ -19,6 +19,7 @@ exports.handler = async function (request, context) {
     sendStatsd("request."+request.directive.header.namespace+"."+request.directive.header.name+":1|c");
 
     debugLogger(request);
+
     if (request.directive.header.namespace === 'Alexa.Discovery' && request.directive.header.name === 'Discover') {
         prodLogger("DEBUG: Discover request " + JSON.stringify(request));
         await handleDiscovery(request, context, "");
@@ -69,11 +70,10 @@ exports.handler = async function (request, context) {
     async function handleDiscovery(request,context){
         const requestToken = request.directive.payload.scope.token;
         const endPoints = await alexaDiscovery(requestToken);
-        let header = request.directive.header;
+        let header = {...request.directive.header};
         header.name = "Discover.Response";
         const response = {event:{ header: header, payload: endPoints }};
         prodLogger("DEBUG: Discovery Response >>>>>>>> " + JSON.stringify(response));
-
         context.succeed(response);
     }
 

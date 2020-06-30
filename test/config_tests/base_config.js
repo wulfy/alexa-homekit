@@ -75,7 +75,6 @@ class mockedDomoticz extends domoticz {
                 }
             };
     }
-
 }
 
 const Tester = class Tester{

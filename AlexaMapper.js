@@ -24,23 +24,28 @@ class AlexaMapper {
 
 		let result = null;
 		prodLogger("mapping device --------")
-
+		const BreakException = {};
 		//search for the right Alexa format based on domoticz type/sybtype/switchtype
-		this.alexaMapping.forEach((alexaMap) =>{
+		try {
+			this.alexaMapping.forEach((alexaMap) =>{
 	      		const alexaDevice = alexaMap.domoticz_mapping;
 				if(	
-					(!alexaDevice.Type || alexaDevice.Type === domoticzDevice.Type) &&
-					(!alexaDevice.Subtype || alexaDevice.Subtype === domoticzDevice.SubType )&&
-					(!alexaDevice.Switchtype|| alexaDevice.Switchtype === domoticzDevice.SwitchType)
+					(!alexaDevice.Type || alexaDevice.Type.includes(domoticzDevice.Type)) &&
+					(!alexaDevice.SubType || alexaDevice.SubType === domoticzDevice.SubType )&&
+					(!alexaDevice.SwitchType|| alexaDevice.SwitchType === domoticzDevice.SwitchType)
 				)
 				{
 			      	prodLogger("---------mapping----------");
 			      	debugLogger('%j',domoticzDevice);
 					result = this.mapAlexaFormatFromDomoticzDevice(domoticzDevice,alexaMap);
 					prodLogger("---------END mapping----------");		
-			        return ;
+			        throw BreakException ;
 				}
 			});
+		}	catch (e) {
+		  		if (e !== BreakException) throw e;
+		}
+
 		return result;
 	}
 
@@ -91,14 +96,14 @@ class AlexaMapper {
 		//deep clone alexaFormat
 		prodLogger("-----configure---------")
 		let alexaDeviceJson = JSON.stringify(alexaFormat);
-		const varRegex = /@[^@#]*@/gm;
+		const varRegex = /%[^%#]*%/gm;
 		const varToReplace =  alexaDeviceJson.match(varRegex);//get all data to retrieve from Domoticz
 
 		//foreach data to replace, get the corresponding value in domoticz
 		varToReplace.forEach((toReplace)=>{
 
 			// @level@ => level
-			const domoticzVar = toReplace.replace(new RegExp("@", 'g'),"");
+			const domoticzVar = toReplace.replace(new RegExp("%", 'g'),"");
 			const deviceData = typeof domoDevice[domoticzVar] === 'string' 
 								? domoDevice[domoticzVar]
 									.replace(/(?:\r\n|\r|\n)/g,'\\n')
@@ -108,7 +113,7 @@ class AlexaMapper {
 	 		// get the var from tomoticz and replace it in mapping json
 			alexaDeviceJson = alexaDeviceJson.replace(toReplace,deviceData);
 		});
-
+		console.log(alexaDeviceJson);
 		let newAlexaDevice =  JSON.parse(alexaDeviceJson);
 		//const cleanRegex = new RegExp("(?:(?!^[×Þß÷þø])[-'0-9a-zÀ-ÿ ])", 'gui');
 
@@ -143,7 +148,7 @@ class AlexaMapper {
                 }];
 
 			const capabilitiesDetails = device.capabilities.map((capa)=>{
-				return {
+				const full_capability  = {
 		                "interface": capa.interface,
 		                "version": "3",
 		                "type": "AlexaInterface",
@@ -154,12 +159,27 @@ class AlexaMapper {
 		                },
 		                "supportsDeactivation": capa.supportsDeactivation
 	             };
+
+	             if(capa.capabilityResources) {
+	             	full_capability.capabilityResources = capa.capabilityResources;
+	             }
+
+	             if(capa.properties) {
+	             	full_capability.properties = capa.properties;
+	             }
+
+	             if(capa.instance) {
+	             	full_capability.instance = capa.instance;
+	             }
+	             return full_capability;
 			});
+
 			return {
 	                ...device.discovery,
 	                //add alexa interface version precision in each capabilities list
 	                //see alexa doc : https://developer.amazon.com/fr/docs/device-apis/alexa-interface.html#discovery
 	                "capabilities": capabilitiesHeader.concat(capabilitiesDetails),
+	                "configuration": device.configuration ? device.configuration : ''
 	             }
 		});
 		const endPoints = {

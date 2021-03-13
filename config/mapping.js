@@ -254,7 +254,7 @@ const DOMOTICZ_ALEXA_BLINDS = {
 	}
 };
 
-const DOMOTICZ_ALEXA_YEE_LED = {
+const DOMOTICZ_ALEXA_DIMMER = {
 	...DOMOTICZ_ALEXA_VOLET,
 	"domoticz_mapping" : {
 		"SwitchType": "Dimmer"
@@ -663,7 +663,7 @@ const DOMOTICZ_UV_RANGE = {
 
 const DOMOTICZ_HUMIDITY_RANGE = {
 	"domoticz_mapping" : {
-		"SubType": "Sound Level",
+		"Type": "Humidity",
 	},
 	"discovery" : {
 		...COMMON_DISCOVERY_MAPPING,
@@ -711,7 +711,6 @@ exports.ALEXAMAPPING = [
 							DOMOTICZ_ALEXA_INVERTED_VOLET,
 							DOMOTICZ_GROUP_SCENE,
 							DOMOTICZ_ALEXA_RFY_VOLET,
-							DOMOTICZ_ALEXA_YEE_LED,
 							DOMOTICZ_ALEXA_TEMP_HUMIDITY,
 							DOMOTICZ_ALEXA_TEMP_HUMIDITY_BARO,
 							DOMOTICZ_ALEXA_CONTACT,
@@ -732,5 +731,7 @@ exports.ALEXAMAPPING = [
 							DOMOTICZ_HUMIDITY_RANGE,
 							DOMOTICZ_UV_RANGE,
 							DOMOTICZ_CUSTOM_RANGE,
-							DOMOTICZ_TOGGLE
+							DOMOTICZ_ALEXA_DIMMER,
+							DOMOTICZ_TOGGLE,
+
 						];

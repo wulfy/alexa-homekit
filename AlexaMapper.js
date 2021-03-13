@@ -30,12 +30,13 @@ class AlexaMapper {
 			this.alexaMapping.forEach((alexaMap) =>{
 	      		const alexaDevice = alexaMap.domoticz_mapping;
 				if(	
-					(!alexaDevice.Type || alexaDevice.Type.includes(domoticzDevice.Type)) &&
+					(!alexaDevice.Type || alexaDevice.Type === domoticzDevice.Type ) &&
 					(!alexaDevice.SubType || alexaDevice.SubType === domoticzDevice.SubType )&&
 					(!alexaDevice.SwitchType|| alexaDevice.SwitchType === domoticzDevice.SwitchType)
 				)
 				{
 			      	prodLogger("---------mapping----------");
+			      	debugLogger('%j',alexaDevice);
 			      	debugLogger('%j',domoticzDevice);
 					result = this.mapAlexaFormatFromDomoticzDevice(domoticzDevice,alexaMap);
 					prodLogger("---------END mapping----------");		
@@ -174,14 +175,20 @@ class AlexaMapper {
 	             return full_capability;
 			});
 
-			return {
-	                ...device.discovery,
+			let discoveryResponse = {
+	            ...device.discovery,
 	                //add alexa interface version precision in each capabilities list
 	                //see alexa doc : https://developer.amazon.com/fr/docs/device-apis/alexa-interface.html#discovery
-	                "capabilities": capabilitiesHeader.concat(capabilitiesDetails),
-	                "configuration": device.configuration ? device.configuration : ''
-	             }
+	            "capabilities": capabilitiesHeader.concat(capabilitiesDetails)
+	        };
+
+	        if(device.configuration) {
+	        	discoveryResponse.configuration = device.configuration;
+	        }
+
+			return discoveryResponse;
 		});
+
 		const endPoints = {
 	            endpoints: discoveryContext,
 	        };

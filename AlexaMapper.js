@@ -25,6 +25,8 @@ class AlexaMapper {
 		let result = null;
 		prodLogger("mapping device --------")
 		const BreakException = {};
+		const scores = [];
+		let score = 0;
 		//search for the right Alexa format based on domoticz type/sybtype/switchtype
 		try {
 			this.alexaMapping.forEach((alexaMap) =>{
@@ -35,19 +37,21 @@ class AlexaMapper {
 					(!alexaDevice.SwitchType|| alexaDevice.SwitchType === domoticzDevice.SwitchType)
 				)
 				{
+					score = (alexaDevice.Type ? 4 : 1) * (alexaDevice.SwitchType ? 3 : 1) * (alexaDevice.SubType ? 2 : 1);
 			      	prodLogger("---------mapping----------");
 			      	debugLogger('%j',alexaDevice);
 			      	debugLogger('%j',domoticzDevice);
 					result = this.mapAlexaFormatFromDomoticzDevice(domoticzDevice,alexaMap);
+					scores[score] = result;
 					prodLogger("---------END mapping----------");		
-			        throw BreakException ;
+			        //throw BreakException ;
 				}
 			});
 		}	catch (e) {
 		  		if (e !== BreakException) throw e;
 		}
 
-		return result;
+		return scores[scores.length-1];
 	}
 
 	/*
@@ -114,7 +118,7 @@ class AlexaMapper {
 	 		// get the var from tomoticz and replace it in mapping json
 			alexaDeviceJson = alexaDeviceJson.replace(toReplace,deviceData);
 		});
-		console.log(alexaDeviceJson);
+		//console.log(alexaDeviceJson);
 		let newAlexaDevice =  JSON.parse(alexaDeviceJson);
 		//const cleanRegex = new RegExp("(?:(?!^[×Þß÷þø])[-'0-9a-zÀ-ÿ ])", 'gui');
 
@@ -214,7 +218,8 @@ class AlexaMapper {
 		alexaDevice.capabilities.forEach((capability)=>{
 		const alexaInterface = capability.interface;
 		//TODO remplacer par un reduce
-		const alexaSupported = capability.supported.forEach((support)=>{
+		const supported = capability.supported ? capability.supported : capability.properties.supported ;
+		const alexaSupported = supported.forEach((support)=>{
 			const newSupport = support;
 			newSupport.value = typeof newSupport.value === "string" && newSupport.value.indexOf("()") >= 0 ? eval(newSupport.value)() : newSupport.value ;
 			properties.push({

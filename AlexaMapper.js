@@ -43,7 +43,7 @@ class AlexaMapper {
 			      	debugLogger('%j',domoticzDevice);
 					result = this.mapAlexaFormatFromDomoticzDevice(domoticzDevice,alexaMap);
 					scores[score] = result;
-					prodLogger("---------END mapping----------");		
+					prodLogger("---------END mapping----------");
 			        //throw BreakException ;
 				}
 			});

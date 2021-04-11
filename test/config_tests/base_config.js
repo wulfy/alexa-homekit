@@ -62,12 +62,12 @@ class mockedDomoticz extends domoticz {
     }
 
     getConnectionConfig (token){
-        const basicAuth = 'Basic ' + Buffer.from(`foo:bar`).toString('base64');
+        const basicAuth = 'Basic ' + Buffer.from(`alexa:Doalexa`).toString('base64');
         prodLogger("CONFIG MOCKED");
         return {
                 proto: "http",
-                hostname: "foo.bar.com",
-                port: "8080",
+                hostname: "lan.scaput.ovh",
+                port: "8084",
                 path: '/json.htm',
                 method: 'GET',
                 headers: {

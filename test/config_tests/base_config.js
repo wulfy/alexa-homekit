@@ -66,8 +66,8 @@ class mockedDomoticz extends domoticz {
         prodLogger("CONFIG MOCKED");
         return {
                 proto: "http",
-                hostname: "foo.bar.com",
-                port: "8080",
+                hostname: "host",
+                port: "port",
                 path: '/json.htm',
                 method: 'GET',
                 headers: {

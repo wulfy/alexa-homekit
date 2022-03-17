@@ -169,6 +169,14 @@ class AlexaMapper {
 	             	full_capability.capabilityResources = capa.capabilityResources;
 	             }
 
+	             if(capa.presets) {
+		         	full_capability.presets = capa.presets;
+		         }
+		         
+		         if(capa.configuration) {
+	             	full_capability.configuration = capa.configuration;
+	             }
+
 	             if(capa.properties) {
 	             	full_capability.properties = capa.properties;
 	             }

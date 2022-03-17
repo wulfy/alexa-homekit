@@ -583,18 +583,7 @@ const DOMOTICZ_VOLTAGE_RANGE = {
                	}
       }
 		}
-	],
-	"presets": [
-      {
-        "rangeValue": 1,
-        "presetResources": {
-          ...FRIENDLY_NAMES
-        }
-      },
-    ],
-    "capabilityResources": {
-    ...FRIENDLY_NAMES
-  },
+	]
 };
 
 const DOMOTICZ_USAGE_RANGE = {
@@ -616,18 +605,7 @@ const DOMOTICZ_USAGE_RANGE = {
              	}
   		}
 		}
-	],
-  "presets": [
-      {
-        "rangeValue": 1,
-        "presetResources": {
-          ...FRIENDLY_NAMES
-        }
-      },
-    ],
-    "capabilityResources": {
-    ...FRIENDLY_NAMES
-  },
+	]
 };
 
 const DOMOTICZ_LUX_RANGE = {
@@ -649,18 +627,7 @@ const DOMOTICZ_LUX_RANGE = {
              	}
   		}
   	}
-  ],
-  "presets": [
-      {
-        "rangeValue": 1,
-        "presetResources": {
-          ...FRIENDLY_NAMES
-        }
-      },
-    ],
-    "capabilityResources": {
-    ...FRIENDLY_NAMES
-  },
+  ]
 };
 
 const DOMOTICZ_AQ_RANGE = {
@@ -682,18 +649,7 @@ const DOMOTICZ_AQ_RANGE = {
        	}
 	    }
 	  }
-	],
-  "presets": [
-      {
-        "rangeValue": 1,
-        "presetResources": {
-          ...FRIENDLY_NAMES
-        }
-      },
-    ],
-    "capabilityResources": {
-    ...FRIENDLY_NAMES
-  },
+	]
 };
 
 const DOMOTICZ_NOISE_RANGE = {
@@ -715,18 +671,7 @@ const DOMOTICZ_NOISE_RANGE = {
        	}
     	}
     }
-	],
-  "presets": [
-      {
-        "rangeValue": 1,
-        "presetResources": {
-          ...FRIENDLY_NAMES
-        }
-      },
-    ],
-    "capabilityResources": {
-    ...FRIENDLY_NAMES
-  },
+	]
 };
 
 const DOMOTICZ_UV_RANGE = {
@@ -748,18 +693,7 @@ const DOMOTICZ_UV_RANGE = {
              	}
   		}
   	}
-	],
-  "presets": [
-      {
-        "rangeValue": 1,
-        "presetResources": {
-          ...FRIENDLY_NAMES
-        }
-      },
-    ],
-  "capabilityResources": {
-    ...FRIENDLY_NAMES
-  },
+	]
 };
 
 const DOMOTICZ_HUMIDITY_RANGE = {
@@ -781,18 +715,7 @@ const DOMOTICZ_HUMIDITY_RANGE = {
 	     	}
     	}
     }
-	],
-  "presets": [
-      {
-        "rangeValue": 1,
-        "presetResources": {
-          ...FRIENDLY_NAMES
-        }
-      },
-    ],
-  "capabilityResources": {
-    ...FRIENDLY_NAMES
-  },
+	]
 };
 
 const DOMOTICZ_CUSTOM_RANGE = {
@@ -814,18 +737,7 @@ const DOMOTICZ_CUSTOM_RANGE = {
        	}
     	}
     }
-	],
-  "presets": [
-      {
-        "rangeValue": 1,
-        "presetResources": {
-          ...FRIENDLY_NAMES
-        }
-      },
-    ],
-  "capabilityResources": {
-    ...FRIENDLY_NAMES
-  },
+	]
 };
 
 exports.ALEXAMAPPING = [

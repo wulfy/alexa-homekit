@@ -45,8 +45,17 @@ const FRIENDLY_NAMES = {
 
 const COMMON_RANGE_CAPABILITY = {
 	  "interface": "Alexa.RangeController",
-      "instance": "default",
-      "version": "3",
+    "instance": "default",
+    "version": "3",
+    "capabilityResources": FRIENDLY_NAMES,
+    "presets": [
+	      {
+	        "rangeValue": 1,
+	        "presetResources": {
+	          ...FRIENDLY_NAMES
+	        }
+	      },
+    ],
 	  "properties": {
 	        "supported": [
 	          {
@@ -63,21 +72,29 @@ const COMMON_RANGE_CAPABILITY = {
 
 const COMMON_RANGE_HUMIDITY_CAPABILITY = {
 	  "interface": "Alexa.RangeController",
-      "instance": "default",
-      "version": "3",
-      "capabilityResources": FRIENDLY_NAMES,
+    "instance": "default",
+    "version": "3",
+    "capabilityResources": FRIENDLY_NAMES,
+    "presets": [
+	      {
+	        "rangeValue": 1,
+	        "presetResources": {
+	          ...FRIENDLY_NAMES
+	        }
+	      },
+    ],
 	  "properties": {
-	        "supported": [
-	          {
-	            "name": "rangeValue",
-	            "value":"()=>parseInt(%Humidity%)",
-	            "instance": "default"
-	          }
-	        ],
-	        "proactivelyReported": true,
-	        "retrievable": true,
-	        "nonControllable": true
-      }
+        "supported": [
+          {
+            "name": "rangeValue",
+            "value":"()=>parseInt(%Humidity%)",
+            "instance": "default"
+          }
+        ],
+        "proactivelyReported": true,
+        "retrievable": true,
+        "nonControllable": true
+    }
 }
 
 const COMMON_TOGGLE_CAPABILITY = {
@@ -95,8 +112,7 @@ const COMMON_TOGGLE_CAPABILITY = {
 	        "proactivelyReported": true,
 	        "retrievable": true,
 	        "nonControllable": true
-	  },
-	  "capabilityResources": FRIENDLY_NAMES
+	  }
 }
 
 const COMMON_LEVEL_CAPABILITY = {

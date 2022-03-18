@@ -45,14 +45,23 @@ const FRIENDLY_NAMES = {
 
 const COMMON_RANGE_CAPABILITY = {
 	  "interface": "Alexa.RangeController",
-      "instance": "default",
-      "version": "3",
-      "capabilityResources": FRIENDLY_NAMES,
+    "instance": "default",
+    "version": "3",
+    "capabilityResources": FRIENDLY_NAMES,
+    "presets": [
+	      {
+	        "rangeValue": 1,
+	        "presetResources": {
+	          ...FRIENDLY_NAMES
+	        }
+	      },
+    ],
 	  "properties": {
 	        "supported": [
 	          {
 	            "name": "rangeValue",
-	            "value":"()=>parseInt(%Data%)"
+	            "value":"()=>parseInt(('%Data%').replace(/[a-z ]/g,''))",
+	            "instance": "default"
 	          }
 	        ],
 	        "proactivelyReported": true,
@@ -63,20 +72,29 @@ const COMMON_RANGE_CAPABILITY = {
 
 const COMMON_RANGE_HUMIDITY_CAPABILITY = {
 	  "interface": "Alexa.RangeController",
-      "instance": "default",
-      "version": "3",
-      "capabilityResources": FRIENDLY_NAMES,
+    "instance": "default",
+    "version": "3",
+    "capabilityResources": FRIENDLY_NAMES,
+    "presets": [
+	      {
+	        "rangeValue": 1,
+	        "presetResources": {
+	          ...FRIENDLY_NAMES
+	        }
+	      },
+    ],
 	  "properties": {
-	        "supported": [
-	          {
-	            "name": "rangeValue",
-	            "value":"()=>parseInt(%Humidity%)"
-	          }
-	        ],
-	        "proactivelyReported": true,
-	        "retrievable": true,
-	        "nonControllable": true
-      }
+        "supported": [
+          {
+            "name": "rangeValue",
+            "value":"()=>parseInt(%Humidity%)",
+            "instance": "default"
+          }
+        ],
+        "proactivelyReported": true,
+        "retrievable": true,
+        "nonControllable": true
+    }
 }
 
 const COMMON_TOGGLE_CAPABILITY = {
@@ -94,8 +112,7 @@ const COMMON_TOGGLE_CAPABILITY = {
 	        "proactivelyReported": true,
 	        "retrievable": true,
 	        "nonControllable": true
-	  },
-	  "capabilityResources": FRIENDLY_NAMES
+	  }
 }
 
 const COMMON_LEVEL_CAPABILITY = {
@@ -109,7 +126,7 @@ const COMMON_LEVEL_CAPABILITY = {
 	            "name": "percentage",
 	            "value" : "%Level%",
 	        }],
-	        "retrievable": true
+	     "retrievable": true
 		};
 
 const COMMON_PERCENTAGE_CAPABILITY = {
@@ -557,15 +574,16 @@ const DOMOTICZ_VOLTAGE_RANGE = {
 		"displayCategories" : ["OTHER"]
 	},
 	"capabilities": [
-		COMMON_RANGE_CAPABILITY,
-	],
-	"configuration": {
+		{ ...COMMON_RANGE_CAPABILITY,
+			"configuration": {
                 "supportedRange": {
                   "minimumValue": 1,
                   "maximumValue": 300,
                   "precision": 1
                	}
-    }
+      }
+		}
+	]
 };
 
 const DOMOTICZ_USAGE_RANGE = {
@@ -577,15 +595,17 @@ const DOMOTICZ_USAGE_RANGE = {
 		"displayCategories" : ["OTHER"]
 	},
 	"capabilities": [
-		COMMON_RANGE_CAPABILITY,
-	],
-	"configuration": {
-                "supportedRange": {
-                  "minimumValue": 1,
-                  "maximumValue": 1000000,
-                  "precision": 1
-               	}
-    }
+		{
+			...COMMON_RANGE_CAPABILITY,
+			"configuration": {
+              "supportedRange": {
+                "minimumValue": 1,
+                "maximumValue": 1000000,
+                "precision": 1
+             	}
+  		}
+		}
+	]
 };
 
 const DOMOTICZ_LUX_RANGE = {
@@ -597,15 +617,17 @@ const DOMOTICZ_LUX_RANGE = {
 		"displayCategories" : ["OTHER"]
 	},
 	"capabilities": [
-		COMMON_RANGE_CAPABILITY,
-	],
-	"configuration": {
-                "supportedRange": {
-                  "minimumValue": 1,
-                  "maximumValue": 255,
-                  "precision": 1
-               	}
-    }
+		{
+			...COMMON_RANGE_CAPABILITY,
+			"configuration": {
+              "supportedRange": {
+                "minimumValue": 1,
+                "maximumValue": 255,
+                "precision": 1
+             	}
+  		}
+  	}
+  ]
 };
 
 const DOMOTICZ_AQ_RANGE = {
@@ -617,15 +639,17 @@ const DOMOTICZ_AQ_RANGE = {
 		"displayCategories" : ["OTHER"]
 	},
 	"capabilities": [
-		COMMON_RANGE_CAPABILITY,
-	],
-	"configuration": {
-                "supportedRange": {
-                  "minimumValue": 1,
-                  "maximumValue": 1000,
-                  "precision": 1
-               	}
-    }
+		{
+			...COMMON_RANGE_CAPABILITY,
+			"configuration": {
+        "supportedRange": {
+          "minimumValue": 1,
+          "maximumValue": 1000,
+          "precision": 1
+       	}
+	    }
+	  }
+	]
 };
 
 const DOMOTICZ_NOISE_RANGE = {
@@ -637,15 +661,17 @@ const DOMOTICZ_NOISE_RANGE = {
 		"displayCategories" : ["OTHER"]
 	},
 	"capabilities": [
-		COMMON_RANGE_CAPABILITY,
-	],
-	"configuration": {
-                "supportedRange": {
-                  "minimumValue": 1,
-                  "maximumValue": 1000,
-                  "precision": 1
-               	}
+		{
+			...COMMON_RANGE_CAPABILITY,
+			"configuration": {
+        "supportedRange": {
+          "minimumValue": 1,
+          "maximumValue": 1000,
+          "precision": 1
+       	}
+    	}
     }
+	]
 };
 
 const DOMOTICZ_UV_RANGE = {
@@ -657,15 +683,17 @@ const DOMOTICZ_UV_RANGE = {
 		"displayCategories" : ["OTHER"]
 	},
 	"capabilities": [
-		COMMON_RANGE_CAPABILITY,
-	],
-	"configuration": {
-                "supportedRange": {
-                  "minimumValue": 1,
-                  "maximumValue": 1000,
-                  "precision": 1
-               	}
-    }
+		{
+			...COMMON_RANGE_CAPABILITY,
+			"configuration": {
+              "supportedRange": {
+                "minimumValue": 1,
+                "maximumValue": 1000,
+                "precision": 1
+             	}
+  		}
+  	}
+	]
 };
 
 const DOMOTICZ_HUMIDITY_RANGE = {
@@ -677,15 +705,17 @@ const DOMOTICZ_HUMIDITY_RANGE = {
 		"displayCategories" : ["OTHER"]
 	},
 	"capabilities": [
-		COMMON_RANGE_HUMIDITY_CAPABILITY,
-	],
-	"configuration": {
-                "supportedRange": {
-                  "minimumValue": 1,
-                  "maximumValue": 1000,
-                  "precision": 1
-               	}
+		{
+			...COMMON_RANGE_HUMIDITY_CAPABILITY,
+			"configuration": {
+	      "supportedRange": {
+	        "minimumValue": 1,
+	        "maximumValue": 1000,
+	        "precision": 1
+	     	}
+    	}
     }
+	]
 };
 
 const DOMOTICZ_CUSTOM_RANGE = {
@@ -697,15 +727,17 @@ const DOMOTICZ_CUSTOM_RANGE = {
 		"displayCategories" : ["OTHER"]
 	},
 	"capabilities": [
-		COMMON_RANGE_CAPABILITY,
-	],
-	"configuration": {
-                "supportedRange": {
-                  "minimumValue": 1,
-                  "maximumValue": 1000000,
-                  "precision": 1
-               	}
+		{
+			...COMMON_RANGE_CAPABILITY,
+			"configuration": {
+        "supportedRange": {
+          "minimumValue": 1,
+          "maximumValue": 1000000,
+          "precision": 1
+       	}
+    	}
     }
+	]
 };
 
 exports.ALEXAMAPPING = [

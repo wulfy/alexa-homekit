@@ -112,7 +112,8 @@ const COMMON_TOGGLE_CAPABILITY = {
 	        "proactivelyReported": true,
 	        "retrievable": true,
 	        "nonControllable": true
-	  }
+	  },
+	  "capabilityResources": FRIENDLY_NAMES,
 }
 
 const COMMON_LEVEL_CAPABILITY = {
@@ -772,4 +773,5 @@ exports.ALEXAMAPPING = [
 							DOMOTICZ_UV_RANGE,
 							DOMOTICZ_CUSTOM_RANGE,
 							DOMOTICZ_ALEXA_DIMMER,
+							DOMOTICZ_TOGGLE,
 						];

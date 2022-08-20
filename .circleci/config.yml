@@ -1,15 +1,19 @@
-version: 2
+version: '2.1'
+orbs:
+  node: circleci/node@x.y
 jobs:
     build-app:
+        docker:
+            - image: 'cimg/base:stable'
         steps:
-            -
-                run: yarn install
+            - checkout
+            - node/install:
+                install-yarn: true
+                node-version: '16.13'
+            - run: yarn install
             # run tests!
-            -
-                run: yarn test
-
+            - run: yarn test
 workflows:
-    version: 2
-    build-project:
+    test_my_app:
         jobs:
             - build-app

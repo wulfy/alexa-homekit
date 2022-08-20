@@ -1,0 +1,30 @@
+version: '2.1'
+orbs:
+  node: circleci/node@5.0.2
+jobs:
+    build-app:
+        docker:
+            - image: 'cimg/base:stable'
+              environment:
+                    APP_ENV: test
+                    CRYPTOPASS: 'circleci oauth'
+                    PROD_MODE: false
+                    INSTANCE_NAME: 'dev'
+                    MYSQL_ADDON_HOST: 'localhost'
+                    MYSQL_ADDON_PORT: '3306'
+                    MYSQL_ADDON_DB: 'alexa_oauth'
+                    METRICS_HOST: 'no.host'
+                    METRICS_PORT: 2003
+                    METRICS_UDP_PORT: 8124
+        steps:
+            - checkout
+            - node/install:
+                install-yarn: true
+                node-version: '16.13'
+            - run: yarn install
+            # run tests!
+            - run: yarn test
+workflows:
+    test_my_app:
+        jobs:
+            - build-app

@@ -1,0 +1,10 @@
+version: 2
+jobs:
+    build-app:
+
+        steps:
+            -
+                run: yarn install
+            # run tests!
+            -
+                run: yarn test

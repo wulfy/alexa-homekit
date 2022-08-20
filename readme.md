@@ -1,5 +1,8 @@
 # ALHAU
 
+[![CircleCI](https://circleci.com/gh/wulfy/alexa-homekit.svg?style=svg)](https://circleci.com/gh/wulfy/alexa-homekit)
+
+
 ## Code installation
 In lambda : use serverless plugin to package and deploy to lambda 
 `npm run package` will do the job. 

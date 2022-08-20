@@ -5,7 +5,7 @@ jobs:
     build-app:
         docker:
             - image: 'cimg/base:stable'
-            - environment:
+              environment:
                     APP_ENV: test
                     CRYPTOPASS: 'circleci oauth'
                     PROD_MODE: false

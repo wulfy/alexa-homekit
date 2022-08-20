@@ -5,6 +5,11 @@ jobs:
     build-app:
         docker:
             - image: 'cimg/base:stable'
+            - environment:
+                    APP_ENV: test
+                    CRYPTOPASS: 'circleci oauth'
+                    PROD_MODE: false
+                    INSTANCE_NAME: 'dev'
         steps:
             - checkout
             - node/install:

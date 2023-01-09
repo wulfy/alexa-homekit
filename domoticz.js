@@ -76,7 +76,7 @@ class domoticz {
 		conConfig.path += "?" + (isScene ? LIST_SCENE_REQUEST : LIST_DEVICE_REQUEST) + filter;
 		debugLogger("getDevices " + conConfig.path);
 		const devicesJsonList = await promiseHttpRequest(conConfig);
-		debugLogger('%j',devicesJsonList)
+		console.log('%j',devicesJsonList)
 		const devicesObjList = JSON.parse(devicesJsonList);
 		return devicesObjList.result;
 	}
@@ -106,11 +106,11 @@ class domoticz {
 	}
 
 	//send http or https command to a domoticz device
-	async sendCommand(deviceSubtype,deviceId,directive,directiveValue){
+	async sendCommand(deviceSubtype,deviceId,directive,directiveValue,inverted){
 		let conConfig = await this.getConnectionConfig();
 		conConfig.path += "?" + SET_COMMAND + "&";
 		//const params = overrideParams && typeof overrideParams === "function" ? overrideParams(requestMethod) : DEVICE_HANDLER_COMMANDS_PARAMS[requestMethod];
-		conConfig.path += generate_command(deviceSubtype,deviceId,directive,directiveValue);
+		conConfig.path += generate_command(deviceSubtype,deviceId,directive,directiveValue,inverted);
 
 		debugLogger('%j',conConfig.path);
 		try {

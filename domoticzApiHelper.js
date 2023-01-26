@@ -71,7 +71,7 @@ exports.sendDeviceCommand = async function (request, value){
 	const deviceId = request.directive.endpoint.endpointId.split("_")[0];
 	const subtype = request.directive.endpoint.endpointId.split("_")[2];
 	const domoticzConnector = getDomoticzFromToken(requestToken);
-	const inverted = cookieInfos['ReversePosition'] && cookieInfos['ReversePosition'] === 'true' ;
+	const inverted = cookieInfos && cookieInfos['ReversePosition'] === 'true' ;
 
 	return await domoticzConnector.sendCommand(subtype,deviceId,directive,directiveValue,inverted)
 }

@@ -25,6 +25,8 @@ const SUBTYPE_TO_FORCE_ON = [PUSH_ON_BUTTON];
 const SUBTYPE_TO_FORCE_OFF = [PUSH_OFF_BUTTON];
 const SUBTYPE_TO_STOP = [VOLET_VENETIAN_US_SUBTYPE,VOLET_VENETIAN_EU_SUBTYPE,VOLET_BLINDS];
 
+const deviceHasToBeInverted = (subType,inverted) => (SUBTYPE_TO_INVERT.includes(subType) && !inverted) || (!SUBTYPE_TO_INVERT.includes(subType) && inverted);
+
 device_handler_command = (subType,value,inverted)=>({
 	"SetPercentage": {
 		"command" : SUBTYPE_TO_STOP.includes(subType) && 50 === value 
@@ -41,11 +43,11 @@ device_handler_command = (subType,value,inverted)=>({
 		"value" : PERCENT_VALUE + "=" + value,
 	},
 	"TurnOff": {
-		"command" : (SUBTYPE_TO_INVERT.includes(subType) || SUBTYPE_TO_FORCE_ON.includes(subType) || inverted) ? SET_DEVICE_ON : SET_DEVICE_OFF,
+		"command" : (deviceHasToBeInverted(subType,inverted) || SUBTYPE_TO_FORCE_ON.includes(subType)) ? SET_DEVICE_ON : SET_DEVICE_OFF,
 		"param" : SWITCH_PARAM,
 	},
 	"TurnOn": {
-		"command" : (SUBTYPE_TO_INVERT.includes(subType) || SUBTYPE_TO_FORCE_OFF.includes(subType) || inverted) ? SET_DEVICE_OFF : SET_DEVICE_ON,
+		"command" : (deviceHasToBeInverted(subType,inverted) || SUBTYPE_TO_FORCE_OFF.includes(subType)) ? SET_DEVICE_OFF : SET_DEVICE_ON,
 		"param" : SWITCH_PARAM,
 	},
 	"SetTargetTemperature": {
@@ -72,7 +74,7 @@ device_handler_command = (subType,value,inverted)=>({
 });
 
 exports.generate_command = (subtype,deviceId,command,value,inverted) => {
-	prodLogger(subtype + "->" + command + "->" + value)
+	prodLogger('subtype:' + subtype + " command:" + command + " value:" + value + " inverted:" + inverted)
 	const paramsMapper = device_handler_command(subtype,value,inverted)[command];
 	let deviceRequest = `${paramsMapper["param"]}&idx=${deviceId}`;
 

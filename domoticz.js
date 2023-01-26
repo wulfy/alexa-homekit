@@ -76,7 +76,7 @@ class domoticz {
 		conConfig.path += "?" + (isScene ? LIST_SCENE_REQUEST : LIST_DEVICE_REQUEST) + filter;
 		debugLogger("getDevices " + conConfig.path);
 		const devicesJsonList = await promiseHttpRequest(conConfig);
-		console.log('%j',devicesJsonList)
+		debugLogger('%j',devicesJsonList)
 		const devicesObjList = JSON.parse(devicesJsonList);
 		return devicesObjList.result;
 	}

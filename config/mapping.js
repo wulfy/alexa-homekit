@@ -152,7 +152,7 @@ const COMMON_POWER_CONTROLLER_CAPABILITY = {
 			},
 			"supported": [{
 	            "name": "powerState",
-	            "value":"()=> ('%Data%' === 'Off' || '%Data%' === 'Closed') ? ('%ReverseState%' === 'false' ? 'OFF' : 'ON') : ('%ReverseState%' === 'false' ? 'ON' : 'OFF')",
+	            "value":"()=> ('%Data%' === 'Off' || '%Data%' === 'Closed') ? ('%ReverseState%' === 'true' ? 'ON' : 'OFF') : ('%ReverseState%' === 'true' ? 'OFF' : 'ON')",
 	        }],
 	        "proactivelyReported": true,
 	        "retrievable": true
@@ -247,7 +247,7 @@ const DOMOTICZ_ALEXA_VOLET = {
 		"displayCategories" : ["LIGHT"],
 		"cookie": {
 			MaxDimLevel:"%MaxDimLevel%",
-			inverted:"%ReversePosition%"
+			ReversePosition:"%ReversePosition%"
 		},
 	},
 	"capabilities" : [

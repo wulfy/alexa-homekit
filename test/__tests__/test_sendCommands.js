@@ -34,7 +34,7 @@ test('SENDING TURN ON POWER', async done => {
 
 test('SENDING TURN ON POWER BLINDS', async done => {
     const data = await base_config.sendDeviceCommand(base_config.mockups.ALEXA_TURNON_REQUEST_BLINDS);
-    expect(data).toBe("/json.htm?type=command&param=switchlight&idx=3&switchcmd=Off");
+    expect(data).toBe("/json.htm?type=command&param=switchlight&idx=3&switchcmd=On");
     done();
 });
 

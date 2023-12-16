@@ -73,11 +73,22 @@ class domoticz {
 
 		prodLogger("get devices original");
 		let conConfig = await this.getConnectionConfig();
-		conConfig.path += "?" + (isScene ? LIST_SCENE_REQUEST : LIST_DEVICE_REQUEST) + filter;
-		debugLogger("getDevices " + conConfig.path);
-		const devicesJsonList = await promiseHttpRequest(conConfig);
+		conConfig.path += "?" + (isScene ? LIST_SCENE_REQUEST_20232 : LIST_DEVICE_REQUEST_20232) + filter;
+		debugLogger("getDevices new version" + conConfig.path);
+		let devicesJsonList = await promiseHttpRequest(conConfig);
 		debugLogger('%j',devicesJsonList)
-		const devicesObjList = JSON.parse(devicesJsonList);
+		let devicesObjList = JSON.parse(devicesJsonList);
+
+		//quick fix for DOMOTICZ UPDATE, if not last version, change to old one
+		//See : https://www.domoticz.com/forum/viewtopic.php?p=303575&sid=09d06521e13e8f5cead43e378a45b027#p303575
+		if(devicesObjList.status !== "OK") {
+			conConfig.path += "?" + (isScene ? LIST_SCENE_REQUEST : LIST_DEVICE_REQUEST) + filter;
+			debugLogger("getDevices old version" + conConfig.path);
+			devicesJsonList = await promiseHttpRequest(conConfig);
+			debugLogger('%j',devicesJsonList)
+			devicesObjList = JSON.parse(devicesJsonList);
+		}
+
 		return devicesObjList.result;
 	}
 

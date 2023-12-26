@@ -1,7 +1,9 @@
 const {decrypt} = require("./config/security");
 const {getUserData} = require("./config/database");
 const { LIST_DEVICE_REQUEST,
-		LIST_SCENE_REQUEST, 
+		LIST_DEVICE_REQUEST_20232,
+		LIST_SCENE_REQUEST,
+		LIST_SCENE_REQUEST_20232, 
 		STATE_REQUEST, 
 		SET_COMMAND, 
 		generate_command
@@ -73,9 +75,10 @@ class domoticz {
 
 		prodLogger("get devices original");
 		let conConfig = await this.getConnectionConfig();
-		conConfig.path += "?" + (isScene ? LIST_SCENE_REQUEST_20232 : LIST_DEVICE_REQUEST_20232) + filter;
-		debugLogger("getDevices new version" + conConfig.path);
-		let devicesJsonList = await promiseHttpRequest(conConfig);
+		let conConfig20232 = {...conConfig};
+		conConfig20232.path += "?" + (isScene ? LIST_SCENE_REQUEST_20232 : LIST_DEVICE_REQUEST_20232) + filter;
+		debugLogger("getDevices new version" + conConfig20232.path);
+		let devicesJsonList = await promiseHttpRequest(conConfig20232);
 		debugLogger('%j',devicesJsonList)
 		let devicesObjList = JSON.parse(devicesJsonList);
 

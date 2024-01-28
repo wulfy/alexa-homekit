@@ -24,7 +24,13 @@ jobs:
             - run: yarn install
             # run tests!
             - run: yarn test
+    deploy-prod:
+        type: approval
+
 workflows:
     test_my_app:
         jobs:
             - build-app
+    deploy:
+        jobs:
+            - deploy-prod

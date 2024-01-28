@@ -32,6 +32,9 @@ jobs:
                     DEPLOY_FUNCTION: alhau_preprod
         steps:
             - checkout
+            - node/install:
+                install-yarn: true
+                node-version: '14'
             - aws-cli/setup:
                 aws_access_key_id: AWS_ACCESS_KEY
                 aws_secret_access_key: AWS_PREPROD_ACCESS_SECRET

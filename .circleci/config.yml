@@ -27,15 +27,17 @@ jobs:
             # run tests!
             - run: yarn test
     deploy-preprod:
-        executor: serverless/default
+        executor: serverless-framework/default
         steps:
             - checkout
             - aws-cli/setup:
                 aws_access_key_id: AWS_ACCESS_KEY
                 aws_secret_access_key: AWS_PREPROD_ACCESS_SECRET
                 region: AWS_REGION_NAME
-            - serverless/setup
-            - run: sls deploy 
+            - serverless-framework/setup
+            - run:
+                command: serverless deploy -v
+                name: deploy 
 
 workflows:
     test_my_app:

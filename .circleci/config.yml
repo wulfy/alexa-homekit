@@ -35,7 +35,7 @@ jobs:
                 aws_secret_access_key: AWS_PREPROD_ACCESS_SECRET
                 region: AWS_REGION_NAME
             - serverless-framework/setup
-            - run: sls deploy
+            - run: sls deploy --stage preprod
 
 workflows:
     test_my_app:

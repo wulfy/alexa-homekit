@@ -63,6 +63,16 @@ functions:
   index:
     handler: index.handler
 
+  
+# Stage parameters
+params:
+  # Values for the "prod" stage
+  prod:
+    my-parameter: foo
+  # Values for the "dev" stage
+  preprod:
+    my-parameter: alhau_preprod
+
 #    The following are a few example events you can configure
 #    NOTE: Please make sure to change your handler code to work with those events
 #    Check the event documentation for details

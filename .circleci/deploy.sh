@@ -2,7 +2,6 @@
 
 set -o nounset
 set -o errexit
-set -o pipefail
 
 
 current_build="${DEPLOY_FUNCTION}"

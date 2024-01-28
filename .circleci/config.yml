@@ -39,7 +39,7 @@ jobs:
             - run:
                 name: Deploy
                 command: |
-                    ./.circleci/deploy.sh echo
+                    sh ./.circleci/deploy.sh
 
 workflows:
     test_my_app:

@@ -11,7 +11,7 @@ if [ -f package-lock.json ]; then
 else
     npm i
 fi
-zip -r "${current_build}.zip '*.js' 'config' 'node_modules'" .
+zip -r "${current_build}.zip" *.js config node_modules
 echo "Checking if function $current_build already exists"
 aws lambda list-functions | jq -r --arg CURRENTFUNCTION "$current_build" '.Functions[] | select(.FunctionName==$CURRENTFUNCTION) | .FunctionArn'
 echo "Updating function: $current_build"

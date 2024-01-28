@@ -26,9 +26,10 @@ jobs:
             # run tests!
             - run: yarn test
     deploy-preprod:
-        executor: aws-cli/default
-        environment:
-            DEPLOY_FUNCTION: alhau_preprod
+        docker:
+            - image: 'cimg/base:stable'
+              environment:
+                    DEPLOY_FUNCTION: alhau_preprod
         steps:
             - checkout
             - aws-cli/setup:

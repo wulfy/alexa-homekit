@@ -71,7 +71,8 @@ params:
     my-parameter: foo
   # Values for the "dev" stage
   preprod:
-    my-parameter: alhau_preprod
+    service: alhau_preprod
+    region: us-west-1
 
 #    The following are a few example events you can configure
 #    NOTE: Please make sure to change your handler code to work with those events

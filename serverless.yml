@@ -19,7 +19,8 @@ service: alhau_skill # NOTE: update this with your service name
 
 provider:
   name: aws
-  runtime: nodejs8.10
+  deploymentMethod: direct
+  runtime: nodejs14
 
 # you can overwrite defaults here
 #  stage: dev

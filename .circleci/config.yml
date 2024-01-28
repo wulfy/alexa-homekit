@@ -32,7 +32,5 @@ workflows:
     test_my_app:
         jobs:
             - build-app
-    deploy:
-        jobs:
             - deploy-preprod:
                 type: approval

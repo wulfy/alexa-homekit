@@ -28,14 +28,18 @@ jobs:
             - run: yarn test
     deploy-preprod:
         executor: serverless-framework/default
+        environment:
+            DEPLOY_FUNCTION
         steps:
             - checkout
             - aws-cli/setup:
                 aws_access_key_id: AWS_ACCESS_KEY
                 aws_secret_access_key: AWS_PREPROD_ACCESS_SECRET
                 region: AWS_REGION_NAME
-            - serverless-framework/setup
-            - run: sls deploy --stage preprod
+            - run:
+                name: Deploy
+                command: |
+                    ./.circleci/deploy.sh echo
 
 workflows:
     test_my_app:

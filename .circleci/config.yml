@@ -1,6 +1,7 @@
 version: '2.1'
 orbs:
   node: circleci/node@5.0.2
+  serverless-framework: circleci/serverless-framework@2.0.1
 jobs:
     build-app:
         docker:
@@ -20,15 +21,19 @@ jobs:
             - checkout
             - node/install:
                 install-yarn: true
-                node-version: '16.13'
+                node-version: '14'
             - run: yarn install
             # run tests!
             - run: yarn test
     deploy-preprod:
-        docker:
-            - image: cimg/node:16.13.0
+        executor: serverless-framework/default
         steps:
             - checkout
+            - aws-cli/setup
+            - serverless-framework/setup
+            - run:
+                command: serverless deploy -v
+                name: deploy
 
 workflows:
     test_my_app:

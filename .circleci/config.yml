@@ -27,7 +27,7 @@ jobs:
             # run tests!
             - run: yarn test
     deploy-preprod:
-        executor: serverless-framework/default
+        executor: serverless/default
         steps:
             - checkout
             - aws-cli/setup:

@@ -2,6 +2,7 @@ version: '2.1'
 orbs:
   node: circleci/node@5.0.2
   serverless-framework: circleci/serverless-framework@2.0.1
+  aws-cli: circleci/aws-cli@4.1.2
 jobs:
     build-app:
         docker:
@@ -29,11 +30,12 @@ jobs:
         executor: serverless-framework/default
         steps:
             - checkout
-            - aws-cli/setup
-            - serverless-framework/setup
-            - run:
-                command: serverless deploy -v
-                name: deploy
+            - aws-cli/setup:
+                aws-access-key-id: AWS_ACCESS_KEY
+                aws-secret-access-key: AWS_PREPROD_ACCESS_SECRET
+                aws-region: AWS_REGION_NAME
+            - serverless/setup
+            - run: sls deploy 
 
 workflows:
     test_my_app:

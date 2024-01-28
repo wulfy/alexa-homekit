@@ -24,7 +24,7 @@ jobs:
             - run: yarn install
             # run tests!
             - run: yarn test
-    deploy-prod:
+    deploy-preprod:
         steps:
             - checkout
 
@@ -34,8 +34,5 @@ workflows:
             - build-app
     deploy:
         jobs:
-            - hold-deploy-preprod:
+            - deploy-preprod:
                 type: approval
-            - deploy-prod:
-                requires:
-                    - hold-deploy-preprod

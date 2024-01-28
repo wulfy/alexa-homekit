@@ -25,6 +25,8 @@ jobs:
             # run tests!
             - run: yarn test
     deploy-preprod:
+        docker:
+            - image: *node_image
         steps:
             - checkout
 

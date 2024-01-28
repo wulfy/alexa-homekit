@@ -41,5 +41,8 @@ workflows:
     test_my_app:
         jobs:
             - build-app
-            - deploy-preprod:
+            - hold-preprod:
                 type: approval
+            - deploy-preprod:
+                requires:
+                    - hold-preprod

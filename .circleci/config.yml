@@ -39,7 +39,6 @@ jobs:
                 aws_access_key_id: AWS_ACCESS_KEY
                 aws_secret_access_key: AWS_PREPROD_ACCESS_SECRET
                 region: AWS_REGION_NAME
-            - run: rm -rf node_modules
             - run: yarn install --production
             - run:
                 name: Deploy

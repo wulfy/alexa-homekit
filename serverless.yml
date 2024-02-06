@@ -21,7 +21,9 @@ provider:
   name: aws
   deploymentMethod: direct
   runtime: nodejs14
-
+  region: eu-west-1
+  deploymentBucket:
+    name: alhau
 # you can overwrite defaults here
 #  stage: dev
 #  region: us-east-1
@@ -63,7 +65,6 @@ functions:
   index:
     name: alhau_preprod
     handler: index.handler
-
   
 # Stage parameters
 params:
@@ -73,7 +74,7 @@ params:
   # Values for the "dev" stage
   preprod:
     service: alhau_preprod
-    region: us-west-1
+    region: eu-west-1
 
 #    The following are a few example events you can configure
 #    NOTE: Please make sure to change your handler code to work with those events

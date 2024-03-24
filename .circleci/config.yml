@@ -70,6 +70,11 @@ workflows:
             - build-app
             - hold-preprod:
                 type: approval
+            - hold-prod:
+                type: approval
             - deploy-preprod:
                 requires:
                     - hold-preprod
+            - deploy-prod:
+                requires:
+                    - hold-prod

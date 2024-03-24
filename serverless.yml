@@ -11,7 +11,7 @@
 #
 # Happy Coding!
 
-service: alhau_skill # NOTE: update this with your service name
+service: alhau # NOTE: update this with your service name
 
 # You can pin your service to only deploy with a specific Serverless version
 # Check out our docs for more details
@@ -19,8 +19,11 @@ service: alhau_skill # NOTE: update this with your service name
 
 provider:
   name: aws
-  runtime: nodejs8.10
-
+  deploymentMethod: direct
+  runtime: nodejs14
+  region: eu-west-1
+  deploymentBucket:
+    name: alhau
 # you can overwrite defaults here
 #  stage: dev
 #  region: us-east-1
@@ -60,7 +63,18 @@ package:
 
 functions:
   index:
+    name: alhau_preprod
     handler: index.handler
+  
+# Stage parameters
+params:
+  # Values for the "prod" stage
+  prod:
+    my-parameter: foo
+  # Values for the "dev" stage
+  preprod:
+    service: alhau_preprod
+    region: eu-west-1
 
 #    The following are a few example events you can configure
 #    NOTE: Please make sure to change your handler code to work with those events

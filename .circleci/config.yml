@@ -1,6 +1,7 @@
 version: '2.1'
 orbs:
   node: circleci/node@5.0.2
+  aws-cli: circleci/aws-cli@4.1.2
 jobs:
     build-app:
         docker:
@@ -20,11 +21,60 @@ jobs:
             - checkout
             - node/install:
                 install-yarn: true
-                node-version: '16.13'
+                node-version: '14'
             - run: yarn install
             # run tests!
             - run: yarn test
+    deploy-preprod:
+        docker:
+            - image: 'cimg/base:stable'
+              environment:
+                    DEPLOY_FUNCTION: alhau_preprod
+        steps:
+            - checkout
+            - node/install:
+                install-yarn: true
+                node-version: '14'
+            - aws-cli/setup:
+                aws_access_key_id: AWS_ACCESS_KEY
+                aws_secret_access_key: AWS_PREPROD_ACCESS_SECRET
+                region: AWS_REGION_NAME
+            - run: yarn install --production
+            - run:
+                name: Deploy
+                command: |
+                    sh ./.circleci/deploy.sh
+    deploy-prod:
+        docker:
+            - image: 'cimg/base:stable'
+              environment:
+                    DEPLOY_FUNCTION: ludohomekit
+        steps:
+            - checkout
+            - node/install:
+                install-yarn: true
+                node-version: '14'
+            - aws-cli/setup:
+                aws_access_key_id: AWS_ACCESS_KEY
+                aws_secret_access_key: AWS_PREPROD_ACCESS_SECRET
+                region: AWS_REGION_NAME
+            - run: yarn install --production
+            - run:
+                name: Deploy
+                command: |
+                    sh ./.circleci/deploy.sh
+
 workflows:
     test_my_app:
         jobs:
             - build-app
+            - hold-preprod:
+                type: approval
+            - hold-prod:
+                type: approval
+            - deploy-preprod:
+                requires:
+                    - hold-preprod
+            - deploy-prod:
+                requires:
+                    - hold-prod

@@ -44,6 +44,25 @@ jobs:
                 name: Deploy
                 command: |
                     sh ./.circleci/deploy.sh
+    deploy-prod:
+        docker:
+            - image: 'cimg/base:stable'
+              environment:
+                    DEPLOY_FUNCTION: ludohomekit
+        steps:
+            - checkout
+            - node/install:
+                install-yarn: true
+                node-version: '14'
+            - aws-cli/setup:
+                aws_access_key_id: AWS_ACCESS_KEY
+                aws_secret_access_key: AWS_PREPROD_ACCESS_SECRET
+                region: AWS_REGION_NAME
+            - run: yarn install --production
+            - run:
+                name: Deploy
+                command: |
+                    sh ./.circleci/deploy.sh
 
 workflows:
     test_my_app:

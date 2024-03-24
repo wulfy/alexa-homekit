@@ -114,11 +114,11 @@ class AlexaMapper {
 									.replace(/(?:\r\n|\r|\n)/g,'\\n')
 									.replace(/"/g,'\\"')
 									.replace("\t",'')
+									.replace(/\/\\/g,'/')
 								: domoDevice[domoticzVar];
 	 		// get the var from tomoticz and replace it in mapping json
 			alexaDeviceJson = alexaDeviceJson.replace(toReplace,deviceData);
 		});
-		//console.log(alexaDeviceJson);
 		let newAlexaDevice =  JSON.parse(alexaDeviceJson);
 		//const cleanRegex = new RegExp("(?:(?!^[×Þß÷þø])[-'0-9a-zÀ-ÿ ])", 'gui');
 

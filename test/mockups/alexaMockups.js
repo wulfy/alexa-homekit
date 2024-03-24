@@ -195,7 +195,26 @@ exports.ALEXA_TURNON_REQUEST_BLINDS = {
           "token": "a4bf269d3fdd181aee9d73a6dfaaaee058471d54"
         },
         "endpointId": "3_aeon_BlindsPercentage",
-        "cookie": {}
+        "cookie": {
+          ReversePosition:"false"
+        }
+      }
+  }
+}
+
+exports.ALEXA_TURNON_REQUEST_BLINDS_REVERSED = {
+  "directive": {
+      "header":ALEXA_TURNON_REQUEST.directive.header,
+      "name":ALEXA_TURNON_REQUEST.directive.payload,
+      "endpoint": {
+        "scope": {
+          "type": "BearerToken",
+          "token": "a4bf269d3fdd181aee9d73a6dfaaaee058471d54"
+        },
+        "endpointId": "3_aeon_Blinds",
+        "cookie": {
+          ReversePosition:"true"
+        }
       }
   }
 }

@@ -2,6 +2,12 @@ const {prodLogger} = require('./logger.js');
 
 exports.LIST_DEVICE_REQUEST = "type=devices&used=true&order=Name";
 exports.LIST_SCENE_REQUEST = "type=scenes&used=true&order=Name";
+exports.STATE_REQUEST = "type=devices";
+exports.LIST_DEVICE_REQUEST_20232 = "type=command&param=getdevices&used=true&order=Name";
+exports.LIST_SCENE_REQUEST_20232 = "type=command&param=getscenes&used=true&order=Name";
+exports.STATE_REQUEST_20232 = "type=command&param=getdevices";
+exports.SET_COMMAND = "type=command";
+
 const SET_DEVICE_LVL = "switchcmd=Set Level";
 const PERCENT_VALUE = "level";
 const SET_DEVICE_ON = "switchcmd=On";
@@ -12,8 +18,6 @@ const SETPOINT_PARAM = "param=setsetpoint";
 const SETCOLOR_PARAM = "param=setcolbrightnessvalue";
 const SCENE_PARAM = "param=switchscene";
 const SWITCH_PARAM = "param=switchlight";
-exports.STATE_REQUEST = "type=devices";
-exports.SET_COMMAND = "type=command";
 const VOLET_VENETIAN_US_SUBTYPE = "VenetianBlindsUS";
 const VOLET_VENETIAN_EU_SUBTYPE = "VenetianBlindsEU";
 const VOLET_SUBTYPE = "BlindsPercentage";

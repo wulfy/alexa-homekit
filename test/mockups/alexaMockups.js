@@ -117,25 +117,48 @@ exports.ALEXA_DISCOVERY_REQUEST_EXAMPLE = {
   }
 }
 
-const ALEXA_TURNON_REQUEST = {
-  "directive": {
-    "header": {
-      "namespace": "Alexa.PowerController",
-      "name": "TurnOn",
-      "payloadVersion": "3",
-      "messageId": "a3f0e5e2-d669-4679-9280-60952cf16abd",
-      "correlationToken": "AAAAAAAAAQA3kb06Zs4ht1pxHUvBUvoyDAIAAAAAAAC4pVmQxwDoRO8b2q8Fd3mEZUYIn//0qKXQkcU4zcwouVwtccm5Ys+nT20ACvTiW1ShZq49/1HX+jkJxCl/hLLNUitTk4eYZJdFgupCI6tD8DK8VRzMnX7hVWMI2ZOdqpitmdDPGgZweTriroJqYZUdO5nycxuZctGT7XXhEqnn1Zjcvh4w7sCM6XyRjQkBAlNO72n1VwJIPGGaJ1X6XYpRjxS9SS7w7Vk3rbnzM21Z5Wm0CgT72PHfsmtdIceeVRQ+U5ry3cOKjHqkiG2rlerI4mkgZroOX25ggpBtxA5t7OYX4L26088+TjppoxV/bUCv5OncIzH9X67xMrLBxfMtUCbwyF9piujE9TMHmk87tv0GWWm/ho7yVcaxVQvGq1NQbOeUoub2YtfOaSiDVRUA0iSRXMpulcWkN9Uhdt1pGKUG0C7iM48ls7WNJ6CkQJmsJ1GDHP6igfwF/0jE1d3Ny4fREll+3xQDyG7KK518P6Oszv8d+W8hV5zurjPyWsj2HnCWxdJ3ZNWbpX/6M1A9rPLXuzdvy6nHoMLr63UHla+cCUABrtHz63O6dfUBiO86jd+smbgsupiQdEM3xVCdLp3F4p3fMixK0twgz+cuxNq8Yl2A80KciCiwhNl03vOIjkEl7TNdPFx+wkFx8FfeY1jLQfg/MVWO70yVoUF9L7y2g+mbn9YS2FgAQw=="
-    },
-    "endpoint": {
-      "scope": {
-        "type": "BearerToken",
-        "token": "a4bf269d3fdd181aee9d73a6dfaaaee058471d54"
+exports.ALEXA_TURNON_REQUEST_FN = (endpointId) => {
+  return {
+    "directive": {
+      "header": {
+        "namespace": "Alexa.PowerController",
+        "name": "TurnOn",
+        "payloadVersion": "3",
+        "messageId": "a3f0e5e2-d669-4679-9280-60952cf16abd",
+        "correlationToken": "AAAAAAAAAQA3kb06Zs4ht1pxHUvBUvoyDAIAAAAAAAC4pVmQxwDoRO8b2q8Fd3mEZUYIn//0qKXQkcU4zcwouVwtccm5Ys+nT20ACvTiW1ShZq49/1HX+jkJxCl/hLLNUitTk4eYZJdFgupCI6tD8DK8VRzMnX7hVWMI2ZOdqpitmdDPGgZweTriroJqYZUdO5nycxuZctGT7XXhEqnn1Zjcvh4w7sCM6XyRjQkBAlNO72n1VwJIPGGaJ1X6XYpRjxS9SS7w7Vk3rbnzM21Z5Wm0CgT72PHfsmtdIceeVRQ+U5ry3cOKjHqkiG2rlerI4mkgZroOX25ggpBtxA5t7OYX4L26088+TjppoxV/bUCv5OncIzH9X67xMrLBxfMtUCbwyF9piujE9TMHmk87tv0GWWm/ho7yVcaxVQvGq1NQbOeUoub2YtfOaSiDVRUA0iSRXMpulcWkN9Uhdt1pGKUG0C7iM48ls7WNJ6CkQJmsJ1GDHP6igfwF/0jE1d3Ny4fREll+3xQDyG7KK518P6Oszv8d+W8hV5zurjPyWsj2HnCWxdJ3ZNWbpX/6M1A9rPLXuzdvy6nHoMLr63UHla+cCUABrtHz63O6dfUBiO86jd+smbgsupiQdEM3xVCdLp3F4p3fMixK0twgz+cuxNq8Yl2A80KciCiwhNl03vOIjkEl7TNdPFx+wkFx8FfeY1jLQfg/MVWO70yVoUF9L7y2g+mbn9YS2FgAQw=="
       },
-      "endpointId": "2_aeon_Switch",
-      "cookie": {}
-    },
-    "payload": {}
-  }
+      "endpoint": {
+        "scope": {
+          "type": "BearerToken",
+          "token": "a4bf269d3fdd181aee9d73a6dfaaaee058471d54"
+        },
+        "endpointId": endpointId ?? "2_aeon_Switch",
+        "cookie": {}
+      },
+      "payload": {}
+    }
+  };
+}
+
+const ALEXA_TURNON_REQUEST = {
+    "directive": {
+      "header": {
+        "namespace": "Alexa.PowerController",
+        "name": "TurnOn",
+        "payloadVersion": "3",
+        "messageId": "a3f0e5e2-d669-4679-9280-60952cf16abd",
+        "correlationToken": "AAAAAAAAAQA3kb06Zs4ht1pxHUvBUvoyDAIAAAAAAAC4pVmQxwDoRO8b2q8Fd3mEZUYIn//0qKXQkcU4zcwouVwtccm5Ys+nT20ACvTiW1ShZq49/1HX+jkJxCl/hLLNUitTk4eYZJdFgupCI6tD8DK8VRzMnX7hVWMI2ZOdqpitmdDPGgZweTriroJqYZUdO5nycxuZctGT7XXhEqnn1Zjcvh4w7sCM6XyRjQkBAlNO72n1VwJIPGGaJ1X6XYpRjxS9SS7w7Vk3rbnzM21Z5Wm0CgT72PHfsmtdIceeVRQ+U5ry3cOKjHqkiG2rlerI4mkgZroOX25ggpBtxA5t7OYX4L26088+TjppoxV/bUCv5OncIzH9X67xMrLBxfMtUCbwyF9piujE9TMHmk87tv0GWWm/ho7yVcaxVQvGq1NQbOeUoub2YtfOaSiDVRUA0iSRXMpulcWkN9Uhdt1pGKUG0C7iM48ls7WNJ6CkQJmsJ1GDHP6igfwF/0jE1d3Ny4fREll+3xQDyG7KK518P6Oszv8d+W8hV5zurjPyWsj2HnCWxdJ3ZNWbpX/6M1A9rPLXuzdvy6nHoMLr63UHla+cCUABrtHz63O6dfUBiO86jd+smbgsupiQdEM3xVCdLp3F4p3fMixK0twgz+cuxNq8Yl2A80KciCiwhNl03vOIjkEl7TNdPFx+wkFx8FfeY1jLQfg/MVWO70yVoUF9L7y2g+mbn9YS2FgAQw=="
+      },
+      "endpoint": {
+        "scope": {
+          "type": "BearerToken",
+          "token": "a4bf269d3fdd181aee9d73a6dfaaaee058471d54"
+        },
+        "endpointId": "2_aeon_Switch",
+        "cookie": {}
+      },
+      "payload": {}
+    }
 }
 
 const ALEXA_TURNOFF_REQUEST = {

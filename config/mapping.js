@@ -60,7 +60,7 @@ const COMMON_RANGE_CAPABILITY = {
 	        "supported": [
 	          {
 	            "name": "rangeValue",
-	            "value":"()=>parseInt(('%Data%').replace(/[a-z ]/g,''))",
+	            "valueResolver": "rangeData",
 	            "instance": "default"
 	          }
 	        ],
@@ -87,7 +87,7 @@ const COMMON_RANGE_HUMIDITY_CAPABILITY = {
         "supported": [
           {
             "name": "rangeValue",
-            "value":"()=>parseInt(%Humidity%)",
+            "valueResolver": "humidity",
             "instance": "default"
           }
         ],
@@ -132,13 +132,13 @@ const COMMON_LEVEL_CAPABILITY = {
 const COMMON_PERCENTAGE_CAPABILITY = {
 			"interface":"Alexa.PercentageController",
 			"state":{
-				"percentage":"()=>parseInt('%Data%')",
+				"percentage":"percentageInt",
 			},
 			"command":{
 			},
 			"supported": [{
 	            "name": "percentage",
-	            "value" : "()=>parseInt('%Data%')",
+	            "valueResolver": "percentageInt",
 	        }],
 	        "retrievable": true
 		};
@@ -152,7 +152,7 @@ const COMMON_POWER_CONTROLLER_CAPABILITY = {
 			},
 			"supported": [{
 	            "name": "powerState",
-	            "value":"()=> ('%Data%' === 'Off' || '%Data%' === 'Closed') ? ('%ReverseState%' === 'true' ? 'ON' : 'OFF') : ('%ReverseState%' === 'true' ? 'OFF' : 'ON')",
+	            "valueResolver": "powerState",
 	        }],
 	        "proactivelyReported": true,
 	        "retrievable": true
@@ -164,7 +164,7 @@ const COMMON_COLOR_CONTROLLER_CAPABILITY = {
 			},
 			"supported": [{
 	            "name": "color",
-	            "value":"()=>({'hue': %hue%,'saturation': (%saturation%/100), 'brightness': (%Level%/100)})",
+	            "valueResolver": "color",
 	        }],
 	        "proactivelyReported": true,
 	        "retrievable": true
@@ -176,7 +176,7 @@ const COMMON_BRIGHT_CONTROLLER_CAPABILITY = {
 			},
 			"supported": [{
 	            "name": "brightness",
-	            "value": "()=>parseInt(%Level%)",
+	            "valueResolver": "brightness",
 	        }],
 	        "proactivelyReported": true,
 	        "retrievable": true
@@ -369,7 +369,7 @@ const DOMOTICZ_ALEXA_TEMP = {
 			},
 			"supported": [{
 	            "name": "temperature",
-	            "value":"()=>({value:%Temp%,scale:'CELSIUS'})",
+	            "valueResolver": "tempCelsius",
 	        }],
 	        "proactivelyReported": false,
 	        "retrievable": true
@@ -396,7 +396,7 @@ const DOMOTICZ_ALEXA_THERMOSTAT = {
 			},
 			"supported": [{
 	            "name": "temperature",
-	            "value":"()=>({value:%Data%,scale:'CELSIUS'})",
+	            "valueResolver": "dataCelsius",
 	        }],
 	        "proactivelyReported": false,
 	        "retrievable": true
@@ -406,7 +406,7 @@ const DOMOTICZ_ALEXA_THERMOSTAT = {
               "supported": [
                   {
                     "name": "targetSetpoint",
-	            	"value":"()=>({value:%SetPoint%,scale:'CELSIUS'})"
+	            	"valueResolver": "setPointCelsius"
                   },
                   {
                   	"name": "thermostatMode",
@@ -460,7 +460,7 @@ const DOMOTICZ_ALEXA_CONTACT = {
 			},
 			"supported": [{
 	            "name": "detectionState",
-	            "value":"()=>%Level%>0?'DETECTED':'NOT_DETECTED'",
+	            "valueResolver": "levelDetection",
 	        }],
 	        "proactivelyReported": false,
 	        "retrievable": true
@@ -469,7 +469,7 @@ const DOMOTICZ_ALEXA_CONTACT = {
         	"interface": "Alexa.EndpointHealth",
         	"supported": [{
 	            "name": "connectivity",
-	            "value": 
+	            "value":
 			        {
 			           "value": "OK"
 			        }
@@ -497,7 +497,7 @@ const DOMOTICZ_ALEXA_DOOR_CONTACT = {
 			},
 			"supported": [{
 	            "name": "detectionState",
-	            "value":"()=>'%Status%'=='Closed'?'NOT_DETECTED':'DETECTED'",
+	            "valueResolver": "statusDetection",
 	        }],
 	        "proactivelyReported": false,
 	        "retrievable": true
@@ -506,7 +506,7 @@ const DOMOTICZ_ALEXA_DOOR_CONTACT = {
         	"interface": "Alexa.EndpointHealth",
         	"supported": [{
 	            "name": "connectivity",
-	            "value": 
+	            "value":
 			        {
 			           "value": "OK"
 			        }

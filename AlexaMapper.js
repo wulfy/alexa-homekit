@@ -3,6 +3,24 @@ const {rgbToHsl} = require('./config/utils');
 
 const escapeSpecialChars = (me) =>   JSON.stringify(""+me);
 
+const VALUE_RESOLVERS = {
+    rangeData:        (d) => parseInt((d.Data || '').replace(/[a-z ]/g, '')),
+    humidity:         (d) => parseInt(d.Humidity),
+    percentageInt:    (d) => parseInt(d.Data),
+    powerState:       (d) => {
+        const isOff = d.Data === 'Off' || d.Data === 'Closed';
+        const isReversed = d.ReverseState === 'true';
+        return isOff ? (isReversed ? 'ON' : 'OFF') : (isReversed ? 'OFF' : 'ON');
+    },
+    color:            (d) => ({ hue: d.hue, saturation: d.saturation / 100, brightness: d.Level / 100 }),
+    brightness:       (d) => parseInt(d.Level),
+    tempCelsius:      (d) => ({ value: d.Temp, scale: 'CELSIUS' }),
+    dataCelsius:      (d) => ({ value: parseFloat(d.Data), scale: 'CELSIUS' }),
+    setPointCelsius:  (d) => ({ value: parseFloat(d.SetPoint), scale: 'CELSIUS' }),
+    levelDetection:   (d) => d.Level > 0 ? 'DETECTED' : 'NOT_DETECTED',
+    statusDetection:  (d) => d.Status === 'Closed' ? 'NOT_DETECTED' : 'DETECTED',
+};
+
 /**
 CLass used to map dmoticz device to Alexa format
 **/
@@ -153,12 +171,15 @@ class AlexaMapper {
                 }];
 
 			const capabilitiesDetails = device.capabilities.map((capa)=>{
+				const supportedForDiscovery = capa.supported
+					? capa.supported.map(({name}) => ({name}))
+					: undefined;
 				const full_capability  = {
 		                "interface": capa.interface,
 		                "version": "3",
 		                "type": "AlexaInterface",
 		                "properties": {
-		                    "supported": capa.supported,
+		                    "supported": supportedForDiscovery,
 		                     "retrievable": capa.retrievable,
 		                     "proactivelyReported": capa.proactivelyReported,
 		                },
@@ -228,15 +249,18 @@ class AlexaMapper {
 		//TODO remplacer par un reduce
 		const supported = capability.supported ? capability.supported : capability.properties.supported ;
 		const alexaSupported = supported.forEach((support)=>{
-			const newSupport = support;
-			newSupport.value = typeof newSupport.value === "string" && newSupport.value.indexOf("()") >= 0 ? eval(newSupport.value)() : newSupport.value ;
+			const newSupport = {...support};
+			if (newSupport.valueResolver) {
+				const resolver = VALUE_RESOLVERS[newSupport.valueResolver];
+				newSupport.value = resolver ? resolver(domoticzDevice) : null;
+				delete newSupport.valueResolver;
+			}
 			properties.push({
 				      "namespace": alexaInterface,
 				      ...newSupport,
 				      "timeOfSample": new Date().toISOString(),
 				      "uncertaintyInMilliseconds": 500
-				    })
-			
+				    });
 			});
 			return alexaSupported;
 		});

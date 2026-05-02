@@ -6,9 +6,12 @@ const net = require('net');
 const udp = require('dgram');
 
 exports.sendStatsd = (data) => {
+	const port = parseInt(process.env.METRICS_UDP_PORT);
+	const host = process.env.METRICS_HOST;
+	if (!port || !host) return;
 	const client = udp.createSocket('udp4');
 	const metricData = METRICS_BASE + "." + data;
-	client.send(metricData, process.env.METRICS_UDP_PORT, process.env.METRICS_HOST, function(error){
+	client.send(metricData, port, host, function(error){
 	  if(error){
 	    client.close();
 	  }else{

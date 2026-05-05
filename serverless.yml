@@ -20,7 +20,7 @@ service: alhau # NOTE: update this with your service name
 provider:
   name: aws
   deploymentMethod: direct
-  runtime: nodejs22
+  runtime: nodejs22.x
   region: eu-west-1
   deploymentBucket:
     name: alhau

@@ -36,8 +36,8 @@ exports.decrypt = (encryptedData) => {
   debugLogger(encryptedData);
   const decipher = crypto.createDecipheriv('aes-192-cbc', key, iv);
   let decrypted = decipher.update(encryptedData, 'hex', 'utf8');
-  prodLogger('final');
   decrypted += decipher.final('utf8');
+  prodLogger('final');
   debugLogger(decrypted);
   return decrypted;
 };

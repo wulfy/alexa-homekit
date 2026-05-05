@@ -38,4 +38,12 @@ describe('cipher', () => {
 
     expect(decrypt(legacyEncrypted)).toBe(plaintext);
   });
+
+  test('backward compat: decrypts hardcoded reference ciphertext (golden value)', () => {
+    // Ciphertext computed with EVP_BytesToKey(MD5, no-salt) + AES-192-CBC,
+    // equivalent to Node 14: createCipher('aes192', 'test-cipher-password-for-jest')
+    //   .update('{"userId":1,"host":"http://domoticz.local:8080"}', 'utf8', 'hex') + .final('hex')
+    const KNOWN_LEGACY_CIPHERTEXT = '66e91478339dc7f27e3efb2a8352be126978700c8f7f3b5bc2e149051973783baebd6b44cada8011302e633294e0939d12f96d70ee30545faaf645f49dafdb10';
+    expect(decrypt(KNOWN_LEGACY_CIPHERTEXT)).toBe('{"userId":1,"host":"http://domoticz.local:8080"}');
+  });
 });

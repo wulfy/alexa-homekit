@@ -51,19 +51,25 @@ Passer sur Node 22, en garantissant que les données existantes chiffrées en BD
 ### Problème cipher
 `crypto.createCipher` et `crypto.createDecipher` ont été **supprimés en Node 22**. L'actuel `config/security.js` les utilise avec `aes192`.
 
-### Solution : EVP_BytesToKey
-Ces APIs utilisaient en interne `EVP_BytesToKey` (OpenSSL) avec MD5, 1 itération, sans salt. En réimplémentant cette dérivation de clé, on obtient exactement les mêmes clé et IV — rendant les données existantes déchiffrables à l'identique.
+### Solution : EVP_BytesToKey (alignée sur alexa-oauth)
+Le projet `../alexa-oauth` a déjà effectué cette même migration. On réutilise son implémentation de `evpBytesToKey` à l'identique pour garantir la compatibilité entre les deux projets qui partagent la même BDD.
 
 ```
-Pour aes192 : keyLen=24, ivLen=16
-D_0 = MD5(password)
-D_1 = MD5(D_0 + password)
-D_2 = MD5(D_1 + password)
-key = [D_0 + D_1 + D_2][0:24]
-iv  = [D_0 + D_1 + D_2][24:40]
+Pour aes-192-cbc : keyLen=24, ivLen=16
+prev = ""
+chunks = []
+while totalLen < 40:
+    hash = MD5(prev + password)
+    chunks.push(hash); prev = hash
+key = combined[0:24]
+iv  = combined[24:40]
 ```
 
-Ensuite : `createCipheriv('aes192', key, iv)` / `createDecipheriv('aes192', key, iv)`.
+Ensuite : `createCipheriv('aes-192-cbc', key, iv)` / `createDecipheriv('aes-192-cbc', key, iv)`.
+
+Note : `alexa-oauth` utilise `'aes-192-cbc'` (nomenclature explicite) plutôt que `'aes192'` — ce sont des alias équivalents. On aligne sur cette notation.
+
+**Comportement `decrypt` conservé** : `alexa-oauth` retourne `JSON.parse(decrypted)`, mais `alexa-homekit` retourne la string brute. On conserve ce comportement pour ne pas casser les appelants existants.
 
 ### Bug corrigé au passage
 Dans le code actuel, l'objet `cipher` est créé **une seule fois** au chargement du module. Après le premier appel à `cipher.final()`, il est finalisé et inutilisable. La nouvelle implémentation crée un cipher par appel à `encrypt()`.

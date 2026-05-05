@@ -11,7 +11,8 @@
   "dependencies": {
     "debug": "^4.1.1",
     "dotenv": "^8.2.0",
-    "mysql": "^2.18.1"
+    "mysql": "^2.18.1",
+    "newrelic": "^13.19.2"
   },
   "scripts": {
     "test": "jest",

@@ -1,3 +1,4 @@
+process.env.NEW_RELIC_ENABLED = 'false';
 /**
 ** Export mocked objects to test skill without using Alexa
 ** Mocked object could use hard coded answers or do real request to a domoticz server

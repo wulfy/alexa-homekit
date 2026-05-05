@@ -8,6 +8,7 @@ jobs:
             - image: 'cimg/base:stable'
               environment:
                     APP_ENV: test
+                    NEW_RELIC_ENABLED: 'false'
                     CRYPTOPASS: 'circleci oauth'
                     PROD_MODE: false
                     INSTANCE_NAME: 'dev'

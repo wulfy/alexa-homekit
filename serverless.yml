@@ -57,6 +57,7 @@ package:
     - AlexaMapper.js
     - domoticzApiHelper.js
     - config/**
+    - newrelic.js
   exclude:
     - test/**
     - "*.*"

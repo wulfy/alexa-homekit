@@ -16,8 +16,11 @@ exports.sendStatsd = (data) => {
 
   if (type === 'c') {
     newrelic.incrementMetric(metricName, value);
+    statsLogger('Metric sent: ' + metricName);
   } else if (type === 'ms') {
     newrelic.recordMetric(metricName, value);
+    statsLogger('Metric sent: ' + metricName);
+  } else {
+    statsLogger('Unknown metric type, dropped: ' + data);
   }
-  statsLogger('Metric sent: ' + metricName);
 };

@@ -3,3 +3,4 @@ node_modules
 .serverless
 yarn-error.log
 .worktrees
+newrelic_agent.log

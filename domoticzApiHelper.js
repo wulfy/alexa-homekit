@@ -15,8 +15,6 @@ const AlexaMapper = require('./AlexaMapper');
 const PROD_MODE = process.env.PROD_MODE === "true";
 const alexaMapper = new AlexaMapper(ALEXAMAPPING);
 
-process.env.NODE_TLS_REJECT_UNAUTHORIZED = "0"; //self signed ssl certificate
-
 //use global because it has to be overriden while testing :
 // so getDomoticzFromToken can return a domoticz mocked class for tests
 global.getDomoticzFromToken = (token) => {

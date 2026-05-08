@@ -175,9 +175,9 @@ jobs:
       - run: yarn install --production
       - uses: aws-actions/configure-aws-credentials@v4
         with:
-          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY }}
-          aws-secret-access-key: ${{ secrets.AWS_PREPROD_ACCESS_SECRET }}
-          aws-region: ${{ secrets.AWS_REGION_NAME }}
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ${{ secrets.AWS_DEFAULT_REGION }}
       - run: sh ./scripts/deploy.sh
 ```
 
@@ -215,6 +215,6 @@ Avant d'utiliser le workflow de déploiement, créer deux environnements dans **
 - `prod` : ajouter les reviewers requis
 
 Puis configurer les secrets dans **Settings → Secrets → Actions** :
-- `AWS_ACCESS_KEY`
-- `AWS_PREPROD_ACCESS_SECRET`
-- `AWS_REGION_NAME`
+- `AWS_ACCESS_KEY_ID`
+- `AWS_SECRET_ACCESS_KEY`
+- `AWS_DEFAULT_REGION`

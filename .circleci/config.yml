@@ -8,6 +8,7 @@ jobs:
             - image: 'cimg/base:stable'
               environment:
                     APP_ENV: test
+                    NEW_RELIC_ENABLED: 'false'
                     CRYPTOPASS: 'circleci oauth'
                     PROD_MODE: false
                     INSTANCE_NAME: 'dev'
@@ -21,7 +22,7 @@ jobs:
             - checkout
             - node/install:
                 install-yarn: true
-                node-version: '14'
+                node-version: '22'
             - run: yarn install
             # run tests!
             - run: yarn test
@@ -34,7 +35,7 @@ jobs:
             - checkout
             - node/install:
                 install-yarn: true
-                node-version: '14'
+                node-version: '22'
             - aws-cli/setup:
                 aws_access_key_id: AWS_ACCESS_KEY
                 aws_secret_access_key: AWS_PREPROD_ACCESS_SECRET
@@ -53,7 +54,7 @@ jobs:
             - checkout
             - node/install:
                 install-yarn: true
-                node-version: '14'
+                node-version: '22'
             - aws-cli/setup:
                 aws_access_key_id: AWS_ACCESS_KEY
                 aws_secret_access_key: AWS_PREPROD_ACCESS_SECRET

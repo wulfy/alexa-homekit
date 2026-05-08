@@ -1,5 +1,8 @@
 {
   "name": "homekitSkill",
+  "engines": {
+    "node": ">=22"
+  },
   "version": "1.0.0",
   "description": "Skill to manage Domoticz command threw Alexa homekit",
   "main": "index.js",
@@ -8,14 +11,15 @@
   "dependencies": {
     "debug": "^4.1.1",
     "dotenv": "^8.2.0",
-    "mysql": "^2.18.1"
+    "mysql": "^2.18.1",
+    "newrelic": "^13.19.2"
   },
   "scripts": {
     "test": "jest",
     "package": "serverless package"
   },
   "devDependencies": {
-    "jest": "^25.1.0",
+    "jest": "^29.0.0",
     "serverless": "^1.65.0"
   }
 }

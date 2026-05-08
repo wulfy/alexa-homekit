@@ -1,0 +1,29 @@
+name: CI
+
+on:
+  push:
+    branches:
+      - '**'
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    env:
+      APP_ENV: test
+      CRYPTOPASS: 'circleci oauth'
+      PROD_MODE: false
+      INSTANCE_NAME: dev
+      MYSQL_ADDON_HOST: localhost
+      MYSQL_ADDON_PORT: '3306'
+      MYSQL_ADDON_DB: alexa_oauth
+      METRICS_HOST: no.host
+      METRICS_PORT: 2003
+      METRICS_UDP_PORT: 8124
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: 'yarn'
+      - run: yarn install
+      - run: yarn test

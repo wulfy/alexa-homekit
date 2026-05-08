@@ -1,6 +1,6 @@
 const base_config = require("../config_tests/base_config");
 
-test('GET DEVICE STATE VENITIAN BLIND', async done => {
+test('GET DEVICE STATE VENITIAN BLIND', async () => {
 
     const { DOMOTICZ_GET_DEVICES } = require("../mockups/client4Mockup");
     global.getDomoticzFromToken = (token) => {
@@ -13,25 +13,24 @@ test('GET DEVICE STATE VENITIAN BLIND', async done => {
     expect(data).toEqual({"properties":
                                     [
                                         {
-                                            "name": "percentage", 
+                                            "name": "percentage",
                                             "namespace": "Alexa.PercentageController",
-                                            "timeOfSample":null, 
-                                            "uncertaintyInMilliseconds": 500, 
+                                            "timeOfSample":null,
+                                            "uncertaintyInMilliseconds": 500,
                                             "value": "0"
                                         },
                                         {
-                                            "name": "powerState", 
+                                            "name": "powerState",
                                             "namespace": "Alexa.PowerController",
-                                            "timeOfSample":null, 
-                                            "uncertaintyInMilliseconds": 500, 
+                                            "timeOfSample":null,
+                                            "uncertaintyInMilliseconds": 500,
                                             "value": "ON"
-                                        }, 
+                                        },
                                     ]
                     });
-    done();
 });
 
-test('GET DEVICE STATE BLINDS RFY', async done => {
+test('GET DEVICE STATE BLINDS RFY', async () => {
 
     const { DOMOTICZ_GET_DEVICES } = require("../mockups/client11Mockup");
     global.getDomoticzFromToken = (token) => {
@@ -44,25 +43,24 @@ test('GET DEVICE STATE BLINDS RFY', async done => {
     expect(data).toEqual({"properties":
                                     [
                                         {
-                                            "name": "percentage", 
+                                            "name": "percentage",
                                             "namespace": "Alexa.PercentageController",
-                                            "timeOfSample":null, 
-                                            "uncertaintyInMilliseconds": 500, 
+                                            "timeOfSample":null,
+                                            "uncertaintyInMilliseconds": 500,
                                             "value": "0"
                                         },
                                         {
-                                            "name": "powerState", 
+                                            "name": "powerState",
                                             "namespace": "Alexa.PowerController",
-                                            "timeOfSample":null, 
-                                            "uncertaintyInMilliseconds": 500, 
+                                            "timeOfSample":null,
+                                            "uncertaintyInMilliseconds": 500,
                                             "value": "OFF"
-                                        }, 
+                                        },
                                     ]
                     });
-    done();
 });
 
-test('GET DEVICE STATE BLINDS SWITCH', async done => {
+test('GET DEVICE STATE BLINDS SWITCH', async () => {
 
     const { DOMOTICZ_GET_DEVICES } = require("../mockups/client12Mockup");
     global.getDomoticzFromToken = (token) => {
@@ -75,25 +73,24 @@ test('GET DEVICE STATE BLINDS SWITCH', async done => {
     expect(data).toEqual({"properties":
                                     [
                                         {
-                                            "name": "percentage", 
+                                            "name": "percentage",
                                             "namespace": "Alexa.PercentageController",
-                                            "timeOfSample":null, 
-                                            "uncertaintyInMilliseconds": 500, 
+                                            "timeOfSample":null,
+                                            "uncertaintyInMilliseconds": 500,
                                             "value": "100"
                                         },
                                         {
-                                            "name": "powerState", 
+                                            "name": "powerState",
                                             "namespace": "Alexa.PowerController",
-                                            "timeOfSample":null, 
-                                            "uncertaintyInMilliseconds": 500, 
+                                            "timeOfSample":null,
+                                            "uncertaintyInMilliseconds": 500,
                                             "value": "OFF"
-                                        }, 
+                                        },
                                     ]
                     });
-    done();
 });
 
-test('GET DEVICE STATE BLINDS INVERTED', async done => {
+test('GET DEVICE STATE BLINDS INVERTED', async () => {
 
     const { DOMOTICZ_GET_DEVICES } = require("../mockups/client3Mockup");
     global.getDomoticzFromToken = (token) => {
@@ -106,25 +103,24 @@ test('GET DEVICE STATE BLINDS INVERTED', async done => {
     expect(data).toEqual({"properties":
                                     [
                                         {
-                                            "name": "percentage", 
+                                            "name": "percentage",
                                             "namespace": "Alexa.PercentageController",
-                                            "timeOfSample":null, 
-                                            "uncertaintyInMilliseconds": 500, 
+                                            "timeOfSample":null,
+                                            "uncertaintyInMilliseconds": 500,
                                             "value": "100"
                                         },
                                         {
-                                            "name": "powerState", 
+                                            "name": "powerState",
                                             "namespace": "Alexa.PowerController",
-                                            "timeOfSample":null, 
-                                            "uncertaintyInMilliseconds": 500, 
+                                            "timeOfSample":null,
+                                            "uncertaintyInMilliseconds": 500,
                                             "value": "ON"
-                                        }, 
+                                        },
                                     ]
                     });
-    done();
 });
 
-test('GET DEVICE STATE BLIND PERCENTAGE', async done => {
+test('GET DEVICE STATE BLIND PERCENTAGE', async () => {
 
     const { DOMOTICZ_GET_DEVICES } = require("../mockups/client10Mockup");
     global.getDomoticzFromToken = (token) => {
@@ -137,25 +133,24 @@ test('GET DEVICE STATE BLIND PERCENTAGE', async done => {
     expect(data).toEqual({"properties":
                                     [
                                         {
-                                            "name": "percentage", 
+                                            "name": "percentage",
                                             "namespace": "Alexa.PercentageController",
-                                            "timeOfSample":null, 
-                                            "uncertaintyInMilliseconds": 500, 
+                                            "timeOfSample":null,
+                                            "uncertaintyInMilliseconds": 500,
                                             "value": "100"
                                         },
                                         {
-                                            "name": "powerState", 
+                                            "name": "powerState",
                                             "namespace": "Alexa.PowerController",
-                                            "timeOfSample":null, 
-                                            "uncertaintyInMilliseconds": 500, 
+                                            "timeOfSample":null,
+                                            "uncertaintyInMilliseconds": 500,
                                             "value": "OFF"
-                                        }, 
+                                        },
                                     ]
                     });
-    done();
 });
 
-test('GET DEVICE STATE DIMMER', async done => {
+test('GET DEVICE STATE DIMMER', async () => {
 
     const { DOMOTICZ_GET_DEVICES } = require("../mockups/client6Mockup");
     global.getDomoticzFromToken = (token) => {
@@ -168,25 +163,24 @@ test('GET DEVICE STATE DIMMER', async done => {
     expect(data).toEqual({"properties":
                                     [
                                         {
-                                            "name": "percentage", 
+                                            "name": "percentage",
                                             "namespace": "Alexa.PercentageController",
-                                            "timeOfSample":null, 
-                                            "uncertaintyInMilliseconds": 500, 
+                                            "timeOfSample":null,
+                                            "uncertaintyInMilliseconds": 500,
                                             "value": "100"
                                         },
                                         {
-                                            "name": "powerState", 
+                                            "name": "powerState",
                                             "namespace": "Alexa.PowerController",
-                                            "timeOfSample":null, 
-                                            "uncertaintyInMilliseconds": 500, 
+                                            "timeOfSample":null,
+                                            "uncertaintyInMilliseconds": 500,
                                             "value": "ON"
-                                        }, 
+                                        },
                                     ]
                     });
-    done();
 });
 
-test('GET DEVICE STATE COLOR', async done => {
+test('GET DEVICE STATE COLOR', async () => {
 
     const { DOMOTICZ_GET_DEVICES } = require("../mockups/domoticzMockups");
     global.getDomoticzFromToken = (token) => {
@@ -199,17 +193,17 @@ test('GET DEVICE STATE COLOR', async done => {
     expect(data).toEqual({"properties":
                                     [
                                         {
-                                            "name": "brightness", 
+                                            "name": "brightness",
                                             "namespace": "Alexa.BrightnessController",
-                                            "timeOfSample":null, 
-                                            "uncertaintyInMilliseconds": 500, 
+                                            "timeOfSample":null,
+                                            "uncertaintyInMilliseconds": 500,
                                             "value": 41
                                         },
                                         {
-                                            "name": "color", 
+                                            "name": "color",
                                             "namespace": "Alexa.ColorController",
-                                            "timeOfSample":null, 
-                                            "uncertaintyInMilliseconds": 500, 
+                                            "timeOfSample":null,
+                                            "uncertaintyInMilliseconds": 500,
                                             "value": {
                                                 "hue":273,
                                                 "brightness":0.41,
@@ -217,18 +211,17 @@ test('GET DEVICE STATE COLOR', async done => {
                                             }
                                         },
                                         {
-                                            "name": "powerState", 
+                                            "name": "powerState",
                                             "namespace": "Alexa.PowerController",
-                                            "timeOfSample":null, 
-                                            "uncertaintyInMilliseconds": 500, 
+                                            "timeOfSample":null,
+                                            "uncertaintyInMilliseconds": 500,
                                             "value": "ON"
-                                        }, 
+                                        },
                                     ]
                     });
-    done();
 });
 
-test('GET SCENE STATE', async done => {
+test('GET SCENE STATE', async () => {
 
     const { DOMOTICZ_GET_SCENES } = require("../mockups/domoticzMockups");
     const { ALEXA_ACTIVATE_SCENE } = require("../mockups/alexaMockups");
@@ -269,10 +262,9 @@ test('GET SCENE STATE', async done => {
                                             }
                                         }
                                     });
-    done();
 });
 
-test('LIMIT DESCRIPTION', async done => {
+test('LIMIT DESCRIPTION', async () => {
 
     const { DOMOTICZ_GET_DEVICES } = require("../mockups/client19Mockup");
     const domoticzConnector = new base_config.mockedDomoticz("token",DOMOTICZ_GET_DEVICES);
@@ -281,10 +273,9 @@ test('LIMIT DESCRIPTION', async done => {
     const discoveryResponse = base_config.alexaMapper.handleDiscovery([mappedDevice]);
 
     expect(discoveryResponse.endpoints[0].description).toEqual("Spécifie le mode de gestion de la VMC (OFF; pilotage par l'hygrométrie de la salle de bain; Automati ...");
-    done();
 });
 
-test('GET DOOR CONTACT CLOSED', async done => {
+test('GET DOOR CONTACT CLOSED', async () => {
 
     const { DOMOTICZ_GET_DEVICES } = require("../mockups/client18Mockup");
     global.getDomoticzFromToken = (token) => {
@@ -297,25 +288,24 @@ test('GET DOOR CONTACT CLOSED', async done => {
     expect(data).toEqual({"properties":
                                     [
                                         {
-                                            "name": "detectionState", 
+                                            "name": "detectionState",
                                             "namespace": "Alexa.ContactSensor",
-                                            "timeOfSample":null, 
-                                            "uncertaintyInMilliseconds": 500, 
+                                            "timeOfSample":null,
+                                            "uncertaintyInMilliseconds": 500,
                                             "value": "NOT_DETECTED"
                                         },
                                         {
-                                            "name": "connectivity", 
-                                            "namespace": "Alexa.EndpointHealth", 
-                                            "timeOfSample": null, 
-                                            "uncertaintyInMilliseconds": 500, 
+                                            "name": "connectivity",
+                                            "namespace": "Alexa.EndpointHealth",
+                                            "timeOfSample": null,
+                                            "uncertaintyInMilliseconds": 500,
                                             "value": {"value": "OK"}
                                         }
                                     ]
                     });
-    done();
 });
 
-test('GET DOOR CONTACT OPEN', async done => {
+test('GET DOOR CONTACT OPEN', async () => {
 
     const { DOMOTICZ_GET_DEVICES } = require("../mockups/domoticzMockups");
     global.getDomoticzFromToken = (token) => {
@@ -328,20 +318,19 @@ test('GET DOOR CONTACT OPEN', async done => {
     expect(data).toEqual({"properties":
                                     [
                                         {
-                                            "name": "detectionState", 
+                                            "name": "detectionState",
                                             "namespace": "Alexa.ContactSensor",
-                                            "timeOfSample":null, 
-                                            "uncertaintyInMilliseconds": 500, 
+                                            "timeOfSample":null,
+                                            "uncertaintyInMilliseconds": 500,
                                             "value": "DETECTED"
                                         },
                                         {
-                                            "name": "connectivity", 
-                                            "namespace": "Alexa.EndpointHealth", 
-                                            "timeOfSample": null, 
-                                            "uncertaintyInMilliseconds": 500, 
+                                            "name": "connectivity",
+                                            "namespace": "Alexa.EndpointHealth",
+                                            "timeOfSample": null,
+                                            "uncertaintyInMilliseconds": 500,
                                             "value": {"value": "OK"}
                                         }
                                     ]
                     });
-    done();
 });

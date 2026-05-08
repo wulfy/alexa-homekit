@@ -1,0 +1,56 @@
+name: Deploy
+
+on:
+  workflow_dispatch:
+    inputs:
+      environment:
+        description: 'Environnement cible'
+        required: true
+        default: 'preprod'
+        type: choice
+        options:
+          - preprod
+          - prod
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    env:
+      APP_ENV: test
+      CRYPTOPASS: 'circleci oauth'
+      PROD_MODE: false
+      INSTANCE_NAME: dev
+      MYSQL_ADDON_HOST: localhost
+      MYSQL_ADDON_PORT: '3306'
+      MYSQL_ADDON_DB: alexa_oauth
+      METRICS_HOST: no.host
+      METRICS_PORT: 2003
+      METRICS_UDP_PORT: 8124
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: 'yarn'
+      - run: yarn install
+      - run: yarn test
+
+  deploy:
+    needs: test
+    runs-on: ubuntu-latest
+    environment: ${{ github.event.inputs.environment }}
+    env:
+      DEPLOY_FUNCTION: ${{ github.event.inputs.environment == 'prod' && 'ludohomekit' || 'alhau_preprod' }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: 'yarn'
+      - run: yarn install --production
+      - uses: aws-actions/configure-aws-credentials@v4
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY }}
+          aws-secret-access-key: ${{ secrets.AWS_PREPROD_ACCESS_SECRET }}
+          aws-region: ${{ secrets.AWS_REGION_NAME }}
+      - run: sh ./scripts/deploy.sh

@@ -40,9 +40,9 @@ Le projet utilise CircleCI pour les tests et les déploiements vers AWS Lambda. 
 
 | Nom | Usage |
 |-----|-------|
-| `AWS_ACCESS_KEY` | Clé d'accès AWS |
-| `AWS_PREPROD_ACCESS_SECRET` | Secret AWS (utilisé pour preprod et prod) |
-| `AWS_REGION_NAME` | Région AWS |
+| `AWS_ACCESS_KEY_ID` | Clé d'accès AWS |
+| `AWS_SECRET_ACCESS_KEY` | Secret AWS (utilisé pour preprod et prod) |
+| `AWS_DEFAULT_REGION` | Région AWS |
 
 ### Variables par environnement
 

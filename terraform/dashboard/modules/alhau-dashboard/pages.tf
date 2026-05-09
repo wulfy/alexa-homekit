@@ -255,4 +255,55 @@ resource "newrelic_one_dashboard" "alhau" {
       }
     }
   }
+
+  # ----------------------------------------------------------------------
+  # PAGE 4 — Logs
+  # Quick triage view. Requires "Logs in Context" or log forwarding to
+  # be enabled in the New Relic agent. The error-level table below is
+  # the most useful starting point when triaging an incident.
+  # ----------------------------------------------------------------------
+  page {
+    name = "Logs"
+
+    widget_line {
+      title  = "Log volume by level"
+      row    = 1
+      column = 1
+      width  = 12
+      height = 3
+
+      nrql_query {
+        account_id = var.account_id
+        query      = "FROM Log SELECT count(*) WHERE entity.name = '${var.newrelic_app_name}' FACET level TIMESERIES"
+      }
+
+      legend_enabled = true
+    }
+
+    widget_log_table {
+      title  = "Recent ERROR logs"
+      row    = 4
+      column = 1
+      width  = 12
+      height = 4
+
+      nrql_query {
+        account_id = var.account_id
+        query      = "FROM Log SELECT timestamp, message, level WHERE entity.name = '${var.newrelic_app_name}' AND level = 'error' SINCE 1 day ago LIMIT 100"
+      }
+    }
+
+    widget_log_table {
+      title  = "Recent logs (all levels)"
+      row    = 8
+      column = 1
+      width  = 12
+      height = 4
+
+      nrql_query {
+        account_id = var.account_id
+        query      = "FROM Log SELECT timestamp, message, level WHERE entity.name = '${var.newrelic_app_name}' SINCE 1 hour ago LIMIT 200"
+      }
+    }
+  }
 }

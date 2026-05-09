@@ -191,4 +191,68 @@ resource "newrelic_one_dashboard" "alhau" {
       }
     }
   }
+
+  # ----------------------------------------------------------------------
+  # PAGE 3 — Activité métier
+  # Domain-level signals: which Domoticz device subtypes are commanded,
+  # how often the app hits the OAuth/users DB, what kinds of Alexa
+  # responses are sent back.
+  # ----------------------------------------------------------------------
+  page {
+    name = "Activité métier"
+
+    widget_bar {
+      title  = "Commands by Domoticz subtype"
+      row    = 1
+      column = 1
+      width  = 6
+      height = 3
+
+      nrql_query {
+        account_id = var.account_id
+        query      = "FROM Metric SELECT sum(newrelic.timeslice.value) WHERE metricTimesliceName LIKE '${local.like_command}' FACET metricTimesliceName SINCE 1 day ago LIMIT 20"
+      }
+
+      filter_current_dashboard = true
+    }
+
+    widget_pie {
+      title  = "Top 10 device subtypes"
+      row    = 1
+      column = 7
+      width  = 6
+      height = 3
+
+      nrql_query {
+        account_id = var.account_id
+        query      = "FROM Metric SELECT sum(newrelic.timeslice.value) WHERE metricTimesliceName LIKE '${local.like_command}' FACET metricTimesliceName SINCE 1 day ago LIMIT 10"
+      }
+    }
+
+    widget_line {
+      title  = "DB user-data lookups"
+      row    = 4
+      column = 1
+      width  = 6
+      height = 3
+
+      nrql_query {
+        account_id = var.account_id
+        query      = "FROM Metric SELECT sum(newrelic.timeslice.value) WHERE metricTimesliceName LIKE '${local.like_database}' TIMESERIES"
+      }
+    }
+
+    widget_stacked_bar {
+      title  = "Alexa responses by directive name"
+      row    = 4
+      column = 7
+      width  = 6
+      height = 3
+
+      nrql_query {
+        account_id = var.account_id
+        query      = "FROM Metric SELECT sum(newrelic.timeslice.value) WHERE metricTimesliceName LIKE '${local.like_answer}' FACET metricTimesliceName TIMESERIES"
+      }
+    }
+  }
 }

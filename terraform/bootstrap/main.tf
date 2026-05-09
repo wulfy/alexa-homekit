@@ -12,9 +12,9 @@ resource "aws_s3_bucket" "tfstate" {
   bucket = var.bucket_name
 
   tags = {
-    Project     = "alexa-homekit"
-    ManagedBy   = "terraform"
-    Purpose     = "tfstate-storage"
+    Project   = "alexa-homekit"
+    ManagedBy = "terraform"
+    Purpose   = "tfstate-storage"
   }
 }
 

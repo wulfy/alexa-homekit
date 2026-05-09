@@ -1,0 +1,120 @@
+# Single resource holding the whole dashboard. Pages and widgets are nested
+# blocks of this resource — there is no way to split them across multiple
+# Terraform resources, the New Relic API treats a dashboard as one entity.
+#
+# We host this resource in pages.tf (rather than main.tf) because main.tf
+# is reserved for locals/helpers, keeping each file focused.
+
+resource "newrelic_one_dashboard" "alhau" {
+  name        = var.dashboard_name
+  permissions = "public_read_only"
+  description = "Alexa HomeKit Lambda — health, traffic and business metrics."
+
+  # Dashboard-level variable: lets the user toggle between prod and preprod
+  # at the top of the dashboard. Each NRQL query that filters on instance
+  # references {{ instance }} (handled below in widgets where appropriate).
+  variable {
+    name                 = "instance"
+    title                = "Environment"
+    type                 = "enum"
+    replacement_strategy = "default"
+    default_values       = ["prod"]
+    is_multi_selection   = false
+
+    item {
+      title = "prod"
+      value = "prod"
+    }
+
+    item {
+      title = "preprod"
+      value = "preprod"
+    }
+  }
+
+  # ----------------------------------------------------------------------
+  # PAGE 1 — Lambda Health
+  # APM- and AWS Lambda-level signals: invocations, errors, latency,
+  # cold starts. Filtered by Lambda function name (covers both envs).
+  # ----------------------------------------------------------------------
+  page {
+    name = "Lambda Health"
+
+    widget_line {
+      title  = "Invocations / 5 min"
+      row    = 1
+      column = 1
+      width  = 4
+      height = 3
+
+      nrql_query {
+        account_id = var.account_id
+        query      = "FROM AwsLambdaInvocation SELECT count(*) WHERE provider.functionName IN (${local.lambda_in_clause}) FACET provider.functionName TIMESERIES 5 minutes"
+      }
+    }
+
+    widget_billboard {
+      title  = "Error rate (last hour)"
+      row    = 1
+      column = 5
+      width  = 4
+      height = 3
+
+      nrql_query {
+        account_id = var.account_id
+        query      = "FROM AwsLambdaInvocation SELECT percentage(count(*), WHERE error IS true) WHERE provider.functionName IN (${local.lambda_in_clause}) SINCE 1 hour ago"
+      }
+
+      warning  = 1
+      critical = 5
+    }
+
+    widget_line {
+      title  = "Cold starts"
+      row    = 1
+      column = 9
+      width  = 4
+      height = 3
+
+      nrql_query {
+        account_id = var.account_id
+        query      = "FROM AwsLambdaInvocation SELECT count(*) WHERE provider.coldStart IS true AND provider.functionName IN (${local.lambda_in_clause}) TIMESERIES"
+      }
+    }
+
+    widget_line {
+      title  = "Transaction duration (p50 / p95 / p99)"
+      row    = 4
+      column = 1
+      width  = 8
+      height = 3
+
+      nrql_query {
+        account_id = var.account_id
+        query      = "FROM Transaction SELECT percentile(duration, 50, 95, 99) WHERE appName = '${var.newrelic_app_name}' TIMESERIES"
+      }
+
+      legend_enabled    = true
+      y_axis_left_zero  = true
+      ignore_time_range = false
+    }
+
+    widget_table {
+      title  = "Recent errors"
+      row    = 4
+      column = 9
+      width  = 4
+      height = 3
+
+      nrql_query {
+        account_id = var.account_id
+        query      = "FROM TransactionError SELECT timestamp, error.message, error.class WHERE appName = '${var.newrelic_app_name}' SINCE 1 day ago LIMIT 50"
+      }
+
+      initial_sorting {
+        direction = "desc"
+        name      = "timestamp"
+      }
+    }
+  }
+}

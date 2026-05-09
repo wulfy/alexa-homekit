@@ -1,0 +1,4 @@
+# Copy this file to terraform.tfvars (gitignored) before running `terraform apply`.
+# The bucket name must be globally unique across AWS.
+bucket_name = "alhau-tfstate"
+region      = "eu-west-1"

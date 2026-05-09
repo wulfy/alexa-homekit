@@ -1,0 +1,23 @@
+# Copy this file to .envrc (gitignored) and `direnv allow` to auto-load.
+# Or `source` it manually before running terraform.
+
+# --- AWS (read by AWS provider AND S3 backend) -----------------------
+export AWS_ACCESS_KEY_ID="..."
+export AWS_SECRET_ACCESS_KEY="..."
+export AWS_REGION="eu-west-1"
+
+# --- New Relic (read by newrelic provider) --------------------------
+# User API Key — different from the License Key used by the runtime
+# agent. Create one at https://one.eu.newrelic.com/api-keys
+export NEW_RELIC_API_KEY="NRAK-..."
+# Optional: also exposed as a Terraform variable below
+export NEW_RELIC_REGION="EU"
+
+# --- Terraform variables (shared across bootstrap/ and dashboard/) --
+# Any TF_VAR_<name> env var is automatically picked up by Terraform
+# as the value of variable <name>.
+export TF_VAR_nr_account_id="1234567"
+export TF_VAR_nr_region="EU"
+# Bootstrap-specific:
+export TF_VAR_bucket_name="alhau-tfstate"
+export TF_VAR_region="eu-west-1"

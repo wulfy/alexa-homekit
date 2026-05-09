@@ -1,0 +1,14 @@
+# Copy to shared.tfvars (gitignored) and use with:
+#
+#   terraform -chdir=terraform/dashboard apply -var-file=../shared.tfvars
+#
+# Only contains NON-SECRET values. Tokens go to env vars (.envrc), never
+# to .tfvars files.
+
+nr_account_id       = 1234567
+nr_region           = "EU"
+dashboard_name      = "ALHAU — Alexa HomeKit"
+newrelic_app_name   = "alexa-homekit"
+lambda_prod_name    = "ludohomekit"
+lambda_preprod_name = "alhau_preprod"
+metric_namespace    = "lambda.alhau"

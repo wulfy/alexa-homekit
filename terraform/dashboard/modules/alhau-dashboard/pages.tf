@@ -117,4 +117,78 @@ resource "newrelic_one_dashboard" "alhau" {
       }
     }
   }
+
+  # ----------------------------------------------------------------------
+  # PAGE 2 — Alexa Traffic
+  # Volumes and latency of incoming Alexa directives, broken down by
+  # namespace + name (e.g. Alexa.PowerController.TurnOn).
+  # ----------------------------------------------------------------------
+  page {
+    name = "Alexa Traffic"
+
+    widget_stacked_bar {
+      title  = "Requests by directive (timeseries)"
+      row    = 1
+      column = 1
+      width  = 8
+      height = 3
+
+      nrql_query {
+        account_id = var.account_id
+        query      = "FROM Metric SELECT sum(newrelic.timeslice.value) WHERE metricTimesliceName LIKE '${local.like_request}' FACET metricTimesliceName TIMESERIES"
+      }
+    }
+
+    widget_pie {
+      title  = "Top 10 directives (last 24h)"
+      row    = 1
+      column = 9
+      width  = 4
+      height = 3
+
+      nrql_query {
+        account_id = var.account_id
+        query      = "FROM Metric SELECT sum(newrelic.timeslice.value) WHERE metricTimesliceName LIKE '${local.like_request}' FACET metricTimesliceName SINCE 1 day ago LIMIT 10"
+      }
+    }
+
+    widget_line {
+      title  = "Latency p95 by directive"
+      row    = 4
+      column = 1
+      width  = 8
+      height = 3
+
+      nrql_query {
+        account_id = var.account_id
+        query      = "FROM Metric SELECT percentile(newrelic.timeslice.value, 95) WHERE metricTimesliceName LIKE '${local.like_request}' FACET metricTimesliceName TIMESERIES"
+      }
+
+      legend_enabled    = true
+      y_axis_left_zero  = true
+      ignore_time_range = false
+
+      units {
+        unit = "ms"
+      }
+    }
+
+    widget_area {
+      title  = "Discovery vs Commands"
+      row    = 4
+      column = 9
+      width  = 4
+      height = 3
+
+      nrql_query {
+        account_id = var.account_id
+        query      = "FROM Metric SELECT sum(newrelic.timeslice.value) AS 'Discovery' WHERE metricTimesliceName LIKE '${local.like_request}' AND metricTimesliceName LIKE '%Discovery%' TIMESERIES"
+      }
+
+      nrql_query {
+        account_id = var.account_id
+        query      = "FROM Metric SELECT sum(newrelic.timeslice.value) AS 'Other directives' WHERE metricTimesliceName LIKE '${local.like_request}' AND metricTimesliceName NOT LIKE '%Discovery%' TIMESERIES"
+      }
+    }
+  }
 }

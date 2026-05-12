@@ -6,14 +6,7 @@ global.getDomoticzFromToken = (token) => {
 }
 
 //TEST FOR INDEX.JS
-test('DISCOVERY TESTING client 5', done => {
-    let context = {};
-    context.succeed = function (data){
-        const testData = JSON.stringify(data); 
-        expect(testData).toMatchSnapshot();
-        done();
-    };
-    
-    base_config.handler(base_config.mockups.ALEXA_DISCOVERY_REQUEST_EXAMPLE,context);
-
+test('DISCOVERY TESTING client 5', async () => {
+    const data = await base_config.handler(base_config.mockups.ALEXA_DISCOVERY_REQUEST_EXAMPLE, {});
+    expect(JSON.stringify(data)).toMatchSnapshot();
 });

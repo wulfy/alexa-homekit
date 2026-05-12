@@ -230,15 +230,11 @@ test('GET SCENE STATE', async () => {
     }
 
     const data = await base_config.getAlexaDeviceState("notoken","1_undefined_undefined",true);
-    const context = {
-        succeed: function(data){this.response = data},
-        response: null,
-    }
     //removing timestamp data for tests
     data.properties.forEach(property => property.timeOfSample = null);
-    base_config.sendAlexaCommandResponse(ALEXA_ACTIVATE_SCENE,context,data);
-    context.response.event.payload.timestamp = null;
-    expect(context.response).toEqual({"context": {},
+    const response = base_config.sendAlexaCommandResponse(ALEXA_ACTIVATE_SCENE, {}, data);
+    response.event.payload.timestamp = null;
+    expect(response).toEqual({"context": {},
                                         "event": {
                                             "header": {
                                                 "namespace": "Alexa.SceneController",

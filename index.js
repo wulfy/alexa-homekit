@@ -15,6 +15,7 @@ const {debugLogger, prodLogger} = require('./config/logger.js');
 
 exports.handler = async function (request, context) {
     let durationStart = performance.now();
+    let response;
 
     //send stats about request receive
     sendStatsd("request."+request.directive.header.namespace+"."+request.directive.header.name+":1|c");
@@ -23,47 +24,47 @@ exports.handler = async function (request, context) {
 
     if (request.directive.header.namespace === 'Alexa.Discovery' && request.directive.header.name === 'Discover') {
         prodLogger("DEBUG: Discover request " + JSON.stringify(request));
-        await handleDiscovery(request, context, "");
+        response = await handleDiscovery(request, context, "");
     }
     else if (request.directive.header.namespace === 'Alexa.PercentageController') {
         if (request.directive.header.name === 'SetPercentage') {
             prodLogger("DEBUG: SetPercentage " + JSON.stringify(request));
-         await handlePercentControl(request, context);
+         response = await handlePercentControl(request, context);
         }
     }
     else if (request.directive.header.namespace === 'Alexa.PowerController'){
         if (request.directive.header.name === 'TurnOff' || request.directive.header.name === 'TurnOn') {
             prodLogger("DEBUG: switch on/off " + JSON.stringify(request));
-         await handlePowerControl(request, context);
+         response = await handlePowerControl(request, context);
         }
     }
     else if (request.directive.header.namespace === 'Alexa.ThermostatController'){
         if (request.directive.header.name === 'SetTargetTemperature') {
             prodLogger("DEBUG: SetTargetTemperature" + JSON.stringify(request));
-         await handleThermostatControl(request, context);
+         response = await handleThermostatControl(request, context);
         }
     }
     else if (request.directive.header.namespace === 'Alexa.ColorController'){
         if (request.directive.header.name === 'SetColor') {
             prodLogger("DEBUG: SetColor" + JSON.stringify(request));
-         await handleColorControl(request, context);
+         response = await handleColorControl(request, context);
         }
     }
     else if (request.directive.header.namespace === 'Alexa.BrightnessController'){
         if (request.directive.header.name === 'SetBrightness') {
             prodLogger("DEBUG: SetBrightness" + JSON.stringify(request));
-         await handleBrightnessControl(request, context);
+         response = await handleBrightnessControl(request, context);
         }
     }
     else if (request.directive.header.namespace === 'Alexa.SceneController'){
         if (request.directive.header.name === 'Activate' || request.directive.header.name === 'Deactivate') {
             prodLogger("DEBUG: SetBrightness" + JSON.stringify(request));
-         await handleSceneController(request, context);
+         response = await handleSceneController(request, context);
         }
     }
     else if (request.directive.header.namespace === 'Alexa') {
         if (request.directive.header.name === 'ReportState') {
-          await handleReportState(request,context);
+          response = await handleReportState(request,context);
         }
     }
 
@@ -75,14 +76,14 @@ exports.handler = async function (request, context) {
         header.name = "Discover.Response";
         const response = {event:{ header: header, payload: endPoints }};
         prodLogger("DEBUG: Discovery Response >>>>>>>> " + JSON.stringify(response));
-        context.succeed(response);
+        return response;
     }
 
     async function handleReportState(request, context) {
         const endpointId = request.directive.endpoint.endpointId;
         const requestToken = request.directive.endpoint.scope.token;
         const deviceStateContext = await getAlexaDeviceState(requestToken,endpointId);
-        sendAlexaCommandResponse(request,context,deviceStateContext,true);
+        return sendAlexaCommandResponse(request,context,deviceStateContext,true);
     }
 
     async function handlePowerControl(request, context) {
@@ -93,7 +94,7 @@ exports.handler = async function (request, context) {
         if (requestMethod === "TurnOff" || requestMethod === "TurnOn") {
             await sendDeviceCommand(request,setValue);
             const contextResult = await getAlexaDeviceState(requestToken,endpointId);
-            sendAlexaCommandResponse(request,context,contextResult);
+            return sendAlexaCommandResponse(request,context,contextResult);
         }
 
     }
@@ -106,7 +107,7 @@ exports.handler = async function (request, context) {
         if (requestMethod === "SetPercentage") {
             await sendDeviceCommand(request,setValue);
             const contextResult = await getAlexaDeviceState(requestToken,endpointId);
-            sendAlexaCommandResponse(request,context,contextResult);
+            return sendAlexaCommandResponse(request,context,contextResult);
         }
     }
 
@@ -118,7 +119,7 @@ exports.handler = async function (request, context) {
         if (requestMethod === "SetBrightness") {
             await sendDeviceCommand(request,setValue);
             const contextResult = await getAlexaDeviceState(requestToken,endpointId);
-            sendAlexaCommandResponse(request,context,contextResult);
+            return sendAlexaCommandResponse(request,context,contextResult);
         }
     }
 
@@ -130,7 +131,7 @@ exports.handler = async function (request, context) {
         if (requestMethod === "SetTargetTemperature") {
             await sendDeviceCommand(request,setValue);
             const contextResult = await getAlexaDeviceState(requestToken,endpointId);
-            sendAlexaCommandResponse(request,context,contextResult);
+            return sendAlexaCommandResponse(request,context,contextResult);
         }
     }
 
@@ -142,7 +143,7 @@ exports.handler = async function (request, context) {
         if (requestMethod === "SetColor") {
             await sendDeviceCommand(request,setValue);
             const contextResult = await getAlexaDeviceState(requestToken,endpointId);
-            sendAlexaCommandResponse(request,context,contextResult);
+            return sendAlexaCommandResponse(request,context,contextResult);
         }
     }
 
@@ -153,10 +154,12 @@ exports.handler = async function (request, context) {
         const requestMethod = request.directive.header.name;
         await sendDeviceCommand(request,setValue);
         const contextResult = await getAlexaDeviceState(requestToken,endpointId,true);
-        sendAlexaCommandResponse(request,context,contextResult);
+        return sendAlexaCommandResponse(request,context,contextResult);
     }
 
     const totalDuration = parseInt(performance.now() - durationStart);
     prodLogger("Duration : " + totalDuration + " ms");
     sendStatsd("request."+request.directive.header.namespace+"."+request.directive.header.name+":"+totalDuration+"|ms");
+
+    return response;
 };

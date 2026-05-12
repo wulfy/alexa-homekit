@@ -37,8 +37,7 @@ exports.alexaMapper = alexaMapper;
 exports.alexaDiscovery = alexaDiscoveryEndpoints;
 exports.PROD_MODE = PROD_MODE
 
-//send alexa response and stop lambda by context.succeed call
-// same response for getState or command
+// Build the Alexa response — same shape for getState or command.
 exports.sendAlexaCommandResponse = function(request,context,contextResult,isStateReport){
 	const endpointId = request.directive.endpoint.endpointId;
     const requestHeader = request.directive.header;
@@ -48,7 +47,7 @@ exports.sendAlexaCommandResponse = function(request,context,contextResult,isStat
     prodLogger("DEBUG: " + requestHeader.namespace + JSON.stringify(response));
 
     sendStatsd("calls.answer."+requestHeader.name+":1|c");
-    context.succeed(response);
+    return response;
 }
 
 //send command to the device handler (ex domoticz)

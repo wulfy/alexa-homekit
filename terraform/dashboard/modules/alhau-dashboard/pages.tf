@@ -7,7 +7,7 @@
 
 resource "newrelic_one_dashboard" "alhau" {
   name        = var.dashboard_name
-  permissions = "public_read_only"
+  permissions = "private"
   description = "Alexa HomeKit Lambda — health, traffic and business metrics."
 
   # Dashboard-level variable: lets the user toggle between prod and preprod

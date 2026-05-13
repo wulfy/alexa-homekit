@@ -8,5 +8,12 @@ exports.config = {
   },
   distributed_tracing: {
     enabled: true
+  },
+  // Required for AWS Lambda. The default background harvest cycle never fires
+  // (Lambda freezes the process between invocations) so the NR Lambda Extension
+  // bundled in the NewRelicNodeJS22X layer must flush telemetry synchronously
+  // at the end of each invocation.
+  serverless_mode: {
+    enabled: true
   }
 }

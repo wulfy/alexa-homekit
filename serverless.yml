@@ -65,8 +65,22 @@ package:
 functions:
   index:
     name: alhau_preprod
-    handler: index.handler
-  
+    # The handler is provided by the New Relic Lambda layer. It wraps the real
+    # handler (pointed to by NEW_RELIC_LAMBDA_HANDLER) so the NR extension can
+    # flush telemetry synchronously at the end of each invocation.
+    handler: newrelic-lambda-wrapper.handler
+    environment:
+      NEW_RELIC_LAMBDA_HANDLER: index.handler
+      # NEW_RELIC_LICENSE_KEY and NEW_RELIC_ACCOUNT_ID are set directly on the
+      # Lambda (Console → Configuration → Environment variables) to avoid
+      # committing secrets. Same for NEW_RELIC_APP_NAME if you want to override
+      # the default 'alexa-homekit'.
+    layers:
+      # Update via https://layers.newrelic-external.com (region eu-west-1,
+      # runtime nodejs22.x). Bump the trailing :NN as new versions are released.
+      - arn:aws:lambda:eu-west-1:451483290750:layer:NewRelicNodeJS22X:24
+
+
 # Stage parameters
 params:
   # Values for the "prod" stage

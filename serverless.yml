@@ -78,7 +78,7 @@ functions:
     layers:
       # Update via https://layers.newrelic-external.com (region eu-west-1,
       # runtime nodejs22.x). Bump the trailing :NN as new versions are released.
-      - arn:aws:lambda:eu-west-1:451483290750:layer:NewRelicNodeJS22X:24
+      - arn:aws:lambda:eu-west-1:451483290750:layer:NewRelicNodeJS22X:80
 
 
 # Stage parameters

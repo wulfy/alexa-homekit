@@ -594,7 +594,7 @@ resource "newrelic_one_dashboard" "alhau" {
 
       nrql_query {
         account_id = var.account_id
-        query      = "FROM Transaction SELECT uniqueCount(alexa.userId) WHERE appName = {{ instance }} AND alexa.userId IS NOT NULL TIMESERIES 1 hour"
+        query      = "FROM Transaction SELECT uniqueCount(alexa.userId) WHERE appName = {{ instance }} AND alexa.userId IS NOT NULL TIMESERIES AUTO"
       }
 
       y_axis_left_zero = true

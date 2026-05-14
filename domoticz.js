@@ -92,6 +92,14 @@ class domoticz {
 			devicesObjList = JSON.parse(devicesJsonList);
 		}
 
+		// Tag the Transaction with the Domoticz version observed in the
+		// response. The user's Domoticz is remote so the version reflects
+		// THEIR install — useful to track upgrades, surface EOL versions,
+		// and correlate bugs with specific releases.
+		if (devicesObjList && devicesObjList.app_version) {
+			require('newrelic').addCustomAttribute('domoticz.version', devicesObjList.app_version);
+		}
+
 		return devicesObjList.result;
 	}
 

@@ -197,6 +197,34 @@ resource "newrelic_one_dashboard" "alhau" {
         query      = "FROM Transaction SELECT count(*) AS 'Other directives' WHERE appName = {{ instance }} AND alexa.directive IS NOT NULL AND alexa.directive NOT LIKE 'Alexa.Discovery%' TIMESERIES"
       }
     }
+
+    widget_line {
+      title  = "Reads (ReportState polling) vs Writes (commands)"
+      row    = 7
+      column = 1
+      width  = 8
+      height = 3
+
+      nrql_query {
+        account_id = var.account_id
+        query      = "FROM Transaction SELECT count(*) WHERE appName = {{ instance }} AND alexa.action.type IS NOT NULL FACET alexa.action.type TIMESERIES"
+      }
+
+      legend_enabled = true
+    }
+
+    widget_pie {
+      title  = "Read/write split (last 24h)"
+      row    = 7
+      column = 9
+      width  = 4
+      height = 3
+
+      nrql_query {
+        account_id = var.account_id
+        query      = "FROM Transaction SELECT count(*) WHERE appName = {{ instance }} AND alexa.action.type IS NOT NULL FACET alexa.action.type SINCE 1 day ago"
+      }
+    }
   }
 
   # ----------------------------------------------------------------------
@@ -271,6 +299,56 @@ resource "newrelic_one_dashboard" "alhau" {
         unit = "ms"
       }
     }
+
+    widget_bar {
+      title  = "Commands by Domoticz subtype (last 24h)"
+      row    = 7
+      column = 1
+      width  = 6
+      height = 3
+
+      nrql_query {
+        account_id = var.account_id
+        query      = "FROM Transaction SELECT count(*) WHERE appName = {{ instance }} AND domoticz.subtype IS NOT NULL FACET domoticz.subtype SINCE 1 day ago LIMIT 20"
+      }
+    }
+
+    widget_line {
+      title  = "Domoticz call duration by subtype (avg ms)"
+      row    = 7
+      column = 7
+      width  = 6
+      height = 3
+
+      nrql_query {
+        account_id = var.account_id
+        query      = "FROM Transaction SELECT average(externalDuration * 1000) WHERE appName = {{ instance }} AND domoticz.subtype IS NOT NULL FACET domoticz.subtype TIMESERIES"
+      }
+
+      legend_enabled = true
+
+      units {
+        unit = "ms"
+      }
+    }
+
+    widget_table {
+      title  = "Errors by component (caught + uncaught)"
+      row    = 10
+      column = 1
+      width  = 12
+      height = 3
+
+      nrql_query {
+        account_id = var.account_id
+        query      = "FROM TransactionError SELECT count(*) WHERE appName = {{ instance }} FACET component, error.class, error.message SINCE 1 day ago LIMIT 50"
+      }
+
+      initial_sorting {
+        direction = "desc"
+        name      = "count"
+      }
+    }
   }
 
   # ----------------------------------------------------------------------
@@ -325,7 +403,111 @@ resource "newrelic_one_dashboard" "alhau" {
   }
 
   # ----------------------------------------------------------------------
-  # PAGE 5 — APM Transactions
+  # PAGE 5 — Devices & Users
+  # Fleet- and user-level signals. Relies on custom attributes attached
+  # in the Lambda handler: alexa.endpointId (which device was acted on),
+  # alexa.userId (DB id of the user behind the OAuth token),
+  # discovery.deviceCount (devices returned by the last Discovery).
+  # ----------------------------------------------------------------------
+  page {
+    name = "Devices & Users"
+
+    widget_bar {
+      title  = "Top 10 devices used (last 24h)"
+      row    = 1
+      column = 1
+      width  = 6
+      height = 3
+
+      nrql_query {
+        account_id = var.account_id
+        query      = "FROM Transaction SELECT count(*) WHERE appName = {{ instance }} AND alexa.endpointId IS NOT NULL FACET alexa.endpointId SINCE 1 day ago LIMIT 10"
+      }
+    }
+
+    widget_pie {
+      title  = "Devices by Domoticz subtype (last 24h)"
+      row    = 1
+      column = 7
+      width  = 6
+      height = 3
+
+      nrql_query {
+        account_id = var.account_id
+        query      = "FROM Transaction SELECT uniqueCount(domoticz.deviceId) WHERE appName = {{ instance }} AND domoticz.subtype IS NOT NULL FACET domoticz.subtype SINCE 1 day ago"
+      }
+    }
+
+    widget_billboard {
+      title  = "Discovery inventory (latest)"
+      row    = 4
+      column = 1
+      width  = 4
+      height = 3
+
+      nrql_query {
+        account_id = var.account_id
+        query      = "FROM Transaction SELECT latest(discovery.deviceCount) WHERE appName = {{ instance }} AND discovery.deviceCount IS NOT NULL SINCE 1 day ago"
+      }
+    }
+
+    widget_billboard {
+      title  = "Distinct users (last 24h)"
+      row    = 4
+      column = 5
+      width  = 4
+      height = 3
+
+      nrql_query {
+        account_id = var.account_id
+        query      = "FROM Transaction SELECT uniqueCount(alexa.userId) WHERE appName = {{ instance }} AND alexa.userId IS NOT NULL SINCE 1 day ago"
+      }
+    }
+
+    widget_billboard {
+      title  = "Devices used (last 24h)"
+      row    = 4
+      column = 9
+      width  = 4
+      height = 3
+
+      nrql_query {
+        account_id = var.account_id
+        query      = "FROM Transaction SELECT uniqueCount(alexa.endpointId) WHERE appName = {{ instance }} AND alexa.endpointId IS NOT NULL SINCE 1 day ago"
+      }
+    }
+
+    widget_line {
+      title  = "Distinct users over time"
+      row    = 7
+      column = 1
+      width  = 8
+      height = 3
+
+      nrql_query {
+        account_id = var.account_id
+        query      = "FROM Transaction SELECT uniqueCount(alexa.userId) WHERE appName = {{ instance }} AND alexa.userId IS NOT NULL TIMESERIES 1 hour"
+      }
+
+      y_axis_left_zero = true
+    }
+
+    widget_bar {
+      title  = "Top users by invocation count (last 24h)"
+      row    = 7
+      column = 9
+      width  = 4
+      height = 3
+
+      nrql_query {
+        account_id = var.account_id
+        query      = "FROM Transaction SELECT count(*) WHERE appName = {{ instance }} AND alexa.userId IS NOT NULL FACET alexa.userId SINCE 1 day ago LIMIT 10"
+      }
+    }
+  }
+
+  # ----------------------------------------------------------------------
+  # PAGE 6 — APM Transactions
   # Same kind of signal as the "Alexa Traffic" and "Lambda Health" pages,
   # but sourced from the agent's auto-instrumented Transaction events
   # instead of our custom-metric timeslices. Useful as a cross-check —

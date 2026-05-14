@@ -372,20 +372,23 @@ resource "newrelic_one_dashboard" "alhau" {
     }
 
     widget_line {
-      title  = "DB query time (avg ms)"
+      title  = "DB calls (count + avg duration)"
       row    = 4
       column = 1
       width  = 6
       height = 3
 
+      # Removed the `databaseDuration IS NOT NULL` filter — when the agent
+      # didn't observe a DB segment (early invocations before the mysql
+      # instrumentation kicked in, or transactions that didn't hit the DB),
+      # average() handles those NULLs gracefully. Count is also surfaced
+      # so a sparse chart is interpretable (some invocations don't hit DB).
       nrql_query {
         account_id = var.account_id
-        query      = "FROM Transaction SELECT average(databaseDuration * 1000) WHERE appName = {{ instance }} AND databaseDuration IS NOT NULL TIMESERIES"
+        query      = "FROM Transaction SELECT count(databaseDuration) AS 'DB calls', average(databaseDuration * 1000) AS 'avg ms' WHERE appName = {{ instance }} TIMESERIES"
       }
 
-      units {
-        unit = "ms"
-      }
+      legend_enabled = true
     }
 
     widget_stacked_bar {
@@ -771,9 +774,23 @@ resource "newrelic_one_dashboard" "alhau" {
       width  = 12
       height = 3
 
+      # Multi-percentage in a single SELECT doesn't render reliably in
+      # widget_area TIMESERIES mode — switching to count(*) faceted into
+      # three buckets via WHERE clauses on separate nrql_query blocks.
+      # Each block produces one series that NR stacks in the area chart.
       nrql_query {
         account_id = var.account_id
-        query      = "FROM Transaction SELECT percentage(count(*), WHERE duration < 2) AS '< 2s', percentage(count(*), WHERE duration >= 2 AND duration < 4) AS '2-4s', percentage(count(*), WHERE duration >= 4) AS '> 4s' WHERE appName = {{ instance }} TIMESERIES 1 hour"
+        query      = "FROM Transaction SELECT count(*) AS '< 2s (good)' WHERE appName = {{ instance }} AND duration < 2 TIMESERIES"
+      }
+
+      nrql_query {
+        account_id = var.account_id
+        query      = "FROM Transaction SELECT count(*) AS '2-4s (slow)' WHERE appName = {{ instance }} AND duration >= 2 AND duration < 4 TIMESERIES"
+      }
+
+      nrql_query {
+        account_id = var.account_id
+        query      = "FROM Transaction SELECT count(*) AS '> 4s (bad)' WHERE appName = {{ instance }} AND duration >= 4 TIMESERIES"
       }
 
       legend_enabled = true
@@ -955,7 +972,7 @@ resource "newrelic_one_dashboard" "alhau" {
 
       nrql_query {
         account_id = var.account_id
-        query      = "FROM Transaction SELECT timestamp, appName, duration * 1000 AS 'duration_ms', error WHERE appName IN (${local.lambda_in_clause}) SINCE 1 day ago LIMIT 100"
+        query      = "FROM Transaction SELECT timestamp, appName, alexa.directive, alexa.endpointId, domoticz.subtype, domoticz.deviceId, duration * 1000 AS 'duration_ms', externalDuration * 1000 AS 'ext_ms', databaseDuration * 1000 AS 'db_ms', error WHERE appName IN (${local.lambda_in_clause}) SINCE 1 day ago LIMIT 100"
       }
 
       initial_sorting {

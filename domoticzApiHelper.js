@@ -28,7 +28,13 @@ async function alexaDiscoveryEndpoints(requestToken){
 	const domoticzConnector = getDomoticzFromToken(requestToken);
 	const devices = await domoticzConnector.getAllDevices();
 	const mappedDevices = alexaMapper.fromDomoticzDevices(devices);
-	return alexaMapper.handleDiscovery(mappedDevices);
+	const discoveryResult = alexaMapper.handleDiscovery(mappedDevices);
+	// Track the device inventory size — useful to detect when a user's
+	// Domoticz hub returns fewer devices than expected (a partial outage).
+	if (discoveryResult && discoveryResult.endpoints) {
+		require('newrelic').addCustomAttribute('discovery.deviceCount', discoveryResult.endpoints.length);
+	}
+	return discoveryResult;
 }
 
 

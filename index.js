@@ -17,14 +17,26 @@ exports.handler = async function (request, context) {
     let durationStart = performance.now();
     let response;
 
-    // Tag the NR Transaction with the Alexa directive so dashboards can
-    // FACET by namespace/name. The legacy timeslice metrics (incrementMetric)
-    // are not queryable via NRQL on this NR account, so per-directive
-    // breakdowns come from Transaction events instead.
-    require('newrelic').addCustomAttribute(
+    // Tag the NR Transaction with rich metadata so dashboards can FACET on
+    // these attributes. The legacy timeslice metrics (incrementMetric) are
+    // not queryable via NRQL on this NR account.
+    const nr = require('newrelic');
+    nr.addCustomAttribute(
         'alexa.directive',
         request.directive.header.namespace + '.' + request.directive.header.name
     );
+    // ReportState is Alexa polling for device state — separating it from
+    // write actions (TurnOn, SetTargetTemperature, …) shows the read/write
+    // mix and lets us isolate Alexa-driven polling load.
+    nr.addCustomAttribute(
+        'alexa.action.type',
+        request.directive.header.namespace === 'Alexa' && request.directive.header.name === 'ReportState'
+            ? 'read'
+            : 'write'
+    );
+    if (request.directive.endpoint && request.directive.endpoint.endpointId) {
+        nr.addCustomAttribute('alexa.endpointId', request.directive.endpoint.endpointId);
+    }
 
     //send stats about request receive
     sendStatsd("request."+request.directive.header.namespace+"."+request.directive.header.name+":1|c");

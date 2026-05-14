@@ -127,6 +127,13 @@ class domoticz {
 		conConfig.path += generate_command(deviceSubtype,deviceId,directive,directiveValue,inverted);
 
 		debugLogger('%j',conConfig.path);
+		// Tag the NR Transaction with what's being commanded — enables
+		// per-subtype breakdowns of throughput and externalDuration on the
+		// dashboard, and lets us correlate slow/erroring transactions with
+		// a specific device.
+		const nr = require('newrelic');
+		nr.addCustomAttribute('domoticz.subtype', deviceSubtype);
+		nr.addCustomAttribute('domoticz.deviceId', deviceId);
 		try {
 			PROD_MODE ? await promiseHttpRequest(conConfig) : null ;
 			prodLogger("REQUEST SENT");
@@ -134,6 +141,9 @@ class domoticz {
 
 			return conConfig.path;
 		}catch(e){
+			// Surface non-fatal Domoticz errors to NR so they appear in
+			// TransactionError without breaking the user-facing response.
+			nr.noticeError(e, { component: 'domoticz', subtype: deviceSubtype, deviceId: deviceId });
 			throw e;
 		}
 

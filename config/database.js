@@ -51,17 +51,37 @@ const getUserData = (token) => {
     sendStatsd("calls.database.getUserData:1|c");
 
     const connectionDatabase = getDatabase();
-    return connectionDatabase.query(`SELECT * FROM oauth_tokens as ot 
-                                     LEFT JOIN users as us ON ot.user_id = us.id 
-                                     LEFT JOIN user_data as ud ON ud.user_id = ot.user_id 
-                                     WHERE ot.access_token = ? `, 
+    return connectionDatabase.query(`SELECT * FROM oauth_tokens as ot
+                                     LEFT JOIN users as us ON ot.user_id = us.id
+                                     LEFT JOIN user_data as ud ON ud.user_id = ot.user_id
+                                     WHERE ot.access_token = ? `,
     [token]).then( results => {
         debugLogger(results[0])
         let data = results[0];
-        if(!data) 
-            throw "ERROR NO TOKEN FOUND";
+        if(!data) {
+            // Distinct from a generic DB error — this is an auth/lookup
+            // miss, surfaced to NR as a non-fatal noticeError so it shows
+            // up in TransactionError without crashing the handler.
+            const err = new Error("ERROR NO TOKEN FOUND");
+            require('newrelic').noticeError(err, { component: 'database', reason: 'unknown_token' });
+            throw err;
+        }
+
+        // Identify the user behind this invocation. Using the DB id (not
+        // the OAuth token) keeps us safe from leaking secrets to NR while
+        // still enabling uniqueCount(alexa.userId) for DAU/MAU metrics.
+        if (data.user_id !== undefined) {
+            require('newrelic').addCustomAttribute('alexa.userId', String(data.user_id));
+        }
 
         return data;
+    }).catch(err => {
+        // Catch connection errors / SQL errors that aren't the lookup miss
+        // above. Re-throw so the caller's behavior is unchanged.
+        if (err && err.message !== "ERROR NO TOKEN FOUND") {
+            require('newrelic').noticeError(err, { component: 'database', reason: 'query_error' });
+        }
+        throw err;
     });
 }
 

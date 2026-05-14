@@ -17,6 +17,15 @@ exports.handler = async function (request, context) {
     let durationStart = performance.now();
     let response;
 
+    // Tag the NR Transaction with the Alexa directive so dashboards can
+    // FACET by namespace/name. The legacy timeslice metrics (incrementMetric)
+    // are not queryable via NRQL on this NR account, so per-directive
+    // breakdowns come from Transaction events instead.
+    require('newrelic').addCustomAttribute(
+        'alexa.directive',
+        request.directive.header.namespace + '.' + request.directive.header.name
+    );
+
     //send stats about request receive
     sendStatsd("request."+request.directive.header.namespace+"."+request.directive.header.name+":1|c");
 

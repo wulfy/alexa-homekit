@@ -732,7 +732,7 @@ resource "newrelic_one_dashboard" "alhau" {
 
       nrql_query {
         account_id = var.account_id
-        query      = "FROM Transaction SELECT percentage(count(*), WHERE duration BETWEEN 2 AND 4) WHERE appName = {{ instance }} SINCE 1 day ago"
+        query      = "FROM Transaction SELECT percentage(count(*), WHERE duration >= 2 AND duration < 4) WHERE appName = {{ instance }} SINCE 1 day ago"
       }
     }
 
@@ -762,7 +762,7 @@ resource "newrelic_one_dashboard" "alhau" {
 
       nrql_query {
         account_id = var.account_id
-        query      = "FROM Transaction SELECT percentage(count(*), WHERE duration < 2) AS '< 2s', percentage(count(*), WHERE duration BETWEEN 2 AND 4) AS '2-4s', percentage(count(*), WHERE duration >= 4) AS '> 4s' WHERE appName = {{ instance }} TIMESERIES 1 hour"
+        query      = "FROM Transaction SELECT percentage(count(*), WHERE duration < 2) AS '< 2s', percentage(count(*), WHERE duration >= 2 AND duration < 4) AS '2-4s', percentage(count(*), WHERE duration >= 4) AS '> 4s' WHERE appName = {{ instance }} TIMESERIES 1 hour"
       }
 
       legend_enabled = true

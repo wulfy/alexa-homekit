@@ -70,8 +70,17 @@ const getUserData = (token) => {
         // Identify the user behind this invocation. Using the DB id (not
         // the OAuth token) keeps us safe from leaking secrets to NR while
         // still enabling uniqueCount(alexa.userId) for DAU/MAU metrics.
+        const nr = require('newrelic');
         if (data.user_id !== undefined) {
-            require('newrelic').addCustomAttribute('alexa.userId', String(data.user_id));
+            nr.addCustomAttribute('alexa.userId', String(data.user_id));
+        }
+        // Also capture a human-readable identifier (email is the common
+        // login) so dashboards can show "who" without manual id↔user
+        // mapping. Falls through several candidate column names so this
+        // works regardless of the exact schema variant.
+        const login = data.email || data.login || data.username || data.user_email || data.mail;
+        if (login) {
+            nr.addCustomAttribute('alexa.userLogin', String(login));
         }
 
         return data;

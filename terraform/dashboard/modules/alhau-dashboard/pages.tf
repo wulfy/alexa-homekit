@@ -91,12 +91,16 @@ resource "newrelic_one_dashboard" "alhau" {
 
       nrql_query {
         account_id = var.account_id
-        query      = "FROM Transaction SELECT percentile(duration, 50, 95, 99) WHERE appName = '${var.newrelic_app_name}' TIMESERIES"
+        query      = "FROM Transaction SELECT percentile(duration * 1000, 50, 95, 99) WHERE appName IN (${local.lambda_in_clause}) TIMESERIES"
       }
 
       legend_enabled    = true
       y_axis_left_zero  = true
       ignore_time_range = false
+
+      units {
+        unit = "ms"
+      }
     }
 
     widget_table {
@@ -108,7 +112,7 @@ resource "newrelic_one_dashboard" "alhau" {
 
       nrql_query {
         account_id = var.account_id
-        query      = "FROM TransactionError SELECT timestamp, error.message, error.class WHERE appName = '${var.newrelic_app_name}' SINCE 1 day ago LIMIT 50"
+        query      = "FROM TransactionError SELECT timestamp, appName, error.message, error.class WHERE appName IN (${local.lambda_in_clause}) SINCE 1 day ago LIMIT 50"
       }
 
       initial_sorting {
@@ -121,7 +125,10 @@ resource "newrelic_one_dashboard" "alhau" {
   # ----------------------------------------------------------------------
   # PAGE 2 — Alexa Traffic
   # Volumes and latency of incoming Alexa directives, broken down by
-  # namespace + name (e.g. Alexa.PowerController.TurnOn).
+  # alexa.directive (custom attribute attached to each Transaction by
+  # the Lambda code via newrelic.addCustomAttribute). Format is the
+  # concatenation of the directive namespace and name, e.g.
+  # 'Alexa.PowerController.TurnOn' or 'Alexa.Discovery.Discover'.
   # ----------------------------------------------------------------------
   page {
     name = "Alexa Traffic"
@@ -135,7 +142,7 @@ resource "newrelic_one_dashboard" "alhau" {
 
       nrql_query {
         account_id = var.account_id
-        query      = "FROM Metric SELECT sum(newrelic.timeslice.value) WHERE metricTimesliceName LIKE '${local.like_request}' FACET metricTimesliceName TIMESERIES"
+        query      = "FROM Transaction SELECT count(*) WHERE appName IN (${local.lambda_in_clause}) FACET alexa.directive TIMESERIES"
       }
     }
 
@@ -148,7 +155,7 @@ resource "newrelic_one_dashboard" "alhau" {
 
       nrql_query {
         account_id = var.account_id
-        query      = "FROM Metric SELECT sum(newrelic.timeslice.value) WHERE metricTimesliceName LIKE '${local.like_request}' FACET metricTimesliceName SINCE 1 day ago LIMIT 10"
+        query      = "FROM Transaction SELECT count(*) WHERE appName IN (${local.lambda_in_clause}) FACET alexa.directive SINCE 1 day ago LIMIT 10"
       }
     }
 
@@ -161,7 +168,7 @@ resource "newrelic_one_dashboard" "alhau" {
 
       nrql_query {
         account_id = var.account_id
-        query      = "FROM Metric SELECT percentile(newrelic.timeslice.value, 95) WHERE metricTimesliceName LIKE '${local.like_request}' FACET metricTimesliceName TIMESERIES"
+        query      = "FROM Transaction SELECT percentile(duration * 1000, 95) WHERE appName IN (${local.lambda_in_clause}) FACET alexa.directive TIMESERIES"
       }
 
       legend_enabled    = true
@@ -182,27 +189,27 @@ resource "newrelic_one_dashboard" "alhau" {
 
       nrql_query {
         account_id = var.account_id
-        query      = "FROM Metric SELECT sum(newrelic.timeslice.value) AS 'Discovery' WHERE metricTimesliceName LIKE '${local.like_request}' AND metricTimesliceName LIKE '%Discovery%' TIMESERIES"
+        query      = "FROM Transaction SELECT count(*) AS 'Discovery' WHERE appName IN (${local.lambda_in_clause}) AND alexa.directive LIKE 'Alexa.Discovery%' TIMESERIES"
       }
 
       nrql_query {
         account_id = var.account_id
-        query      = "FROM Metric SELECT sum(newrelic.timeslice.value) AS 'Other directives' WHERE metricTimesliceName LIKE '${local.like_request}' AND metricTimesliceName NOT LIKE '%Discovery%' TIMESERIES"
+        query      = "FROM Transaction SELECT count(*) AS 'Other directives' WHERE appName IN (${local.lambda_in_clause}) AND alexa.directive IS NOT NULL AND alexa.directive NOT LIKE 'Alexa.Discovery%' TIMESERIES"
       }
     }
   }
 
   # ----------------------------------------------------------------------
   # PAGE 3 — Activité métier
-  # Domain-level signals: which Domoticz device subtypes are commanded,
-  # how often the app hits the OAuth/users DB, what kinds of Alexa
-  # responses are sent back.
+  # Domain-level signals based on the agent's auto-instrumentation:
+  # external calls to Domoticz, MySQL queries to the OAuth/users DB,
+  # and per-directive response latency.
   # ----------------------------------------------------------------------
   page {
     name = "Activité métier"
 
-    widget_bar {
-      title  = "Commands by Domoticz subtype"
+    widget_line {
+      title  = "External calls (Domoticz)"
       row    = 1
       column = 1
       width  = 6
@@ -210,27 +217,29 @@ resource "newrelic_one_dashboard" "alhau" {
 
       nrql_query {
         account_id = var.account_id
-        query      = "FROM Metric SELECT sum(newrelic.timeslice.value) WHERE metricTimesliceName LIKE '${local.like_command}' FACET metricTimesliceName SINCE 1 day ago LIMIT 20"
-      }
-
-      filter_current_dashboard = true
-    }
-
-    widget_pie {
-      title  = "Top 10 device subtypes"
-      row    = 1
-      column = 7
-      width  = 6
-      height = 3
-
-      nrql_query {
-        account_id = var.account_id
-        query      = "FROM Metric SELECT sum(newrelic.timeslice.value) WHERE metricTimesliceName LIKE '${local.like_command}' FACET metricTimesliceName SINCE 1 day ago LIMIT 10"
+        query      = "FROM Transaction SELECT count(externalDuration) WHERE appName IN (${local.lambda_in_clause}) AND externalDuration IS NOT NULL TIMESERIES"
       }
     }
 
     widget_line {
-      title  = "DB user-data lookups"
+      title  = "Domoticz call duration (avg ms)"
+      row    = 1
+      column = 7
+      width  = 6
+      height = 3
+
+      nrql_query {
+        account_id = var.account_id
+        query      = "FROM Transaction SELECT average(externalDuration * 1000) WHERE appName IN (${local.lambda_in_clause}) AND externalDuration IS NOT NULL TIMESERIES"
+      }
+
+      units {
+        unit = "ms"
+      }
+    }
+
+    widget_line {
+      title  = "DB query time (avg ms)"
       row    = 4
       column = 1
       width  = 6
@@ -238,12 +247,16 @@ resource "newrelic_one_dashboard" "alhau" {
 
       nrql_query {
         account_id = var.account_id
-        query      = "FROM Metric SELECT sum(newrelic.timeslice.value) WHERE metricTimesliceName LIKE '${local.like_database}' TIMESERIES"
+        query      = "FROM Transaction SELECT average(databaseDuration * 1000) WHERE appName IN (${local.lambda_in_clause}) AND databaseDuration IS NOT NULL TIMESERIES"
+      }
+
+      units {
+        unit = "ms"
       }
     }
 
     widget_stacked_bar {
-      title  = "Alexa responses by directive name"
+      title  = "Response time breakdown (avg ms)"
       row    = 4
       column = 7
       width  = 6
@@ -251,7 +264,11 @@ resource "newrelic_one_dashboard" "alhau" {
 
       nrql_query {
         account_id = var.account_id
-        query      = "FROM Metric SELECT sum(newrelic.timeslice.value) WHERE metricTimesliceName LIKE '${local.like_answer}' FACET metricTimesliceName TIMESERIES"
+        query      = "FROM Transaction SELECT average(databaseDuration * 1000) AS 'MySQL', average(externalDuration * 1000) AS 'Domoticz', average((duration - databaseDuration - externalDuration) * 1000) AS 'Other (handler logic)' WHERE appName IN (${local.lambda_in_clause}) TIMESERIES"
+      }
+
+      units {
+        unit = "ms"
       }
     }
   }
@@ -274,7 +291,7 @@ resource "newrelic_one_dashboard" "alhau" {
 
       nrql_query {
         account_id = var.account_id
-        query      = "FROM Log SELECT count(*) WHERE entity.name = '${var.newrelic_app_name}' FACET level TIMESERIES"
+        query      = "FROM Log SELECT count(*) WHERE entity.name IN (${local.lambda_in_clause}) FACET level TIMESERIES"
       }
 
       legend_enabled = true
@@ -289,7 +306,7 @@ resource "newrelic_one_dashboard" "alhau" {
 
       nrql_query {
         account_id = var.account_id
-        query      = "FROM Log SELECT timestamp, message, level WHERE entity.name = '${var.newrelic_app_name}' AND level = 'error' SINCE 1 day ago LIMIT 100"
+        query      = "FROM Log SELECT timestamp, message, level WHERE entity.name IN (${local.lambda_in_clause}) AND level = 'error' SINCE 1 day ago LIMIT 100"
       }
     }
 
@@ -302,7 +319,7 @@ resource "newrelic_one_dashboard" "alhau" {
 
       nrql_query {
         account_id = var.account_id
-        query      = "FROM Log SELECT timestamp, message, level WHERE entity.name = '${var.newrelic_app_name}' SINCE 1 hour ago LIMIT 200"
+        query      = "FROM Log SELECT timestamp, message, level WHERE entity.name IN (${local.lambda_in_clause}) SINCE 1 hour ago LIMIT 200"
       }
     }
   }

@@ -1,24 +1,15 @@
-# Locals used by widgets across pages. Centralizing these strings here
-# avoids subtle drift between pages and makes it obvious what query
-# fragment is reused where.
+# Locals used by widgets across pages.
 #
-# Note on metric data shape: the app uses newrelic.incrementMetric() and
-# newrelic.recordMetric() (see config/metrics.js). Both publish *metric
-# timeslice data*, which is queried in NRQL as:
+# The dashboard sources all its data from agent auto-instrumented events
+# (Transaction, TransactionError, AwsLambdaInvocation, Metric goldenmetrics)
+# rather than the legacy timeslice custom metrics emitted by
+# newrelic.incrementMetric(). The timeslice format is being phased out
+# at New Relic and is not queryable via standard NRQL filters on our
+# account, so we use the supported events instead.
 #
-#   FROM Metric WHERE metricTimesliceName LIKE 'Custom/<ns>/<key>'
-#   SELECT sum(newrelic.timeslice.value)            -- for counters
-#   SELECT percentile(newrelic.timeslice.value, 95) -- for ms timings
-#
-# This is DIFFERENT from custom events (FROM <EventName> ...).
-# If the queries below return no data after `apply`, the most likely
-# cause is a mismatch in metricTimesliceName — verify with the New Relic
-# Query Builder by running:
-#
-#   FROM Metric SELECT uniques(metricTimesliceName)
-#   WHERE metricTimesliceName LIKE 'Custom/lambda.alhau%' SINCE 1 day ago
-#
-# and adjust the `like_*` locals below.
+# Per-directive breakdowns (e.g. Alexa.PowerController.TurnOn) come from
+# the `alexa.directive` custom attribute that index.js attaches to every
+# Transaction via newrelic.addCustomAttribute().
 
 locals {
   lambda_function_names = [
@@ -28,11 +19,4 @@ locals {
 
   # NRQL-friendly representation: "'ludohomekit', 'alhau_preprod'"
   lambda_in_clause = join(", ", [for n in local.lambda_function_names : format("'%s'", n)])
-
-  # LIKE patterns for metric timeslices. The `%` after the namespace covers
-  # the per-instance suffix (e.g. lambda.alhau.prod, lambda.alhau.preprod).
-  like_request  = "Custom/${var.metric_namespace}.%/request.%"
-  like_answer   = "Custom/${var.metric_namespace}.%/calls.answer.%"
-  like_command  = "Custom/${var.metric_namespace}.%/calls.command.%"
-  like_database = "Custom/${var.metric_namespace}.%/calls.database.%"
 }

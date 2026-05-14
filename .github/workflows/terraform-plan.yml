@@ -10,6 +10,9 @@ permissions:
   contents: read
   pull-requests: write   # to comment the plan on the PR
 
+env:
+  FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: "true"
+
 jobs:
   plan:
     name: Plan

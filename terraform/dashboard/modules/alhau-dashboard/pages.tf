@@ -18,7 +18,7 @@ resource "newrelic_one_dashboard" "alhau" {
     title                = "Environment"
     type                 = "enum"
     replacement_strategy = "default"
-    default_values       = ["prod"]
+    default_values       = ["ludohomekit"]
     is_multi_selection   = false
 
     item {

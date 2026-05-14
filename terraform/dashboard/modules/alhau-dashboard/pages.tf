@@ -49,7 +49,7 @@ resource "newrelic_one_dashboard" "alhau" {
 
       nrql_query {
         account_id = var.account_id
-        query      = "FROM AwsLambdaInvocation SELECT count(*) WHERE provider.functionName = '{{ instance }}' TIMESERIES 5 minutes"
+        query      = "FROM AwsLambdaInvocation SELECT count(*) WHERE provider.functionName = {{ instance }} TIMESERIES 5 minutes"
       }
     }
 
@@ -62,7 +62,7 @@ resource "newrelic_one_dashboard" "alhau" {
 
       nrql_query {
         account_id = var.account_id
-        query      = "FROM AwsLambdaInvocation SELECT percentage(count(*), WHERE error IS true) WHERE provider.functionName = '{{ instance }}' SINCE 1 hour ago"
+        query      = "FROM AwsLambdaInvocation SELECT percentage(count(*), WHERE error IS true) WHERE provider.functionName = {{ instance }} SINCE 1 hour ago"
       }
 
       warning  = 1
@@ -78,7 +78,7 @@ resource "newrelic_one_dashboard" "alhau" {
 
       nrql_query {
         account_id = var.account_id
-        query      = "FROM AwsLambdaInvocation SELECT count(*) WHERE provider.coldStart IS true AND provider.functionName = '{{ instance }}' TIMESERIES"
+        query      = "FROM AwsLambdaInvocation SELECT count(*) WHERE provider.coldStart IS true AND provider.functionName = {{ instance }} TIMESERIES"
       }
     }
 
@@ -91,7 +91,7 @@ resource "newrelic_one_dashboard" "alhau" {
 
       nrql_query {
         account_id = var.account_id
-        query      = "FROM Transaction SELECT percentile(duration * 1000, 50, 95, 99) WHERE appName = '{{ instance }}' TIMESERIES"
+        query      = "FROM Transaction SELECT percentile(duration * 1000, 50, 95, 99) WHERE appName = {{ instance }} TIMESERIES"
       }
 
       legend_enabled    = true
@@ -112,7 +112,7 @@ resource "newrelic_one_dashboard" "alhau" {
 
       nrql_query {
         account_id = var.account_id
-        query      = "FROM TransactionError SELECT timestamp, appName, error.message, error.class WHERE appName = '{{ instance }}' SINCE 1 day ago LIMIT 50"
+        query      = "FROM TransactionError SELECT timestamp, appName, error.message, error.class WHERE appName = {{ instance }} SINCE 1 day ago LIMIT 50"
       }
 
       initial_sorting {
@@ -142,7 +142,7 @@ resource "newrelic_one_dashboard" "alhau" {
 
       nrql_query {
         account_id = var.account_id
-        query      = "FROM Transaction SELECT count(*) WHERE appName = '{{ instance }}' FACET alexa.directive TIMESERIES"
+        query      = "FROM Transaction SELECT count(*) WHERE appName = {{ instance }} FACET alexa.directive TIMESERIES"
       }
     }
 
@@ -155,7 +155,7 @@ resource "newrelic_one_dashboard" "alhau" {
 
       nrql_query {
         account_id = var.account_id
-        query      = "FROM Transaction SELECT count(*) WHERE appName = '{{ instance }}' FACET alexa.directive SINCE 1 day ago LIMIT 10"
+        query      = "FROM Transaction SELECT count(*) WHERE appName = {{ instance }} FACET alexa.directive SINCE 1 day ago LIMIT 10"
       }
     }
 
@@ -168,7 +168,7 @@ resource "newrelic_one_dashboard" "alhau" {
 
       nrql_query {
         account_id = var.account_id
-        query      = "FROM Transaction SELECT percentile(duration * 1000, 95) WHERE appName = '{{ instance }}' FACET alexa.directive TIMESERIES"
+        query      = "FROM Transaction SELECT percentile(duration * 1000, 95) WHERE appName = {{ instance }} FACET alexa.directive TIMESERIES"
       }
 
       legend_enabled    = true
@@ -189,12 +189,12 @@ resource "newrelic_one_dashboard" "alhau" {
 
       nrql_query {
         account_id = var.account_id
-        query      = "FROM Transaction SELECT count(*) AS 'Discovery' WHERE appName = '{{ instance }}' AND alexa.directive LIKE 'Alexa.Discovery%' TIMESERIES"
+        query      = "FROM Transaction SELECT count(*) AS 'Discovery' WHERE appName = {{ instance }} AND alexa.directive LIKE 'Alexa.Discovery%' TIMESERIES"
       }
 
       nrql_query {
         account_id = var.account_id
-        query      = "FROM Transaction SELECT count(*) AS 'Other directives' WHERE appName = '{{ instance }}' AND alexa.directive IS NOT NULL AND alexa.directive NOT LIKE 'Alexa.Discovery%' TIMESERIES"
+        query      = "FROM Transaction SELECT count(*) AS 'Other directives' WHERE appName = {{ instance }} AND alexa.directive IS NOT NULL AND alexa.directive NOT LIKE 'Alexa.Discovery%' TIMESERIES"
       }
     }
   }
@@ -217,7 +217,7 @@ resource "newrelic_one_dashboard" "alhau" {
 
       nrql_query {
         account_id = var.account_id
-        query      = "FROM Transaction SELECT count(externalDuration) WHERE appName = '{{ instance }}' AND externalDuration IS NOT NULL TIMESERIES"
+        query      = "FROM Transaction SELECT count(externalDuration) WHERE appName = {{ instance }} AND externalDuration IS NOT NULL TIMESERIES"
       }
     }
 
@@ -230,7 +230,7 @@ resource "newrelic_one_dashboard" "alhau" {
 
       nrql_query {
         account_id = var.account_id
-        query      = "FROM Transaction SELECT average(externalDuration * 1000) WHERE appName = '{{ instance }}' AND externalDuration IS NOT NULL TIMESERIES"
+        query      = "FROM Transaction SELECT average(externalDuration * 1000) WHERE appName = {{ instance }} AND externalDuration IS NOT NULL TIMESERIES"
       }
 
       units {
@@ -247,7 +247,7 @@ resource "newrelic_one_dashboard" "alhau" {
 
       nrql_query {
         account_id = var.account_id
-        query      = "FROM Transaction SELECT average(databaseDuration * 1000) WHERE appName = '{{ instance }}' AND databaseDuration IS NOT NULL TIMESERIES"
+        query      = "FROM Transaction SELECT average(databaseDuration * 1000) WHERE appName = {{ instance }} AND databaseDuration IS NOT NULL TIMESERIES"
       }
 
       units {
@@ -264,7 +264,7 @@ resource "newrelic_one_dashboard" "alhau" {
 
       nrql_query {
         account_id = var.account_id
-        query      = "FROM Transaction SELECT average(databaseDuration * 1000) AS 'MySQL', average(externalDuration * 1000) AS 'Domoticz', average((duration - databaseDuration - externalDuration) * 1000) AS 'Other (handler logic)' WHERE appName = '{{ instance }}' TIMESERIES"
+        query      = "FROM Transaction SELECT average(databaseDuration * 1000) AS 'MySQL', average(externalDuration * 1000) AS 'Domoticz', average((duration - databaseDuration - externalDuration) * 1000) AS 'Other (handler logic)' WHERE appName = {{ instance }} TIMESERIES"
       }
 
       units {
@@ -291,7 +291,7 @@ resource "newrelic_one_dashboard" "alhau" {
 
       nrql_query {
         account_id = var.account_id
-        query      = "FROM Log SELECT count(*) WHERE entity.name = '{{ instance }}' FACET level TIMESERIES"
+        query      = "FROM Log SELECT count(*) WHERE entity.name = {{ instance }} FACET level TIMESERIES"
       }
 
       legend_enabled = true
@@ -306,7 +306,7 @@ resource "newrelic_one_dashboard" "alhau" {
 
       nrql_query {
         account_id = var.account_id
-        query      = "FROM Log SELECT timestamp, message, level WHERE entity.name = '{{ instance }}' AND level = 'error' SINCE 1 day ago LIMIT 100"
+        query      = "FROM Log SELECT timestamp, message, level WHERE entity.name = {{ instance }} AND level = 'error' SINCE 1 day ago LIMIT 100"
       }
     }
 
@@ -319,7 +319,7 @@ resource "newrelic_one_dashboard" "alhau" {
 
       nrql_query {
         account_id = var.account_id
-        query      = "FROM Log SELECT timestamp, message, level WHERE entity.name = '{{ instance }}' SINCE 1 hour ago LIMIT 200"
+        query      = "FROM Log SELECT timestamp, message, level WHERE entity.name = {{ instance }} SINCE 1 hour ago LIMIT 200"
       }
     }
   }

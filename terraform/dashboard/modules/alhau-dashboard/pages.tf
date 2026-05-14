@@ -49,7 +49,7 @@ resource "newrelic_one_dashboard" "alhau" {
 
       nrql_query {
         account_id = var.account_id
-        query      = "FROM AwsLambdaInvocation SELECT count(*) WHERE provider.functionName = {{ instance }} TIMESERIES 5 minutes"
+        query      = "FROM Transaction SELECT count(*) WHERE appName = {{ instance }} TIMESERIES 5 minutes"
       }
     }
 
@@ -62,7 +62,7 @@ resource "newrelic_one_dashboard" "alhau" {
 
       nrql_query {
         account_id = var.account_id
-        query      = "FROM AwsLambdaInvocation SELECT percentage(count(*), WHERE error IS true) WHERE provider.functionName = {{ instance }} SINCE 1 hour ago"
+        query      = "FROM Transaction SELECT percentage(count(*), WHERE error IS true) WHERE appName = {{ instance }} SINCE 1 hour ago"
       }
 
       warning  = 1
@@ -78,7 +78,7 @@ resource "newrelic_one_dashboard" "alhau" {
 
       nrql_query {
         account_id = var.account_id
-        query      = "FROM AwsLambdaInvocation SELECT count(*) WHERE provider.coldStart IS true AND provider.functionName = {{ instance }} TIMESERIES"
+        query      = "FROM Transaction SELECT count(*) WHERE appName = {{ instance }} AND aws.lambda.coldStart IS true TIMESERIES"
       }
     }
 
@@ -130,7 +130,7 @@ resource "newrelic_one_dashboard" "alhau" {
 
       nrql_query {
         account_id = var.account_id
-        query      = "FROM AwsLambdaInvocation SELECT percentage(count(*), WHERE provider.coldStart IS true) WHERE provider.functionName = {{ instance }} SINCE 1 day ago"
+        query      = "FROM Transaction SELECT percentage(count(*), WHERE aws.lambda.coldStart IS true) WHERE appName = {{ instance }} SINCE 1 day ago"
       }
 
       warning  = 20
@@ -146,7 +146,7 @@ resource "newrelic_one_dashboard" "alhau" {
 
       nrql_query {
         account_id = var.account_id
-        query      = "FROM AwsLambdaInvocation SELECT percentile(duration, 95) WHERE provider.functionName = {{ instance }} FACET provider.coldStart TIMESERIES"
+        query      = "FROM Transaction SELECT percentile(duration * 1000, 95) WHERE appName = {{ instance }} FACET aws.lambda.coldStart TIMESERIES"
       }
 
       legend_enabled = true
@@ -157,34 +157,42 @@ resource "newrelic_one_dashboard" "alhau" {
     }
 
     widget_line {
-      title  = "Memory headroom (max used vs allocated)"
+      title  = "External (Domoticz) vs DB share of duration"
       row    = 10
       column = 1
       width  = 8
       height = 3
 
+      # No AwsLambdaInvocation events on this account (NR-AWS account-level
+      # integration isn't installed), so memory/billed-duration breakdowns
+      # aren't available. We surface the next-most-useful capacity signal:
+      # where the handler spends its time. Useful to spot when Domoticz
+      # response time degrades or DB queries get slow.
       nrql_query {
         account_id = var.account_id
-        query      = "FROM AwsLambdaInvocation SELECT max(provider.maxMemoryUsed) AS 'Max used', max(provider.memorySize) AS 'Allocated' WHERE provider.functionName = {{ instance }} TIMESERIES 1 hour"
+        query      = "FROM Transaction SELECT average(externalDuration * 1000) AS 'Domoticz', average(databaseDuration * 1000) AS 'MySQL', average((duration - externalDuration - databaseDuration) * 1000) AS 'Handler' WHERE appName = {{ instance }} TIMESERIES 5 minutes"
       }
 
       legend_enabled = true
 
       units {
-        unit = "byte"
+        unit = "ms"
       }
     }
 
     widget_billboard {
-      title  = "Cost (GB-seconds, last 24h)"
+      title  = "Estimated cost (GB-s, last 24h)"
       row    = 10
       column = 9
       width  = 4
       height = 3
 
+      # Approximation: Lambda billed duration ≈ wall-clock duration rounded
+      # up to 1 ms. We assume 128 MB allocated (memory_size) — adjust the
+      # divisor below if you change the function's memorySize.
       nrql_query {
         account_id = var.account_id
-        query      = "FROM AwsLambdaInvocation SELECT sum(provider.billedDurationInMs * provider.memorySize / 1024 / 1000) AS 'GB-s' WHERE provider.functionName = {{ instance }} SINCE 1 day ago"
+        query      = "FROM Transaction SELECT sum(duration * 128 / 1024) AS 'GB-s (est., 128MB)' WHERE appName = {{ instance }} SINCE 1 day ago"
       }
     }
   }
@@ -596,9 +604,12 @@ resource "newrelic_one_dashboard" "alhau" {
       width  = 4
       height = 3
 
+      # FACET on userLogin (email) for readability — falls back to userId
+      # via NRQL coalesce-equivalent so users without login captured still
+      # appear (early data points predating the login attribute).
       nrql_query {
         account_id = var.account_id
-        query      = "FROM Transaction SELECT count(*) WHERE appName = {{ instance }} AND alexa.userId IS NOT NULL FACET alexa.userId SINCE 1 day ago LIMIT 10"
+        query      = "FROM Transaction SELECT count(*) WHERE appName = {{ instance }} AND (alexa.userLogin IS NOT NULL OR alexa.userId IS NOT NULL) FACET alexa.userLogin, alexa.userId SINCE 1 day ago LIMIT 10"
       }
     }
 
@@ -812,7 +823,7 @@ resource "newrelic_one_dashboard" "alhau" {
 
       nrql_query {
         account_id = var.account_id
-        query      = "FROM Transaction SELECT timestamp, alexa.directive, domoticz.subtype, duration * 1000 AS 'duration_ms', externalDuration * 1000 AS 'ext_ms', databaseDuration * 1000 AS 'db_ms', alexa.userId WHERE appName = {{ instance }} SINCE 7 days ago LIMIT 100"
+        query      = "FROM Transaction SELECT timestamp, alexa.directive, domoticz.subtype, duration * 1000 AS 'duration_ms', externalDuration * 1000 AS 'ext_ms', databaseDuration * 1000 AS 'db_ms', alexa.userLogin, alexa.userId WHERE appName = {{ instance }} SINCE 7 days ago LIMIT 100"
       }
 
       initial_sorting {

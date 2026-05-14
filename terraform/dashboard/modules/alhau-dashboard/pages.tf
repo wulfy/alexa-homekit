@@ -120,6 +120,73 @@ resource "newrelic_one_dashboard" "alhau" {
         name      = "timestamp"
       }
     }
+
+    widget_billboard {
+      title  = "Cold start ratio (last 24h)"
+      row    = 7
+      column = 1
+      width  = 4
+      height = 3
+
+      nrql_query {
+        account_id = var.account_id
+        query      = "FROM AwsLambdaInvocation SELECT percentage(count(*), WHERE provider.coldStart IS true) WHERE provider.functionName = {{ instance }} SINCE 1 day ago"
+      }
+
+      warning  = 20
+      critical = 40
+    }
+
+    widget_line {
+      title  = "Latency p95: cold vs warm"
+      row    = 7
+      column = 5
+      width  = 8
+      height = 3
+
+      nrql_query {
+        account_id = var.account_id
+        query      = "FROM AwsLambdaInvocation SELECT percentile(duration, 95) WHERE provider.functionName = {{ instance }} FACET provider.coldStart TIMESERIES"
+      }
+
+      legend_enabled = true
+
+      units {
+        unit = "ms"
+      }
+    }
+
+    widget_line {
+      title  = "Memory headroom (max used vs allocated)"
+      row    = 10
+      column = 1
+      width  = 8
+      height = 3
+
+      nrql_query {
+        account_id = var.account_id
+        query      = "FROM AwsLambdaInvocation SELECT max(provider.maxMemoryUsed) AS 'Max used', max(provider.memorySize) AS 'Allocated' WHERE provider.functionName = {{ instance }} TIMESERIES 1 hour"
+      }
+
+      legend_enabled = true
+
+      units {
+        unit = "byte"
+      }
+    }
+
+    widget_billboard {
+      title  = "Cost (GB-seconds, last 24h)"
+      row    = 10
+      column = 9
+      width  = 4
+      height = 3
+
+      nrql_query {
+        account_id = var.account_id
+        query      = "FROM AwsLambdaInvocation SELECT sum(provider.billedDurationInMs * provider.memorySize / 1024 / 1000) AS 'GB-s' WHERE provider.functionName = {{ instance }} SINCE 1 day ago"
+      }
+    }
   }
 
   # ----------------------------------------------------------------------
@@ -223,6 +290,36 @@ resource "newrelic_one_dashboard" "alhau" {
       nrql_query {
         account_id = var.account_id
         query      = "FROM Transaction SELECT count(*) WHERE appName = {{ instance }} AND alexa.action.type IS NOT NULL FACET alexa.action.type SINCE 1 day ago"
+      }
+    }
+
+    widget_bar {
+      title  = "Usage by hour of day (last 7 days)"
+      row    = 10
+      column = 1
+      width  = 8
+      height = 3
+
+      nrql_query {
+        account_id = var.account_id
+        query      = "FROM Transaction SELECT count(*) WHERE appName = {{ instance }} FACET hourOf(timestamp) SINCE 7 days ago LIMIT 24"
+      }
+    }
+
+    widget_line {
+      title  = "Latency p95 by hour of day"
+      row    = 10
+      column = 9
+      width  = 4
+      height = 3
+
+      nrql_query {
+        account_id = var.account_id
+        query      = "FROM Transaction SELECT percentile(duration * 1000, 95) WHERE appName = {{ instance }} FACET hourOf(timestamp) SINCE 7 days ago LIMIT 24"
+      }
+
+      units {
+        unit = "ms"
       }
     }
   }
@@ -504,10 +601,229 @@ resource "newrelic_one_dashboard" "alhau" {
         query      = "FROM Transaction SELECT count(*) WHERE appName = {{ instance }} AND alexa.userId IS NOT NULL FACET alexa.userId SINCE 1 day ago LIMIT 10"
       }
     }
+
+    widget_table {
+      title  = "Errors per device (last 7 days)"
+      row    = 10
+      column = 1
+      width  = 6
+      height = 3
+
+      nrql_query {
+        account_id = var.account_id
+        query      = "FROM TransactionError SELECT count(*) WHERE appName = {{ instance }} AND domoticz.deviceId IS NOT NULL FACET domoticz.deviceId, domoticz.subtype, error.class SINCE 7 days ago LIMIT 20"
+      }
+
+      initial_sorting {
+        direction = "desc"
+        name      = "count"
+      }
+    }
+
+    widget_line {
+      title  = "Slowest devices (avg Domoticz call duration)"
+      row    = 10
+      column = 7
+      width  = 6
+      height = 3
+
+      nrql_query {
+        account_id = var.account_id
+        query      = "FROM Transaction SELECT average(externalDuration * 1000) WHERE appName = {{ instance }} AND alexa.endpointId IS NOT NULL FACET alexa.endpointId TIMESERIES SINCE 7 days ago LIMIT 10"
+      }
+
+      legend_enabled = true
+
+      units {
+        unit = "ms"
+      }
+    }
+
+    widget_billboard {
+      title  = "Active devices vs discovered"
+      row    = 13
+      column = 1
+      width  = 6
+      height = 3
+
+      nrql_query {
+        account_id = var.account_id
+        query      = "FROM Transaction SELECT uniqueCount(alexa.endpointId) AS 'Used (30d)', latest(discovery.deviceCount) AS 'Discovered (latest)' WHERE appName = {{ instance }} SINCE 30 days ago"
+      }
+    }
+
+    widget_billboard {
+      title  = "Current Domoticz version"
+      row    = 13
+      column = 7
+      width  = 3
+      height = 3
+
+      nrql_query {
+        account_id = var.account_id
+        query      = "FROM Transaction SELECT latest(domoticz.version) WHERE appName = {{ instance }} AND domoticz.version IS NOT NULL SINCE 1 day ago"
+      }
+    }
+
+    widget_pie {
+      title  = "Domoticz versions used (selected period)"
+      row    = 13
+      column = 10
+      width  = 3
+      height = 3
+
+      # No SINCE — picks up the dashboard's time selector so the user
+      # can see which Domoticz versions were observed over any chosen
+      # period (last hour, last week, custom range).
+      nrql_query {
+        account_id = var.account_id
+        query      = "FROM Transaction SELECT count(*) WHERE appName = {{ instance }} AND domoticz.version IS NOT NULL FACET domoticz.version LIMIT MAX"
+      }
+    }
+
+    widget_area {
+      title  = "Domoticz version transitions over time"
+      row    = 16
+      column = 1
+      width  = 12
+      height = 3
+
+      nrql_query {
+        account_id = var.account_id
+        query      = "FROM Transaction SELECT count(*) WHERE appName = {{ instance }} AND domoticz.version IS NOT NULL FACET domoticz.version TIMESERIES"
+      }
+
+      legend_enabled = true
+    }
   }
 
   # ----------------------------------------------------------------------
-  # PAGE 6 — APM Transactions
+  # PAGE 6 — SLO & Performance
+  # Service-level signals: latency buckets vs UX targets, slowest
+  # invocations to triage. Alexa skills are billed against an 8s
+  # timeout but the user experience degrades around 2-3s, so we track
+  # the share of invocations in each bucket.
+  # ----------------------------------------------------------------------
+  page {
+    name = "SLO & Performance"
+
+    widget_billboard {
+      title  = "Good responses (< 2s, last 24h)"
+      row    = 1
+      column = 1
+      width  = 4
+      height = 3
+
+      nrql_query {
+        account_id = var.account_id
+        query      = "FROM Transaction SELECT percentage(count(*), WHERE duration < 2) WHERE appName = {{ instance }} SINCE 1 day ago"
+      }
+
+      warning  = 90
+      critical = 75
+    }
+
+    widget_billboard {
+      title  = "Slow responses (2-4s, last 24h)"
+      row    = 1
+      column = 5
+      width  = 4
+      height = 3
+
+      nrql_query {
+        account_id = var.account_id
+        query      = "FROM Transaction SELECT percentage(count(*), WHERE duration BETWEEN 2 AND 4) WHERE appName = {{ instance }} SINCE 1 day ago"
+      }
+    }
+
+    widget_billboard {
+      title  = "Bad responses (> 4s, last 24h)"
+      row    = 1
+      column = 9
+      width  = 4
+      height = 3
+
+      nrql_query {
+        account_id = var.account_id
+        query      = "FROM Transaction SELECT percentage(count(*), WHERE duration >= 4) WHERE appName = {{ instance }} SINCE 1 day ago"
+      }
+
+      # Inverted thresholds: bigger is worse.
+      warning  = 5
+      critical = 15
+    }
+
+    widget_area {
+      title  = "SLO buckets over time"
+      row    = 4
+      column = 1
+      width  = 12
+      height = 3
+
+      nrql_query {
+        account_id = var.account_id
+        query      = "FROM Transaction SELECT percentage(count(*), WHERE duration < 2) AS '< 2s', percentage(count(*), WHERE duration BETWEEN 2 AND 4) AS '2-4s', percentage(count(*), WHERE duration >= 4) AS '> 4s' WHERE appName = {{ instance }} TIMESERIES 1 hour"
+      }
+
+      legend_enabled = true
+    }
+
+    widget_line {
+      title  = "Latency percentiles (p50 / p90 / p99)"
+      row    = 7
+      column = 1
+      width  = 8
+      height = 3
+
+      nrql_query {
+        account_id = var.account_id
+        query      = "FROM Transaction SELECT percentile(duration * 1000, 50, 90, 99) WHERE appName = {{ instance }} TIMESERIES"
+      }
+
+      legend_enabled = true
+
+      units {
+        unit = "ms"
+      }
+    }
+
+    widget_billboard {
+      title  = "Apdex (last 24h)"
+      row    = 7
+      column = 9
+      width  = 4
+      height = 3
+
+      nrql_query {
+        account_id = var.account_id
+        query      = "FROM Transaction SELECT apdex(duration, t: 2) WHERE appName = {{ instance }} SINCE 1 day ago"
+      }
+
+      warning  = 0.7
+      critical = 0.5
+    }
+
+    widget_table {
+      title  = "Slowest transactions (last 7 days)"
+      row    = 10
+      column = 1
+      width  = 12
+      height = 4
+
+      nrql_query {
+        account_id = var.account_id
+        query      = "FROM Transaction SELECT timestamp, alexa.directive, domoticz.subtype, duration * 1000 AS 'duration_ms', externalDuration * 1000 AS 'ext_ms', databaseDuration * 1000 AS 'db_ms', alexa.userId WHERE appName = {{ instance }} SINCE 7 days ago LIMIT 100"
+      }
+
+      initial_sorting {
+        direction = "desc"
+        name      = "duration_ms"
+      }
+    }
+  }
+
+  # ----------------------------------------------------------------------
+  # PAGE 7 — APM Transactions
   # Same kind of signal as the "Alexa Traffic" and "Lambda Health" pages,
   # but sourced from the agent's auto-instrumented Transaction events
   # instead of our custom-metric timeslices. Useful as a cross-check —

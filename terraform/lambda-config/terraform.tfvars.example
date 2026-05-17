@@ -1,0 +1,50 @@
+# Copy to terraform.tfvars (gitignored) and fill in.
+# Secrets (nr_license_key) should come from TF_VAR_nr_license_key in
+# the parent terraform/.envrc — leave them out of this file.
+
+nr_account_id = "7960957"
+
+# Lookup role ARNs once with:
+#   aws lambda get-function-configuration --function-name alhau_preprod \
+#     --query 'Role' --output text
+
+preprod = {
+  function_name = "alhau_preprod"
+  role_arn      = "arn:aws:iam::242542229507:role/service-role/REPLACE-ME"
+
+  # FULL current env vars — capture with:
+  #   aws lambda get-function-configuration --function-name alhau_preprod \
+  #     --query 'Environment.Variables' --output json
+  env_vars = {
+    INSTANCE_NAME       = "PREPROD"
+    PROD_MODE           = "true"
+    DEBUG               = "prod,stats"
+    DEBUG_HIDE_DATE     = "true"
+    MYSQL_ADDON_HOST    = "REPLACE-ME"
+    MYSQL_ADDON_PORT    = "3306"
+    MYSQL_ADDON_USER    = "REPLACE-ME"
+    MYSQL_ADDON_PASSWORD = "REPLACE-ME"
+    MYSQL_ADDON_DB      = "REPLACE-ME"
+    CRYPTOPASS          = "REPLACE-ME"
+    DOMOTICZ_API_HOST   = "REPLACE-ME"
+    DOMOTICZ_API_PORT   = "REPLACE-ME"
+    DOMOTICZ_API_LOGIN  = "REPLACE-ME"
+    DOMOTICZ_API_PASSWORD = "REPLACE-ME"
+    METRICS_HOST        = "REPLACE-ME"
+    METRICS_PORT        = "REPLACE-ME"
+    METRICS_UDP_PORT    = "REPLACE-ME"
+    # NEW_RELIC_* vars below are managed by Terraform via main.tf locals —
+    # do not duplicate them here.
+  }
+}
+
+prod = {
+  function_name = "ludohomekit"
+  role_arn      = "arn:aws:iam::242542229507:role/service-role/REPLACE-ME"
+
+  env_vars = {
+    INSTANCE_NAME       = "prod"
+    PROD_MODE           = "true"
+    # ... same shape as preprod above
+  }
+}

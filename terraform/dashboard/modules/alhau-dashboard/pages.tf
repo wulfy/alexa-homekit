@@ -457,6 +457,69 @@ resource "newrelic_one_dashboard" "alhau" {
         name      = "count"
       }
     }
+
+    # ----------------------------------------------------------------------
+    # Command-value widgets — built from `command.value` and `command.color.*`
+    # custom attributes attached by the value-setting handlers in index.js
+    # (handlePercentControl, handleBrightnessControl, handleThermostatControl,
+    # handleColorControl). Each handler tags the Transaction with the value
+    # the user actually asked Alexa for, so we can see usage patterns.
+    # Scales differ between directives (% vs °C) so we FACET to keep each
+    # directive on its own series.
+    # ----------------------------------------------------------------------
+    widget_line {
+      title  = "Average value set by directive"
+      row    = 13
+      column = 1
+      width  = 8
+      height = 3
+
+      nrql_query {
+        account_id = var.account_id
+        query      = "FROM Transaction SELECT average(command.value) WHERE appName = {{ instance }} AND command.value IS NOT NULL FACET alexa.directive TIMESERIES"
+      }
+
+      legend_enabled = true
+    }
+
+    widget_table {
+      title  = "Latest value per directive"
+      row    = 13
+      column = 9
+      width  = 4
+      height = 3
+
+      nrql_query {
+        account_id = var.account_id
+        query      = "FROM Transaction SELECT latest(command.value), count(*) WHERE appName = {{ instance }} AND command.value IS NOT NULL FACET alexa.directive SINCE 1 day ago"
+      }
+    }
+
+    widget_histogram {
+      title  = "Color hue distribution (last 7 days)"
+      row    = 16
+      column = 1
+      width  = 6
+      height = 3
+
+      nrql_query {
+        account_id = var.account_id
+        query      = "FROM Transaction SELECT histogram(command.color.hue, 360, 36) WHERE appName = {{ instance }} AND command.color.hue IS NOT NULL SINCE 7 days ago"
+      }
+    }
+
+    widget_histogram {
+      title  = "Temperature target distribution (last 7 days)"
+      row    = 16
+      column = 7
+      width  = 6
+      height = 3
+
+      nrql_query {
+        account_id = var.account_id
+        query      = "FROM Transaction SELECT histogram(command.value, 35, 25) WHERE appName = {{ instance }} AND alexa.directive = 'Alexa.ThermostatController.SetTargetTemperature' SINCE 7 days ago"
+      }
+    }
   }
 
   # ----------------------------------------------------------------------

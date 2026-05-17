@@ -4,3 +4,15 @@ node_modules
 yarn-error.log
 .worktrees
 newrelic_agent.log
+
+# Terraform
+**/.terraform/
+**/.terraform.lock.hcl
+**/terraform.tfstate
+**/terraform.tfstate.backup
+**/terraform.tfvars
+**/*.auto.tfvars
+**/.envrc
+**/*.tfplan
+**/crash.log
+**/crash.*.log

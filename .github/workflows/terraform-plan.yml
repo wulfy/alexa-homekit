@@ -1,0 +1,85 @@
+name: Terraform Plan
+
+on:
+  pull_request:
+    paths:
+      - 'terraform/dashboard/**'
+      - '.github/workflows/terraform-plan.yml'
+
+permissions:
+  contents: read
+  pull-requests: write   # to comment the plan on the PR
+
+env:
+  FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: "true"
+
+jobs:
+  plan:
+    name: Plan
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: terraform/dashboard
+    env:
+      NEW_RELIC_API_KEY:    ${{ secrets.NEW_RELIC_API_KEY }}
+      NEW_RELIC_ACCOUNT_ID: ${{ secrets.NEW_RELIC_ACCOUNT_ID }}
+      NEW_RELIC_REGION:     EU
+      TF_VAR_nr_account_id: ${{ secrets.NEW_RELIC_ACCOUNT_ID }}
+      TF_INPUT:             "false"
+      TF_IN_AUTOMATION:     "true"
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: aws-actions/configure-aws-credentials@v4
+        with:
+          aws-access-key-id:     ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region:            ${{ secrets.AWS_DEFAULT_REGION }}
+
+      - uses: hashicorp/setup-terraform@v3
+        with:
+          terraform_version: 1.10.5
+
+      - name: Terraform fmt
+        run: terraform fmt -check -recursive
+
+      - name: Terraform init
+        run: terraform init
+
+      - name: Terraform validate
+        run: terraform validate -no-color
+
+      - name: Terraform plan
+        id: plan
+        run: terraform plan -no-color -out=tfplan
+        continue-on-error: true
+
+      - name: Render plan
+        if: steps.plan.outcome == 'success'
+        run: terraform show -no-color tfplan > plan.txt
+
+      - name: Comment plan on PR
+        if: always()
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const fs = require('fs');
+            const planOutcome = '${{ steps.plan.outcome }}';
+            let body;
+            if (planOutcome === 'success' && fs.existsSync('terraform/dashboard/plan.txt')) {
+              const plan = fs.readFileSync('terraform/dashboard/plan.txt', 'utf8');
+              const truncated = plan.length > 60000 ? plan.slice(0, 60000) + '\n\n…(truncated)…' : plan;
+              body = `### Terraform plan\n\n<details><summary>Show plan</summary>\n\n\`\`\`\n${truncated}\n\`\`\`\n\n</details>`;
+            } else {
+              body = `### Terraform plan failed\n\nSee the workflow logs for details.`;
+            }
+            github.rest.issues.createComment({
+              issue_number: context.issue.number,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              body,
+            });
+
+      - name: Fail if plan failed
+        if: steps.plan.outcome != 'success'
+        run: exit 1

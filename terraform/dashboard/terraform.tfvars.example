@@ -1,0 +1,11 @@
+# Copy this file to terraform.tfvars (gitignored) and fill in your values.
+# Alternatively, use TF_VAR_<name> env vars or the shared.tfvars at the
+# parent terraform/ folder via -var-file=../shared.tfvars.
+
+nr_account_id = 1234567
+# nr_region   = "EU"   # default — uncomment to override
+# dashboard_name      = "ALHAU — Alexa HomeKit"
+# newrelic_app_name   = "alexa-homekit"
+# lambda_prod_name    = "ludohomekit"
+# lambda_preprod_name = "alhau_preprod"
+# metric_namespace    = "lambda.alhau"

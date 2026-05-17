@@ -1,0 +1,54 @@
+name: Terraform Apply
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+env:
+  FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: "true"
+
+jobs:
+  apply:
+    name: Apply
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: terraform/dashboard
+    env:
+      NEW_RELIC_API_KEY:    ${{ secrets.NEW_RELIC_API_KEY }}
+      NEW_RELIC_ACCOUNT_ID: ${{ secrets.NEW_RELIC_ACCOUNT_ID }}
+      NEW_RELIC_REGION:     EU
+      TF_VAR_nr_account_id: ${{ secrets.NEW_RELIC_ACCOUNT_ID }}
+      TF_INPUT:             "false"
+      TF_IN_AUTOMATION:     "true"
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: aws-actions/configure-aws-credentials@v4
+        with:
+          aws-access-key-id:     ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region:            ${{ secrets.AWS_DEFAULT_REGION }}
+
+      - uses: hashicorp/setup-terraform@v3
+        with:
+          terraform_version: 1.10.5
+
+      - name: Terraform init
+        run: terraform init
+
+      - name: Terraform validate
+        run: terraform validate -no-color
+
+      - name: Terraform apply
+        run: terraform apply -auto-approve -no-color
+
+      - name: Output dashboard URL
+        run: |
+          {
+            echo "## Dashboard URL"
+            echo ""
+            echo "Permalink: $(terraform output -raw dashboard_permalink)"
+          } >> "$GITHUB_STEP_SUMMARY"

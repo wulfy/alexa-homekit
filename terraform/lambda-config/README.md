@@ -63,10 +63,11 @@ terraform apply
 ```
 
 Terraform creates:
-- Both IAM execution roles (`alhau_preprod-execution`, `ludohomekit-execution`)
-- The basic Lambda execution policy attachments (for CloudWatch Logs)
-- Both Lambda functions with handler/runtime/layers/env vars set
-  (using a tiny placeholder zip — real code comes next)
+- One shared IAM execution role (named per `shared_iam_role_name`)
+- The basic Lambda execution policy attached to it (for CloudWatch Logs)
+- Both Lambda functions with handler/runtime/layers/env vars set,
+  pointing to the shared role (using a tiny placeholder zip — real code
+  comes next)
 
 ### 5. Deploy the real function code
 
@@ -111,29 +112,30 @@ Repeat for `ludohomekit`.
 
 ### 2. Fill in `terraform.tfvars`
 
-Set `iam_role_name` to the existing role's **name** (not the full ARN),
-and paste the env vars into the `env_vars` map. ⚠️ **The map must be
-COMPLETE** — anything missing from `env_vars` will be deleted from the
-live function on apply. The NR_* env vars are managed automatically
-via `main.tf` and should NOT appear in `env_vars`.
+Set `shared_iam_role_name` to the existing role's **name** (not the
+full ARN — strip everything before/including the last `/`), and paste
+the env vars into each `env_vars` map. ⚠️ **The map must be COMPLETE** —
+anything missing from `env_vars` will be deleted from the live function
+on apply. The NR_* env vars are managed automatically via `main.tf` and
+should NOT appear in `env_vars`.
 
 ### 3. Initialize and import
+
+Because preprod and prod share the same IAM role, the role is imported
+ONCE.
 
 ```bash
 cd terraform/lambda-config
 terraform init
 
-# Import existing roles (use the role NAME you extracted above)
-terraform import aws_iam_role.preprod alhau_preprod-role-abc123
-terraform import aws_iam_role.prod    ludohomekit-role-def456
+# Import the shared role (use the role NAME, not ARN)
+terraform import aws_iam_role.shared <existing-role-name>
 
-# Then the policy attachments (use <role-name>/<policy-arn>)
-terraform import aws_iam_role_policy_attachment.preprod_basic_execution \
-  alhau_preprod-role-abc123/arn:aws:iam::aws:policy/service-role/AWSLambdaBasicExecutionRole
-terraform import aws_iam_role_policy_attachment.prod_basic_execution \
-  ludohomekit-role-def456/arn:aws:iam::aws:policy/service-role/AWSLambdaBasicExecutionRole
+# Import the policy attachment (<role-name>/<policy-arn>)
+terraform import aws_iam_role_policy_attachment.shared_basic_execution \
+  <existing-role-name>/arn:aws:iam::aws:policy/service-role/AWSLambdaBasicExecutionRole
 
-# Finally the functions themselves
+# Import each function
 terraform import aws_lambda_function.preprod alhau_preprod
 terraform import aws_lambda_function.prod    ludohomekit
 ```

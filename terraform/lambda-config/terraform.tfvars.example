@@ -4,14 +4,15 @@
 
 nr_account_id = "7960957"
 
-# For from-scratch deployment, pick canonical role names below — Terraform
-# will create them with the basic Lambda execution policy attached.
-# When adopting existing functions, set these to the existing roles'
-# names and import them first (see README → "Adopt existing functions").
+# Shared IAM execution role name. Both Lambdas reference the same role.
+# For from-scratch deployment, pick a canonical name (e.g. alhau-lambda-execution)
+# — Terraform will create it with the basic Lambda execution policy attached.
+# When adopting an existing setup, set this to the existing role's name
+# and import it first (see README → "Adopt existing functions").
+shared_iam_role_name = "aws-serverless-repository-o-Oauth2SharedLamdbaRole-XXXXXX"
 
 preprod = {
   function_name = "alhau_preprod"
-  iam_role_name = "alhau_preprod-execution"
 
   # FULL current env vars — capture with:
   #   aws lambda get-function-configuration --function-name alhau_preprod \
@@ -41,7 +42,6 @@ preprod = {
 
 prod = {
   function_name = "ludohomekit"
-  iam_role_name = "ludohomekit-execution"
 
   env_vars = {
     INSTANCE_NAME = "prod"

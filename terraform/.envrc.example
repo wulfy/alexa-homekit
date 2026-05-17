@@ -39,6 +39,13 @@ export TF_VAR_nr_extension_send_function_logs=true
 # delaying the user-visible Alexa response. Override only if needed.
 # export TF_VAR_nr_data_collection_timeout="30s"
 
+# Name of the IAM role shared by both Lambdas (preprod + prod).
+# Get the existing one with:
+#   aws lambda get-function-configuration --function-name alhau_preprod \
+#     --region eu-west-1 --query 'Role' --output text
+# and strip the ARN prefix (everything before/including the last `/`).
+export TF_VAR_shared_iam_role_name="..."
+
 # Per-environment Lambda config (JSON-encoded HCL object).
 # env_vars must contain the FULL current map — anything missing is
 # REMOVED from the live function on apply. Generate from existing
@@ -50,7 +57,6 @@ export TF_VAR_nr_extension_send_function_logs=true
 #  — those are managed by main.tf via the dedicated TF vars above.)
 export TF_VAR_preprod='{
   "function_name": "alhau_preprod",
-  "iam_role_name": "alhau_preprod-execution",
   "env_vars": {
     "INSTANCE_NAME": "PREPROD",
     "PROD_MODE": "true",
@@ -72,7 +78,6 @@ export TF_VAR_preprod='{
 
 export TF_VAR_prod='{
   "function_name": "ludohomekit",
-  "iam_role_name": "ludohomekit-execution",
   "env_vars": {
     "INSTANCE_NAME": "prod",
     "PROD_MODE": "true"

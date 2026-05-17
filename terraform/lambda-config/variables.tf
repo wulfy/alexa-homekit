@@ -56,16 +56,27 @@ EOT
 
 # --- Per-function configuration --------------------------------------
 
+variable "shared_iam_role_name" {
+  description = <<EOT
+Name of the IAM execution role shared by both Lambdas (preprod and
+prod). Terraform creates this role from-scratch (with the basic Lambda
+execution policy attached); when adopting an existing setup, set this
+to the existing shared role's name and `terraform import` it before
+applying — see README.
+
+We model this as a single shared role because the two Lambdas in this
+project use the same execution role. If you later need distinct roles
+per environment, split this into two `aws_iam_role` resources in
+iam.tf and reference each from the matching `aws_lambda_function`.
+EOT
+  type        = string
+}
+
 variable "preprod" {
   description = <<EOT
 Configuration for the preprod Lambda.
 
 `function_name` is the AWS Lambda function name.
-
-`iam_role_name` is the IAM execution role name. Terraform creates it
-from scratch (with the basic Lambda execution policy attached). When
-adopting an existing function, set this to the existing role's name
-and `terraform import` the role before applying — see README.
 
 `env_vars` is the FULL map of application env vars currently set on the
 function (DOMOTICZ_*, MYSQL_*, CRYPTOPASS, etc.). Terraform will merge
@@ -75,7 +86,6 @@ the one-shot capture command.
 EOT
   type = object({
     function_name = string
-    iam_role_name = string
     env_vars      = map(string)
   })
   sensitive = true
@@ -85,7 +95,6 @@ variable "prod" {
   description = "Same shape as `preprod`, but for the prod Lambda (ludohomekit)."
   type = object({
     function_name = string
-    iam_role_name = string
     env_vars      = map(string)
   })
   sensitive = true

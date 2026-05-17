@@ -23,7 +23,7 @@
 
 resource "aws_lambda_function" "preprod" {
   function_name = var.preprod.function_name
-  role          = aws_iam_role.preprod.arn
+  role          = aws_iam_role.shared.arn
   runtime       = "nodejs24.x"
   handler       = "newrelic-lambda-wrapper.handler"
 
@@ -50,7 +50,7 @@ resource "aws_lambda_function" "preprod" {
 
 resource "aws_lambda_function" "prod" {
   function_name = var.prod.function_name
-  role          = aws_iam_role.prod.arn
+  role          = aws_iam_role.shared.arn
   runtime       = "nodejs24.x"
   handler       = "newrelic-lambda-wrapper.handler"
 

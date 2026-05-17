@@ -592,7 +592,7 @@ resource "newrelic_one_dashboard" "alhau" {
 
       nrql_query {
         account_id = var.account_id
-        query      = "FROM Transaction SELECT count(*) WHERE appName = {{ instance }} AND alexa.endpointId IS NOT NULL FACET alexa.endpointId SINCE 1 day ago LIMIT 10"
+        query      = "FROM Transaction SELECT count(*) WHERE appName = {{ instance }} AND alexa.endpointId IS NOT NULL FACET domoticz.deviceName, alexa.endpointId SINCE 1 day ago LIMIT 10"
       }
     }
 
@@ -688,7 +688,7 @@ resource "newrelic_one_dashboard" "alhau" {
 
       nrql_query {
         account_id = var.account_id
-        query      = "FROM TransactionError SELECT count(*) WHERE appName = {{ instance }} AND domoticz.deviceId IS NOT NULL FACET domoticz.deviceId, domoticz.subtype, error.class SINCE 7 days ago LIMIT 20"
+        query      = "FROM TransactionError SELECT count(*) WHERE appName = {{ instance }} AND domoticz.deviceId IS NOT NULL FACET domoticz.deviceName, domoticz.deviceId, domoticz.subtype, error.class SINCE 7 days ago LIMIT 20"
       }
 
       initial_sorting {
@@ -706,7 +706,7 @@ resource "newrelic_one_dashboard" "alhau" {
 
       nrql_query {
         account_id = var.account_id
-        query      = "FROM Transaction SELECT average(externalDuration * 1000) WHERE appName = {{ instance }} AND alexa.endpointId IS NOT NULL FACET alexa.endpointId TIMESERIES SINCE 7 days ago LIMIT 10"
+        query      = "FROM Transaction SELECT average(externalDuration * 1000) WHERE appName = {{ instance }} AND alexa.endpointId IS NOT NULL FACET domoticz.deviceName, alexa.endpointId TIMESERIES SINCE 7 days ago LIMIT 10"
       }
 
       legend_enabled = true
@@ -903,7 +903,7 @@ resource "newrelic_one_dashboard" "alhau" {
 
       nrql_query {
         account_id = var.account_id
-        query      = "FROM Transaction SELECT timestamp, alexa.directive, domoticz.subtype, duration * 1000 AS 'duration_ms', externalDuration * 1000 AS 'ext_ms', databaseDuration * 1000 AS 'db_ms', alexa.userLogin, alexa.userId WHERE appName = {{ instance }} SINCE 7 days ago LIMIT 100"
+        query      = "FROM Transaction SELECT timestamp, alexa.directive, domoticz.deviceName, domoticz.subtype, duration * 1000 AS 'duration_ms', externalDuration * 1000 AS 'ext_ms', databaseDuration * 1000 AS 'db_ms', alexa.userLogin, alexa.userId WHERE appName = {{ instance }} SINCE 7 days ago LIMIT 100"
       }
 
       initial_sorting {
@@ -1035,7 +1035,7 @@ resource "newrelic_one_dashboard" "alhau" {
 
       nrql_query {
         account_id = var.account_id
-        query      = "FROM Transaction SELECT timestamp, appName, alexa.directive, alexa.endpointId, domoticz.subtype, domoticz.deviceId, duration * 1000 AS 'duration_ms', externalDuration * 1000 AS 'ext_ms', databaseDuration * 1000 AS 'db_ms', error WHERE appName IN (${local.lambda_in_clause}) SINCE 1 day ago LIMIT 100"
+        query      = "FROM Transaction SELECT timestamp, appName, alexa.directive, domoticz.deviceName, alexa.endpointId, domoticz.subtype, domoticz.deviceId, duration * 1000 AS 'duration_ms', externalDuration * 1000 AS 'ext_ms', databaseDuration * 1000 AS 'db_ms', error WHERE appName IN (${local.lambda_in_clause}) SINCE 1 day ago LIMIT 100"
       }
 
       initial_sorting {

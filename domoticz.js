@@ -118,6 +118,13 @@ class domoticz {
 			}
 		});
 
+		// Tag the Transaction with the user-facing device name from Domoticz
+		// (the label shown in the Domoticz UI). Lets the dashboard FACET on
+		// a readable name instead of just the opaque endpointId / idx.
+		if (returnDevice && returnDevice.Name) {
+			require('newrelic').addCustomAttribute('domoticz.deviceName', returnDevice.Name);
+		}
+
 		return returnDevice;
 	}
 

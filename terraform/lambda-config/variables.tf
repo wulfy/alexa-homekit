@@ -48,8 +48,12 @@ variable "preprod" {
   description = <<EOT
 Configuration for the preprod Lambda.
 
-`function_name` and `role_arn` mirror the live AWS values (look them up
-with `aws lambda get-function-configuration --function-name <name>`).
+`function_name` is the AWS Lambda function name.
+
+`iam_role_name` is the IAM execution role name. Terraform creates it
+from scratch (with the basic Lambda execution policy attached). When
+adopting an existing function, set this to the existing role's name
+and `terraform import` the role before applying — see README.
 
 `env_vars` is the FULL map of application env vars currently set on the
 function (DOMOTICZ_*, MYSQL_*, CRYPTOPASS, etc.). Terraform will merge
@@ -59,7 +63,7 @@ the one-shot capture command.
 EOT
   type = object({
     function_name = string
-    role_arn      = string
+    iam_role_name = string
     env_vars      = map(string)
   })
   sensitive = true
@@ -69,7 +73,7 @@ variable "prod" {
   description = "Same shape as `preprod`, but for the prod Lambda (ludohomekit)."
   type = object({
     function_name = string
-    role_arn      = string
+    iam_role_name = string
     env_vars      = map(string)
   })
   sensitive = true

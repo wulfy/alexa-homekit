@@ -1,88 +1,144 @@
 # Terraform — Lambda runtime configuration
 
-Manages the **runtime config** of both Lambdas (`alhau_preprod` / `ludohomekit`):
-handler, layers, environment variables. Everything we previously set
-manually in the AWS console.
+Manages the **IAM execution role + runtime config** of both Lambdas
+(`alhau_preprod` / `ludohomekit`): role, handler, runtime, layers,
+environment variables. Replaces what we previously set by hand in the
+AWS console.
 
 The **code zip** stays managed by `scripts/deploy.sh` (which calls
 `aws lambda update-function-code`). Terraform points at a placeholder
-and ignores all code-related attributes via `lifecycle.ignore_changes`.
+zip and ignores all code-related attributes via
+`lifecycle.ignore_changes`.
 
-## What Terraform does (and doesn't do) here
+## What Terraform owns (and doesn't)
 
 | Owned by Terraform | Owned elsewhere |
 |---|---|
-| `handler` = `newrelic-lambda-wrapper.handler` | Code zip (deploy.sh) |
-| `runtime` = `nodejs24.x` | IAM role + its policies |
-| `layers` (NR Lambda Layer) | Triggers (Alexa skill) |
-| `environment.variables` (FULL map: app + NR) | Destinations / DLQ |
+| IAM execution role + basic Lambda policy | Code zip (`deploy.sh`) |
+| `handler` = `newrelic-lambda-wrapper.handler` | Triggers (Alexa skill) |
+| `runtime` = `nodejs24.x` | Destinations / DLQ |
+| `layers` (NR Lambda Layer) | |
+| `environment.variables` (full map: app + NR) | |
 
 ## Prerequisites
 
 - Terraform >= 1.10
-- `terraform/.envrc` sourced with `AWS_*` and `NEW_RELIC_*` env vars
-- The two Lambdas already exist on AWS — Terraform will **import** them,
-  not create from scratch.
+- `terraform/.envrc` sourced with `AWS_*` + `TF_VAR_nr_license_key` +
+  `TF_VAR_nr_account_id`
+- AWS credentials with IAM + Lambda permissions
 
-## First-time bootstrap (one-shot)
+## Path A — From-scratch deployment
 
-### 1. Capture current values from AWS
+For a fresh AWS account or after recreating everything from zero. The
+order matters because each step depends on the previous.
 
-For each function (`alhau_preprod`, `ludohomekit`):
+### 1. Create the Terraform state bucket (one-shot per AWS account)
 
 ```bash
-# Role ARN
-aws lambda get-function-configuration \
-  --function-name alhau_preprod --region eu-west-1 \
-  --query 'Role' --output text
-
-# Current env vars (use as basis for `env_vars` in tfvars)
-aws lambda get-function-configuration \
-  --function-name alhau_preprod --region eu-west-1 \
-  --query 'Environment.Variables' --output json
+cd terraform/bootstrap
+terraform init
+terraform apply        # creates the alhau-tfstate S3 bucket
 ```
 
-Repeat with `--function-name ludohomekit` for prod.
-
-### 2. Fill in `terraform.tfvars`
+### 2. Fill in tfvars
 
 ```bash
 cd terraform/lambda-config
 cp terraform.tfvars.example terraform.tfvars
-# Edit terraform.tfvars: paste role_arn and env_vars from step 1
+# Edit terraform.tfvars: pick role names, paste env_vars
 ```
 
-⚠️ **Important** — `env_vars` must contain **every** existing app env
-var (DOMOTICZ_*, MYSQL_*, CRYPTOPASS, etc.). Any var present on the
-live function but missing from `env_vars` will be **deleted** at
-`terraform apply` time. The NR_* env vars are managed automatically
-via `main.tf` and should NOT appear in `env_vars`.
-
-The `terraform.tfvars` file contains secrets (DB passwords, etc.) —
-it is gitignored. Don't commit it.
-
-### 3. Set the NR license key via env var
+### 3. Set the NR license key
 
 ```bash
 # Add to terraform/.envrc (gitignored):
 export TF_VAR_nr_license_key="eu01xxYOURKEYHERE"
 ```
 
-This keeps the license key out of `terraform.tfvars` entirely.
-
-### 4. Initialize and import
+### 4. Apply
 
 ```bash
 terraform init
+terraform apply
+```
+
+Terraform creates:
+- Both IAM execution roles (`alhau_preprod-execution`, `ludohomekit-execution`)
+- The basic Lambda execution policy attachments (for CloudWatch Logs)
+- Both Lambda functions with handler/runtime/layers/env vars set
+  (using a tiny placeholder zip — real code comes next)
+
+### 5. Deploy the real function code
+
+```bash
+cd ../..
+sh scripts/deploy.sh          # or via the GitHub Actions Deploy workflow
+```
+
+`deploy.sh` updates the function code in place; Terraform's
+`lifecycle.ignore_changes` keeps it from fighting back.
+
+### 6. Create the New Relic dashboard
+
+```bash
+cd terraform/dashboard
+terraform init
+terraform apply
+```
+
+You now have a fully reproducible setup from a vanilla AWS account.
+
+## Path B — Adopt existing functions (recommended for current users)
+
+Same module, different flow: Terraform takes over an already-existing
+Lambda + role instead of creating them.
+
+### 1. Capture current state from AWS
+
+```bash
+# Function names + roles (note the role NAME at the end, not the ARN)
+aws lambda get-function-configuration --function-name alhau_preprod \
+  --region eu-west-1 --query 'Role' --output text
+# → arn:aws:iam::xxxxx:role/service-role/alhau_preprod-role-abc123
+#                                          ^^^^^^^^^^^^^^^^^^^^^^^^^^ this part
+
+# Current env vars (full map)
+aws lambda get-function-configuration --function-name alhau_preprod \
+  --region eu-west-1 --query 'Environment.Variables' --output json
+```
+
+Repeat for `ludohomekit`.
+
+### 2. Fill in `terraform.tfvars`
+
+Set `iam_role_name` to the existing role's **name** (not the full ARN),
+and paste the env vars into the `env_vars` map. ⚠️ **The map must be
+COMPLETE** — anything missing from `env_vars` will be deleted from the
+live function on apply. The NR_* env vars are managed automatically
+via `main.tf` and should NOT appear in `env_vars`.
+
+### 3. Initialize and import
+
+```bash
+cd terraform/lambda-config
+terraform init
+
+# Import existing roles (use the role NAME you extracted above)
+terraform import aws_iam_role.preprod alhau_preprod-role-abc123
+terraform import aws_iam_role.prod    ludohomekit-role-def456
+
+# Then the policy attachments (use <role-name>/<policy-arn>)
+terraform import aws_iam_role_policy_attachment.preprod_basic_execution \
+  alhau_preprod-role-abc123/arn:aws:iam::aws:policy/service-role/AWSLambdaBasicExecutionRole
+terraform import aws_iam_role_policy_attachment.prod_basic_execution \
+  ludohomekit-role-def456/arn:aws:iam::aws:policy/service-role/AWSLambdaBasicExecutionRole
+
+# Finally the functions themselves
 terraform import aws_lambda_function.preprod alhau_preprod
 terraform import aws_lambda_function.prod    ludohomekit
 ```
 
-`terraform import` brings the existing AWS state into the Terraform
-state file. After this, Terraform knows the functions exist; the next
-plan will show diffs only for what's actually different.
-
-### 5. Plan and review
+### 4. Plan and review carefully
 
 ```bash
 terraform plan
@@ -91,45 +147,48 @@ terraform plan
 Expected diffs on first plan:
 
 - `layers` add (if the NR layer wasn't already attached)
-- `environment.variables` add (`NEW_RELIC_LAMBDA_HANDLER`,
-  `NEW_RELIC_APM_LAMBDA_MODE`, etc. that we manage)
-- `handler` change to `newrelic-lambda-wrapper.handler` (if not
-  already set)
+- `environment.variables` add (NEW_RELIC_* values managed by `main.tf`)
+- `handler` change to `newrelic-lambda-wrapper.handler` (if not already
+  set)
+- Possibly assume_role_policy alignment if the imported trust policy
+  differs from the canonical one in `iam.tf`
 
-If you see a diff that would remove an env var you actually need
-(e.g., `MYSQL_ADDON_PASSWORD`), it means your `env_vars` map is
-incomplete. Re-run the capture in step 1, update tfvars, re-plan.
+If you see a diff that removes an env var you actually need, your
+`env_vars` map is incomplete — fix the tfvars and re-plan.
 
-### 6. Apply
+If the existing IAM role has additional policies attached (beyond
+basic execution), the import won't see them. Add corresponding
+`aws_iam_role_policy_attachment` resources to `iam.tf` to keep them
+managed.
+
+### 5. Apply
 
 ```bash
 terraform apply
 ```
 
-After apply, the runtime config is reproducible. Next time you bump
-the NR layer version or change an env var, edit the .tf or tfvars,
-re-plan, re-apply.
+## Day-to-day operations
 
-## Day-to-day
-
-- **Deploy code only** → `scripts/deploy.sh` (existing workflow). Touches
-  the zip; Terraform ignores it via `lifecycle.ignore_changes`.
-- **Update layer version** → bump the default in `variables.tf` or set
-  `TF_VAR_nr_lambda_layer_arn`, then `terraform apply`.
-- **Add/change app env var** → edit `terraform.tfvars`, `terraform apply`.
-- **Add NR-managed env var** → edit `main.tf` locals.
+- **Deploy code only** → `scripts/deploy.sh` (or GitHub Actions Deploy
+  workflow). Terraform ignores it via `lifecycle.ignore_changes`.
+- **Bump NR layer version** → edit `nr_lambda_layer_arn` default in
+  `variables.tf` or override via `TF_VAR_nr_lambda_layer_arn`, then
+  `terraform apply`.
+- **Change an env var** → edit `terraform.tfvars`, `terraform apply`.
+- **Add an NR-managed env var** → edit `main.tf` `local.nr_env_vars_base`.
+- **Add a Lambda permission** → add an `aws_iam_role_policy` or
+  `aws_iam_role_policy_attachment` in `iam.tf`.
 
 ## Caveats
 
 - **Drift**: if someone changes the live function via the AWS console
   (e.g., adds an env var manually), the next `terraform plan` will
-  show that as drift and propose to remove it. Either update tfvars to
-  match, or revert the manual change.
-- **Code deploys racing apply**: `deploy.sh` and `terraform apply`
-  both modify the function, but they touch disjoint attributes
-  (code vs config). They can run in any order without conflict.
-- **First-time apply may report `last_modified` changes**: harmless,
-  Terraform is just refreshing the timestamp in state.
+  show that as drift and propose to remove it. Either update tfvars
+  to match, or revert the manual change.
+- **Code deploys vs `terraform apply`**: both run safely in any order
+  because they touch disjoint Lambda attributes (code vs config).
+- **First `apply` after import** may report a `last_modified`
+  change: harmless, Terraform is just refreshing the state timestamp.
 
 ## Architecture
 
@@ -137,9 +196,9 @@ re-plan, re-apply.
 terraform/
 ├── bootstrap/           # local state — creates the S3 bucket
 ├── dashboard/           # S3-backed — NR dashboard
-└── lambda-config/       # S3-backed — Lambda handler/layers/env vars  ← you are here
+└── lambda-config/       # S3-backed — IAM role + Lambda runtime config  ← you are here
 ```
 
 Both `dashboard/` and `lambda-config/` use the same S3 bucket
-(`alhau-tfstate`) with distinct keys, so they never clobber each
-other's state.
+(`alhau-tfstate`) under distinct state keys, so they never clobber
+each other.

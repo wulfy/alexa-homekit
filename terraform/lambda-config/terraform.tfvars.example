@@ -4,13 +4,14 @@
 
 nr_account_id = "7960957"
 
-# Lookup role ARNs once with:
-#   aws lambda get-function-configuration --function-name alhau_preprod \
-#     --query 'Role' --output text
+# For from-scratch deployment, pick canonical role names below — Terraform
+# will create them with the basic Lambda execution policy attached.
+# When adopting existing functions, set these to the existing roles'
+# names and import them first (see README → "Adopt existing functions").
 
 preprod = {
   function_name = "alhau_preprod"
-  role_arn      = "arn:aws:iam::242542229507:role/service-role/REPLACE-ME"
+  iam_role_name = "alhau_preprod-execution"
 
   # FULL current env vars — capture with:
   #   aws lambda get-function-configuration --function-name alhau_preprod \
@@ -40,11 +41,11 @@ preprod = {
 
 prod = {
   function_name = "ludohomekit"
-  role_arn      = "arn:aws:iam::242542229507:role/service-role/REPLACE-ME"
+  iam_role_name = "ludohomekit-execution"
 
   env_vars = {
-    INSTANCE_NAME       = "prod"
-    PROD_MODE           = "true"
+    INSTANCE_NAME = "prod"
+    PROD_MODE     = "true"
     # ... same shape as preprod above
   }
 }

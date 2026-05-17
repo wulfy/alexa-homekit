@@ -43,7 +43,6 @@ resource "aws_lambda_function" "preprod" {
       s3_key,
       s3_object_version,
       source_code_hash,
-      last_modified,
     ]
   }
 }
@@ -70,7 +69,6 @@ resource "aws_lambda_function" "prod" {
       s3_key,
       s3_object_version,
       source_code_hash,
-      last_modified,
     ]
   }
 }

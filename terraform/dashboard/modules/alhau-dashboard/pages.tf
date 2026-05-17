@@ -540,7 +540,7 @@ resource "newrelic_one_dashboard" "alhau" {
 
       nrql_query {
         account_id = var.account_id
-        query      = "FROM Log SELECT count(*) WHERE entity.name = {{ instance }} FACET level TIMESERIES"
+        query      = "FROM Log SELECT count(*) WHERE faas.name = {{ instance }} FACET level TIMESERIES"
       }
 
       legend_enabled = true
@@ -555,7 +555,7 @@ resource "newrelic_one_dashboard" "alhau" {
 
       nrql_query {
         account_id = var.account_id
-        query      = "FROM Log SELECT timestamp, message, level WHERE entity.name = {{ instance }} AND level = 'error' SINCE 1 day ago LIMIT 100"
+        query      = "FROM Log SELECT timestamp, message, level WHERE faas.name = {{ instance }} AND level = 'ERROR' SINCE 1 day ago LIMIT 100"
       }
     }
 
@@ -568,7 +568,7 @@ resource "newrelic_one_dashboard" "alhau" {
 
       nrql_query {
         account_id = var.account_id
-        query      = "FROM Log SELECT timestamp, message, level WHERE entity.name = {{ instance }} SINCE 1 hour ago LIMIT 200"
+        query      = "FROM Log SELECT timestamp, message, level WHERE faas.name = {{ instance }} SINCE 1 hour ago LIMIT 200"
       }
     }
   }

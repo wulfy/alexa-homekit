@@ -42,6 +42,18 @@ EOT
   default     = false
 }
 
+variable "nr_data_collection_timeout" {
+  description = <<EOT
+How long the NR Lambda Extension waits for agent telemetry after the
+handler returns before flushing. Default 30s — covers slow Alexa
+requests (e.g. Domoticz timing out on flaky home networks) without
+delaying the user-visible response. Set to "" to use the extension's
+own default (~100ms in Standard mode).
+EOT
+  type        = string
+  default     = "30s"
+}
+
 # --- Per-function configuration --------------------------------------
 
 variable "preprod" {

@@ -19,7 +19,18 @@ locals {
     NEW_RELIC_EXTENSION_SEND_FUNCTION_LOGS = "true"
   } : {}
 
-  nr_env_vars = merge(local.nr_env_vars_base, local.nr_env_vars_logs)
+  # Optional: override the extension's data-collection wait window.
+  # Set var.nr_data_collection_timeout = "" to leave it unset (use
+  # extension defaults).
+  nr_env_vars_timeout = var.nr_data_collection_timeout != "" ? {
+    NEW_RELIC_DATA_COLLECTION_TIMEOUT = var.nr_data_collection_timeout
+  } : {}
+
+  nr_env_vars = merge(
+    local.nr_env_vars_base,
+    local.nr_env_vars_logs,
+    local.nr_env_vars_timeout,
+  )
 }
 
 # Placeholder zip used to satisfy the aws_lambda_function `filename`

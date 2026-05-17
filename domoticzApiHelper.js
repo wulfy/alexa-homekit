@@ -28,7 +28,13 @@ async function alexaDiscoveryEndpoints(requestToken){
 	const domoticzConnector = getDomoticzFromToken(requestToken);
 	const devices = await domoticzConnector.getAllDevices();
 	const mappedDevices = alexaMapper.fromDomoticzDevices(devices);
-	return alexaMapper.handleDiscovery(mappedDevices);
+	const discoveryResult = alexaMapper.handleDiscovery(mappedDevices);
+	// Track the device inventory size — useful to detect when a user's
+	// Domoticz hub returns fewer devices than expected (a partial outage).
+	if (discoveryResult && discoveryResult.endpoints) {
+		require('newrelic').addCustomAttribute('discovery.deviceCount', discoveryResult.endpoints.length);
+	}
+	return discoveryResult;
 }
 
 
@@ -37,8 +43,7 @@ exports.alexaMapper = alexaMapper;
 exports.alexaDiscovery = alexaDiscoveryEndpoints;
 exports.PROD_MODE = PROD_MODE
 
-//send alexa response and stop lambda by context.succeed call
-// same response for getState or command
+// Build the Alexa response — same shape for getState or command.
 exports.sendAlexaCommandResponse = function(request,context,contextResult,isStateReport){
 	const endpointId = request.directive.endpoint.endpointId;
     const requestHeader = request.directive.header;
@@ -48,7 +53,7 @@ exports.sendAlexaCommandResponse = function(request,context,contextResult,isStat
     prodLogger("DEBUG: " + requestHeader.namespace + JSON.stringify(response));
 
     sendStatsd("calls.answer."+requestHeader.name+":1|c");
-    context.succeed(response);
+    return response;
 }
 
 //send command to the device handler (ex domoticz)

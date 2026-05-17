@@ -15,6 +15,28 @@ const {debugLogger, prodLogger} = require('./config/logger.js');
 
 exports.handler = async function (request, context) {
     let durationStart = performance.now();
+    let response;
+
+    // Tag the NR Transaction with rich metadata so dashboards can FACET on
+    // these attributes. The legacy timeslice metrics (incrementMetric) are
+    // not queryable via NRQL on this NR account.
+    const nr = require('newrelic');
+    nr.addCustomAttribute(
+        'alexa.directive',
+        request.directive.header.namespace + '.' + request.directive.header.name
+    );
+    // ReportState is Alexa polling for device state — separating it from
+    // write actions (TurnOn, SetTargetTemperature, …) shows the read/write
+    // mix and lets us isolate Alexa-driven polling load.
+    nr.addCustomAttribute(
+        'alexa.action.type',
+        request.directive.header.namespace === 'Alexa' && request.directive.header.name === 'ReportState'
+            ? 'read'
+            : 'write'
+    );
+    if (request.directive.endpoint && request.directive.endpoint.endpointId) {
+        nr.addCustomAttribute('alexa.endpointId', request.directive.endpoint.endpointId);
+    }
 
     //send stats about request receive
     sendStatsd("request."+request.directive.header.namespace+"."+request.directive.header.name+":1|c");
@@ -23,47 +45,47 @@ exports.handler = async function (request, context) {
 
     if (request.directive.header.namespace === 'Alexa.Discovery' && request.directive.header.name === 'Discover') {
         prodLogger("DEBUG: Discover request " + JSON.stringify(request));
-        await handleDiscovery(request, context, "");
+        response = await handleDiscovery(request, context, "");
     }
     else if (request.directive.header.namespace === 'Alexa.PercentageController') {
         if (request.directive.header.name === 'SetPercentage') {
             prodLogger("DEBUG: SetPercentage " + JSON.stringify(request));
-         await handlePercentControl(request, context);
+         response = await handlePercentControl(request, context);
         }
     }
     else if (request.directive.header.namespace === 'Alexa.PowerController'){
         if (request.directive.header.name === 'TurnOff' || request.directive.header.name === 'TurnOn') {
             prodLogger("DEBUG: switch on/off " + JSON.stringify(request));
-         await handlePowerControl(request, context);
+         response = await handlePowerControl(request, context);
         }
     }
     else if (request.directive.header.namespace === 'Alexa.ThermostatController'){
         if (request.directive.header.name === 'SetTargetTemperature') {
             prodLogger("DEBUG: SetTargetTemperature" + JSON.stringify(request));
-         await handleThermostatControl(request, context);
+         response = await handleThermostatControl(request, context);
         }
     }
     else if (request.directive.header.namespace === 'Alexa.ColorController'){
         if (request.directive.header.name === 'SetColor') {
             prodLogger("DEBUG: SetColor" + JSON.stringify(request));
-         await handleColorControl(request, context);
+         response = await handleColorControl(request, context);
         }
     }
     else if (request.directive.header.namespace === 'Alexa.BrightnessController'){
         if (request.directive.header.name === 'SetBrightness') {
             prodLogger("DEBUG: SetBrightness" + JSON.stringify(request));
-         await handleBrightnessControl(request, context);
+         response = await handleBrightnessControl(request, context);
         }
     }
     else if (request.directive.header.namespace === 'Alexa.SceneController'){
         if (request.directive.header.name === 'Activate' || request.directive.header.name === 'Deactivate') {
             prodLogger("DEBUG: SetBrightness" + JSON.stringify(request));
-         await handleSceneController(request, context);
+         response = await handleSceneController(request, context);
         }
     }
     else if (request.directive.header.namespace === 'Alexa') {
         if (request.directive.header.name === 'ReportState') {
-          await handleReportState(request,context);
+          response = await handleReportState(request,context);
         }
     }
 
@@ -75,14 +97,14 @@ exports.handler = async function (request, context) {
         header.name = "Discover.Response";
         const response = {event:{ header: header, payload: endPoints }};
         prodLogger("DEBUG: Discovery Response >>>>>>>> " + JSON.stringify(response));
-        context.succeed(response);
+        return response;
     }
 
     async function handleReportState(request, context) {
         const endpointId = request.directive.endpoint.endpointId;
         const requestToken = request.directive.endpoint.scope.token;
         const deviceStateContext = await getAlexaDeviceState(requestToken,endpointId);
-        sendAlexaCommandResponse(request,context,deviceStateContext,true);
+        return sendAlexaCommandResponse(request,context,deviceStateContext,true);
     }
 
     async function handlePowerControl(request, context) {
@@ -93,7 +115,7 @@ exports.handler = async function (request, context) {
         if (requestMethod === "TurnOff" || requestMethod === "TurnOn") {
             await sendDeviceCommand(request,setValue);
             const contextResult = await getAlexaDeviceState(requestToken,endpointId);
-            sendAlexaCommandResponse(request,context,contextResult);
+            return sendAlexaCommandResponse(request,context,contextResult);
         }
 
     }
@@ -104,9 +126,14 @@ exports.handler = async function (request, context) {
         const requestToken = request.directive.endpoint.scope.token;
         const requestMethod = request.directive.header.name;
         if (requestMethod === "SetPercentage") {
+            // Tag the value being set so the dashboard can FACET on
+            // alexa.directive and chart average/distribution of command.value.
+            if (typeof setValue === 'number') {
+                require('newrelic').addCustomAttribute('command.value', setValue);
+            }
             await sendDeviceCommand(request,setValue);
             const contextResult = await getAlexaDeviceState(requestToken,endpointId);
-            sendAlexaCommandResponse(request,context,contextResult);
+            return sendAlexaCommandResponse(request,context,contextResult);
         }
     }
 
@@ -116,9 +143,12 @@ exports.handler = async function (request, context) {
         const requestToken = request.directive.endpoint.scope.token;
         const requestMethod = request.directive.header.name;
         if (requestMethod === "SetBrightness") {
+            if (typeof setValue === 'number') {
+                require('newrelic').addCustomAttribute('command.value', setValue);
+            }
             await sendDeviceCommand(request,setValue);
             const contextResult = await getAlexaDeviceState(requestToken,endpointId);
-            sendAlexaCommandResponse(request,context,contextResult);
+            return sendAlexaCommandResponse(request,context,contextResult);
         }
     }
 
@@ -128,9 +158,12 @@ exports.handler = async function (request, context) {
         const requestToken = request.directive.endpoint.scope.token;
         const requestMethod = request.directive.header.name;
         if (requestMethod === "SetTargetTemperature") {
+            if (typeof setValue === 'number') {
+                require('newrelic').addCustomAttribute('command.value', setValue);
+            }
             await sendDeviceCommand(request,setValue);
             const contextResult = await getAlexaDeviceState(requestToken,endpointId);
-            sendAlexaCommandResponse(request,context,contextResult);
+            return sendAlexaCommandResponse(request,context,contextResult);
         }
     }
 
@@ -140,9 +173,18 @@ exports.handler = async function (request, context) {
         const requestToken = request.directive.endpoint.scope.token;
         const requestMethod = request.directive.header.name;
         if (requestMethod === "SetColor") {
+            // Color is an object {hue, saturation, brightness} — split into
+            // 3 numeric attributes so the dashboard can FACET / histogram on
+            // each axis (most-used hues, saturation distribution, etc.).
+            if (setValue && typeof setValue === 'object') {
+                const nr = require('newrelic');
+                if (typeof setValue.hue === 'number')        nr.addCustomAttribute('command.color.hue', setValue.hue);
+                if (typeof setValue.saturation === 'number') nr.addCustomAttribute('command.color.saturation', setValue.saturation);
+                if (typeof setValue.brightness === 'number') nr.addCustomAttribute('command.color.brightness', setValue.brightness);
+            }
             await sendDeviceCommand(request,setValue);
             const contextResult = await getAlexaDeviceState(requestToken,endpointId);
-            sendAlexaCommandResponse(request,context,contextResult);
+            return sendAlexaCommandResponse(request,context,contextResult);
         }
     }
 
@@ -153,10 +195,12 @@ exports.handler = async function (request, context) {
         const requestMethod = request.directive.header.name;
         await sendDeviceCommand(request,setValue);
         const contextResult = await getAlexaDeviceState(requestToken,endpointId,true);
-        sendAlexaCommandResponse(request,context,contextResult);
+        return sendAlexaCommandResponse(request,context,contextResult);
     }
 
     const totalDuration = parseInt(performance.now() - durationStart);
     prodLogger("Duration : " + totalDuration + " ms");
     sendStatsd("request."+request.directive.header.namespace+"."+request.directive.header.name+":"+totalDuration+"|ms");
+
+    return response;
 };

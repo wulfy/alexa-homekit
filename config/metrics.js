@@ -12,7 +12,9 @@ exports.sendStatsd = (data) => {
   if (pipeIdx === -1) return;
   const value = parseFloat(rest.substring(0, pipeIdx));
   const type = rest.substring(pipeIdx + 1);
-  const metricName = 'Custom/' + METRICS_BASE + '/' + metricKey;
+  // The NR Node agent auto-prefixes custom metric names with "Custom/" —
+  // do NOT add it here or names end up as "Custom/Custom/<base>/<key>".
+  const metricName = METRICS_BASE + '/' + metricKey;
 
   if (type === 'c') {
     newrelic.incrementMetric(metricName, value);

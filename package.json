@@ -11,8 +11,7 @@
   "dependencies": {
     "debug": "^4.1.1",
     "dotenv": "^8.2.0",
-    "mysql": "^2.18.1",
-    "newrelic": "^13.19.2"
+    "mysql": "^2.18.1"
   },
   "scripts": {
     "test": "jest",
@@ -20,6 +19,7 @@
   },
   "devDependencies": {
     "jest": "^29.0.0",
+    "newrelic": "^13.19.2",
     "serverless": "^1.65.0"
   }
 }

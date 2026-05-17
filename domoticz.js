@@ -92,6 +92,14 @@ class domoticz {
 			devicesObjList = JSON.parse(devicesJsonList);
 		}
 
+		// Tag the Transaction with the Domoticz version observed in the
+		// response. The user's Domoticz is remote so the version reflects
+		// THEIR install — useful to track upgrades, surface EOL versions,
+		// and correlate bugs with specific releases.
+		if (devicesObjList && devicesObjList.app_version) {
+			require('newrelic').addCustomAttribute('domoticz.version', devicesObjList.app_version);
+		}
+
 		return devicesObjList.result;
 	}
 
@@ -110,6 +118,13 @@ class domoticz {
 			}
 		});
 
+		// Tag the Transaction with the user-facing device name from Domoticz
+		// (the label shown in the Domoticz UI). Lets the dashboard FACET on
+		// a readable name instead of just the opaque endpointId / idx.
+		if (returnDevice && returnDevice.Name) {
+			require('newrelic').addCustomAttribute('domoticz.deviceName', returnDevice.Name);
+		}
+
 		return returnDevice;
 	}
 
@@ -127,6 +142,13 @@ class domoticz {
 		conConfig.path += generate_command(deviceSubtype,deviceId,directive,directiveValue,inverted);
 
 		debugLogger('%j',conConfig.path);
+		// Tag the NR Transaction with what's being commanded — enables
+		// per-subtype breakdowns of throughput and externalDuration on the
+		// dashboard, and lets us correlate slow/erroring transactions with
+		// a specific device.
+		const nr = require('newrelic');
+		nr.addCustomAttribute('domoticz.subtype', deviceSubtype);
+		nr.addCustomAttribute('domoticz.deviceId', deviceId);
 		try {
 			PROD_MODE ? await promiseHttpRequest(conConfig) : null ;
 			prodLogger("REQUEST SENT");
@@ -134,6 +156,9 @@ class domoticz {
 
 			return conConfig.path;
 		}catch(e){
+			// Surface non-fatal Domoticz errors to NR so they appear in
+			// TransactionError without breaking the user-facing response.
+			nr.noticeError(e, { component: 'domoticz', subtype: deviceSubtype, deviceId: deviceId });
 			throw e;
 		}
 

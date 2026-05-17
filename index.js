@@ -126,6 +126,11 @@ exports.handler = async function (request, context) {
         const requestToken = request.directive.endpoint.scope.token;
         const requestMethod = request.directive.header.name;
         if (requestMethod === "SetPercentage") {
+            // Tag the value being set so the dashboard can FACET on
+            // alexa.directive and chart average/distribution of command.value.
+            if (typeof setValue === 'number') {
+                require('newrelic').addCustomAttribute('command.value', setValue);
+            }
             await sendDeviceCommand(request,setValue);
             const contextResult = await getAlexaDeviceState(requestToken,endpointId);
             return sendAlexaCommandResponse(request,context,contextResult);
@@ -138,6 +143,9 @@ exports.handler = async function (request, context) {
         const requestToken = request.directive.endpoint.scope.token;
         const requestMethod = request.directive.header.name;
         if (requestMethod === "SetBrightness") {
+            if (typeof setValue === 'number') {
+                require('newrelic').addCustomAttribute('command.value', setValue);
+            }
             await sendDeviceCommand(request,setValue);
             const contextResult = await getAlexaDeviceState(requestToken,endpointId);
             return sendAlexaCommandResponse(request,context,contextResult);
@@ -150,6 +158,9 @@ exports.handler = async function (request, context) {
         const requestToken = request.directive.endpoint.scope.token;
         const requestMethod = request.directive.header.name;
         if (requestMethod === "SetTargetTemperature") {
+            if (typeof setValue === 'number') {
+                require('newrelic').addCustomAttribute('command.value', setValue);
+            }
             await sendDeviceCommand(request,setValue);
             const contextResult = await getAlexaDeviceState(requestToken,endpointId);
             return sendAlexaCommandResponse(request,context,contextResult);
@@ -162,6 +173,15 @@ exports.handler = async function (request, context) {
         const requestToken = request.directive.endpoint.scope.token;
         const requestMethod = request.directive.header.name;
         if (requestMethod === "SetColor") {
+            // Color is an object {hue, saturation, brightness} — split into
+            // 3 numeric attributes so the dashboard can FACET / histogram on
+            // each axis (most-used hues, saturation distribution, etc.).
+            if (setValue && typeof setValue === 'object') {
+                const nr = require('newrelic');
+                if (typeof setValue.hue === 'number')        nr.addCustomAttribute('command.color.hue', setValue.hue);
+                if (typeof setValue.saturation === 'number') nr.addCustomAttribute('command.color.saturation', setValue.saturation);
+                if (typeof setValue.brightness === 'number') nr.addCustomAttribute('command.color.brightness', setValue.brightness);
+            }
             await sendDeviceCommand(request,setValue);
             const contextResult = await getAlexaDeviceState(requestToken,endpointId);
             return sendAlexaCommandResponse(request,context,contextResult);

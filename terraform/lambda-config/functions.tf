@@ -26,6 +26,8 @@ resource "aws_lambda_function" "preprod" {
   role          = aws_iam_role.shared.arn
   runtime       = "nodejs24.x"
   handler       = "newrelic-lambda-wrapper.handler"
+  timeout       = var.lambda_timeout
+  memory_size   = var.lambda_memory_size
 
   filename         = data.archive_file.placeholder.output_path
   source_code_hash = data.archive_file.placeholder.output_base64sha256
@@ -52,6 +54,8 @@ resource "aws_lambda_function" "prod" {
   role          = aws_iam_role.shared.arn
   runtime       = "nodejs24.x"
   handler       = "newrelic-lambda-wrapper.handler"
+  timeout       = var.lambda_timeout
+  memory_size   = var.lambda_memory_size
 
   filename         = data.archive_file.placeholder.output_path
   source_code_hash = data.archive_file.placeholder.output_base64sha256

@@ -56,6 +56,28 @@ EOT
 
 # --- Per-function configuration --------------------------------------
 
+variable "lambda_timeout" {
+  description = <<EOT
+Per-invocation timeout (seconds) for both Lambdas. Alexa demands a
+response within 8s for a good user experience and absolute max ~8s
+before the skill fails — 30s is a generous buffer for slow Domoticz
+hops, async DB lookups, etc. Lambda's hard max is 900s.
+EOT
+  type        = number
+  default     = 30
+}
+
+variable "lambda_memory_size" {
+  description = <<EOT
+Memory allocation (MB) for both Lambdas. 128 MB is sufficient for the
+current workload (Node 24 + NR Lambda layer fit in this with ~10 MB
+headroom). Lambda scales CPU proportionally to memory — bump to 256
+or 512 if you notice latency creeping up at cold starts.
+EOT
+  type        = number
+  default     = 128
+}
+
 variable "shared_iam_role_name" {
   description = <<EOT
 Name of the IAM execution role shared by both Lambdas (preprod and

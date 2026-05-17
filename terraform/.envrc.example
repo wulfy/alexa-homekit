@@ -39,6 +39,11 @@ export TF_VAR_nr_extension_send_function_logs=true
 # delaying the user-visible Alexa response. Override only if needed.
 # export TF_VAR_nr_data_collection_timeout="30s"
 
+# Per-invocation timeout and memory for both Lambdas. Defaults 30s and
+# 128 MB. Override here if you tuned the live Lambdas differently.
+# export TF_VAR_lambda_timeout=30
+# export TF_VAR_lambda_memory_size=128
+
 # Name of the IAM role shared by both Lambdas (preprod + prod).
 # Get the existing one with:
 #   aws lambda get-function-configuration --function-name alhau_preprod \

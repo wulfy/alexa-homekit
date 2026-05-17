@@ -1,4 +1,5 @@
 const mysql = require( 'mysql' );
+const crypto = require('crypto');
 const {databaseLogger, debugLogger} = require('./logger.js');
 const {DBCONFIG} = require('./constants')
 const {sendStatsd} = require('./metrics');
@@ -74,13 +75,17 @@ const getUserData = (token) => {
         if (data.user_id !== undefined) {
             nr.addCustomAttribute('alexa.userId', String(data.user_id));
         }
-        // Also capture a human-readable identifier (email is the common
-        // login) so dashboards can show "who" without manual id↔user
-        // mapping. Falls through several candidate column names so this
-        // works regardless of the exact schema variant.
+        // Also capture a stable per-user identifier so dashboards can
+        // facet by user (top users, retention, per-user error rate, etc.).
+        // We HASH the email rather than store it raw — the skill is now
+        // open to the public so user emails are personal data we'd rather
+        // not ingest into NR. SHA-256 truncated to 16 hex chars is more
+        // than enough to keep all real users distinct (64 bits of entropy)
+        // while not being reversible.
         const login = data.email || data.login || data.username || data.user_email || data.mail;
         if (login) {
-            nr.addCustomAttribute('alexa.userLogin', String(login));
+            const hash = crypto.createHash('sha256').update(String(login)).digest('hex').substring(0, 16);
+            nr.addCustomAttribute('alexa.userLogin', hash);
         }
 
         return data;

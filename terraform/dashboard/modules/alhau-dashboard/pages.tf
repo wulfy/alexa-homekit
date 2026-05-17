@@ -772,6 +772,72 @@ resource "newrelic_one_dashboard" "alhau" {
 
       legend_enabled = true
     }
+
+    # ----------------------------------------------------------------------
+    # User base observability — relevant now that the skill is public.
+    # Watches growth, engagement and the distribution of deployment sizes
+    # across the user base. uniqueCount uses alexa.userId (stable DB id),
+    # not the hashed email — both are present on each Transaction.
+    # ----------------------------------------------------------------------
+    widget_line {
+      title  = "Distinct users per day (90d growth)"
+      row    = 19
+      column = 1
+      width  = 8
+      height = 3
+
+      nrql_query {
+        account_id = var.account_id
+        query      = "FROM Transaction SELECT uniqueCount(alexa.userId) WHERE appName = {{ instance }} AND alexa.userId IS NOT NULL TIMESERIES 1 day SINCE 90 days ago"
+      }
+
+      y_axis_left_zero = true
+    }
+
+    widget_billboard {
+      title  = "Avg commands per user per day (last 7d)"
+      row    = 19
+      column = 9
+      width  = 4
+      height = 3
+
+      nrql_query {
+        account_id = var.account_id
+        query      = "FROM Transaction SELECT count(*) / uniqueCount(alexa.userId) AS 'cmds / user / day' WHERE appName = {{ instance }} AND alexa.userId IS NOT NULL SINCE 7 days ago"
+      }
+    }
+
+    widget_bar {
+      title  = "Device count distribution across users"
+      row    = 22
+      column = 1
+      width  = 6
+      height = 3
+
+      # FACET on discovery.deviceCount = histogram of how many devices
+      # each user has. uniqueCount counts users per bucket.
+      nrql_query {
+        account_id = var.account_id
+        query      = "FROM Transaction SELECT uniqueCount(alexa.userId) WHERE appName = {{ instance }} AND discovery.deviceCount IS NOT NULL FACET discovery.deviceCount SINCE 30 days ago LIMIT MAX"
+      }
+    }
+
+    widget_line {
+      title  = "Cumulative unique users (lifetime view)"
+      row    = 22
+      column = 7
+      width  = 6
+      height = 3
+
+      # 30-day rolling unique count — proxy for retention: if it climbs,
+      # new users keep joining; if it plateaus, churn balances growth.
+      nrql_query {
+        account_id = var.account_id
+        query      = "FROM Transaction SELECT uniqueCount(alexa.userId) WHERE appName = {{ instance }} AND alexa.userId IS NOT NULL TIMESERIES 1 day SINCE 90 days ago"
+      }
+
+      y_axis_left_zero = true
+    }
   }
 
   # ----------------------------------------------------------------------

@@ -21,3 +21,70 @@ export TF_VAR_nr_region="EU"
 # Bootstrap-specific:
 export TF_VAR_bucket_name="alhau-tfstate"
 export TF_VAR_region="eu-west-1"
+
+# --- terraform/lambda-config/ module --------------------------------
+# Manages the Lambda IAM roles, handler/layer/runtime config and the
+# full environment variable map. See terraform/lambda-config/README.md.
+
+# NR Lambda license key (a.k.a. Ingest key). EU keys start with eu01xx.
+# Find at https://one.eu.newrelic.com/api-keys → type "License key".
+export TF_VAR_nr_license_key="eu01xx..."
+
+# Forward CloudWatch Lambda logs to New Relic (true = ingested in NR Log).
+# Set to false on the free tier if log ingest grows too fast.
+export TF_VAR_nr_extension_send_function_logs=true
+
+# How long the NR Lambda extension waits for agent payloads after the
+# handler returns. Default 30s — covers slow Domoticz requests without
+# delaying the user-visible Alexa response. Override only if needed.
+# export TF_VAR_nr_data_collection_timeout="30s"
+
+# Per-invocation timeout and memory for both Lambdas. Defaults 30s and
+# 128 MB. Override here if you tuned the live Lambdas differently.
+# export TF_VAR_lambda_timeout=30
+# export TF_VAR_lambda_memory_size=128
+
+# Name of the IAM role shared by both Lambdas (preprod + prod).
+# Get the existing one with:
+#   aws lambda get-function-configuration --function-name alhau_preprod \
+#     --region eu-west-1 --query 'Role' --output text
+# and strip the ARN prefix (everything before/including the last `/`).
+export TF_VAR_shared_iam_role_name="..."
+
+# Per-environment Lambda config (JSON-encoded HCL object).
+# env_vars must contain the FULL current map — anything missing is
+# REMOVED from the live function on apply. Generate from existing
+# Lambda with:
+#   aws lambda get-function-configuration --function-name alhau_preprod \
+#     --region eu-west-1 --query 'Environment.Variables' --output json
+# (Strip out NEW_RELIC_LICENSE_KEY / ACCOUNT_ID / LAMBDA_HANDLER /
+#  APM_LAMBDA_MODE / EXTENSION_SEND_FUNCTION_LOGS / DATA_COLLECTION_TIMEOUT
+#  — those are managed by main.tf via the dedicated TF vars above.)
+export TF_VAR_preprod='{
+  "function_name": "alhau_preprod",
+  "env_vars": {
+    "INSTANCE_NAME": "PREPROD",
+    "PROD_MODE": "true",
+    "CRYPTOPASS": "...",
+    "MYSQL_ADDON_HOST": "...",
+    "MYSQL_ADDON_PORT": "...",
+    "MYSQL_ADDON_USER": "...",
+    "MYSQL_ADDON_PASSWORD": "...",
+    "MYSQL_ADDON_DB": "...",
+    "DOMOTICZ_API_HOST": "...",
+    "DOMOTICZ_API_PORT": "...",
+    "DOMOTICZ_API_LOGIN": "...",
+    "DOMOTICZ_API_PASSWORD": "...",
+    "METRICS_HOST": "...",
+    "METRICS_PORT": "...",
+    "METRICS_UDP_PORT": "..."
+  }
+}'
+
+export TF_VAR_prod='{
+  "function_name": "ludohomekit",
+  "env_vars": {
+    "INSTANCE_NAME": "prod",
+    "PROD_MODE": "true"
+  }
+}'
